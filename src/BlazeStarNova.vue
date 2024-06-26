@@ -237,10 +237,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, nextTick } from "vue";
+import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
+import { Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
 import { useDisplay } from "vuetify";
+
+import { createHorizon, removeHorizon } from "./horizon";
+import { LocationRad } from "./types";
+import { Annotation2 } from "./Annotation2";
 
 
 type SheetType = "text" | "video";
@@ -277,9 +282,9 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
+const showHorizon = ref(true);
 
 onMounted(() => {
-  console.log(store);
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.gotoRADecZoom({
@@ -289,6 +294,30 @@ onMounted(() => {
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
+
+    store.applySetting(["localHorizonMode", true]);
+    updateHorizon(showHorizon.value);
+
+    // Hack the engine to display our Annotation2 annotations
+    // which go in front of the planet layer
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const originalFrameRenderer = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
+    function renderOneFrame() {
+      originalFrameRenderer();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      Annotation2.prepBatch(this.renderContext);
+      for (const item of Annotation2.annotations) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        item.draw(this.renderContext);
+      }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      Annotation2.drawBatch(this.renderContext);
+    }
+    WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
   });
 });
 
@@ -355,6 +384,25 @@ function selectSheet(sheetType: SheetType | null) {
     sheet.value = sheetType;
   }
 }
+
+function updateHorizon(show: boolean) {
+  if (show) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const settings: Settings = Settings.get_active();
+    const location: LocationRad = {
+      longitudeRad: settings.get_locationLng() * D2R,
+      latitudeRad: settings.get_locationLat() * D2R,
+    };
+    console.log(location);
+    console.log(settings.get_locationLat(), settings.get_locationLng());
+    createHorizon({ location, when: store.currentTime });
+  } else {
+    removeHorizon();
+  }
+}
+
+watch(showHorizon, updateHorizon);
 </script>
 
 <style lang="less">
