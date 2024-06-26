@@ -415,6 +415,9 @@ function updateHorizon(show: boolean) {
 }
 
 watch(showHorizon, updateHorizon);
+watch(showAltAzGrid, (show) => {
+  store.applySetting(["showAltAzGrid", show]);
+});
 </script>
 
 <style lang="less">
