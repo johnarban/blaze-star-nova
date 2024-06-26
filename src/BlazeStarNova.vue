@@ -239,8 +239,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick } from "vue";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
-import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls } from "@cosmicds/vue-toolkit";
+import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
 import { useDisplay } from "vuetify";
+
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -260,8 +261,8 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
   initialCameraParams: () => {
     return {
-      raRad: 0,
-      decRad: 0,
+      raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
+      decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
       zoomDeg: 60
     };
   }
@@ -278,6 +279,7 @@ const buttonColor = ref("#ffffff");
 const tab = ref(0);
 
 onMounted(() => {
+  console.log(store);
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.gotoRADecZoom({
