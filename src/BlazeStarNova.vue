@@ -183,7 +183,7 @@ import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
-import { useDisplay } from "vuetify";
+// import { useDisplay } from "vuetify";
 
 import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
@@ -203,7 +203,7 @@ const store = engineStore();
 useWWTKeyboardControls(store);
 
 const touchscreen = supportsTouchscreen();
-const { smAndDown } = useDisplay();
+// const { smAndDown } = useDisplay();
 
 const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
@@ -284,6 +284,7 @@ const ready = computed(() => layersLoaded.value && positionSet.value);
 const isLoading = computed(() => !ready.value);
 
 /* Properties related to device/screen characteristics */
+// TODO: This seems to be giving the wrong value? Investigate why
 // const smallSize = computed(() => smAndDown);
 
 /* This lets us inject component data into element CSS */
