@@ -238,7 +238,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
-import { Settings, WWTControl } from "@wwtelescope/engine";
+import { Color, Grids, Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
 import { useDisplay } from "vuetify";
@@ -246,6 +246,7 @@ import { useDisplay } from "vuetify";
 import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
+import { makeAltAzGridText } from "./wwt-hacks";
 
 
 type SheetType = "text" | "video";
@@ -283,20 +284,23 @@ const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
 const showHorizon = ref(true);
+const showAltAzGrid = ref(true);
 
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-    store.gotoRADecZoom({
-      ...props.initialCameraParams,
-      instant: true
-    }).then(() => positionSet.value = true);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
     store.applySetting(["localHorizonMode", true]);
+    store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
+    store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
     updateHorizon(showHorizon.value);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    Grids._makeAltAzGridText = makeAltAzGridText;
 
     // Hack the engine to display our Annotation2 annotations
     // which go in front of the planet layer
@@ -318,6 +322,16 @@ onMounted(() => {
       Annotation2.drawBatch(this.renderContext);
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+
+    // We want to make sure that the location change happens AFTER
+    // the camera reposition caused by local horizon mode.
+    // TODO: What is a better way to do this?
+    setTimeout(() => {
+      store.gotoRADecZoom({
+        ...props.initialCameraParams,
+        instant: true
+      }).then(() => positionSet.value = true);
+    }, 500);
   });
 });
 
@@ -394,8 +408,6 @@ function updateHorizon(show: boolean) {
       longitudeRad: settings.get_locationLng() * D2R,
       latitudeRad: settings.get_locationLat() * D2R,
     };
-    console.log(location);
-    console.log(settings.get_locationLat(), settings.get_locationLng());
     createHorizon({ location, when: store.currentTime });
   } else {
     removeHorizon();
