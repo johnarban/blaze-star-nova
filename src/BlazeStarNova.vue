@@ -234,7 +234,6 @@ const showConstellations = ref(true);
 
 onMounted(() => {
   store.waitForReady().then(async () => {
-    console.log(store);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
     // If there are layers to set up, do that here!
