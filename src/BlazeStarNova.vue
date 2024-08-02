@@ -238,6 +238,7 @@ onMounted(() => {
 
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
+    store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
     updateHorizon(showHorizon.value);
 
