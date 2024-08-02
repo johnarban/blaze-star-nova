@@ -3,7 +3,7 @@
 
 /* eslint-disable */
 
-import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d } from "@wwtelescope/engine";
+import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d, WWTControl } from "@wwtelescope/engine";
 
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
@@ -46,4 +46,32 @@ export function initializeConstellationNames() {
       }
       Constellations._namesBatch.add(new Text3d(center, up, name, Settings.get_active().get_constellationLabelsHeight(), 0.000125));
   }
+}
+
+export function setupConstellationFigures() {
+  WWTControl.constellationsFigures.draw = function (renderContext, showOnlySelected, focusConstellation, clearExisting) {
+    const keep = ["BOO", "CRB"];
+    Constellations._maxSeperation = Math.max(0.6, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
+    this._drawCount = 0;
+    var lsSelected = null;
+    if (this.lines == null || Constellations.constellationCentroids == null) {
+        return;
+    }
+    Constellations._constToDraw = focusConstellation;
+    for (const ls of this.lines) {
+        const name = ls.get_name();
+        if (!keep.includes(name)) {
+          continue;
+        }
+        if (Constellations._constToDraw === name && this._boundry) {
+            lsSelected = ls;
+        }
+        else if (!showOnlySelected || !this._boundry) {
+            this._drawSingleConstellation(renderContext, ls, 1);
+        }
+    }
+    if (lsSelected != null) {
+        this._drawSingleConstellation(renderContext, lsSelected, 1);
+    }
+  }.bind(WWTControl.constellationsFigures);
 }

@@ -188,7 +188,7 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { initializeConstellationNames, makeAltAzGridText } from "./wwt-hacks";
+import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
 
 
 type SheetType = "text" | "video";
@@ -243,6 +243,7 @@ onMounted(() => {
     store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
     store.applySetting(["showConstellationLabels", true]);
+    store.applySetting(["showConstellationFigures", true]);
     updateHorizon(showHorizon.value);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -269,6 +270,8 @@ onMounted(() => {
       Annotation2.drawBatch(this.renderContext);
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+    WWTControl.singleton.renderOneFrame();
+    setupConstellationFigures();
 
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
