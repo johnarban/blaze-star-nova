@@ -68,6 +68,8 @@
               label="Sky Grid" hide-details />
             <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
               label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
           </div>
         </div>
       </div>
@@ -228,6 +230,7 @@ const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
+const showConstellations = ref(true);
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -242,8 +245,8 @@ onMounted(() => {
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
     store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
-    store.applySetting(["showConstellationLabels", true]);
-    store.applySetting(["showConstellationFigures", true]);
+    store.applySetting(["showConstellationLabels", showConstellations.value]);
+    store.applySetting(["showConstellationFigures", showConstellations.value]);
     updateHorizon(showHorizon.value);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -368,6 +371,10 @@ function updateHorizon(show: boolean) {
 watch(showHorizon, updateHorizon);
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
+});
+watch(showConstellations, (show) => {
+  store.applySetting(["showConstellationLabels", show]);
+  store.applySetting(["showConstellationFigures", show]);
 });
 </script>
 
