@@ -3,7 +3,7 @@
 
 /* eslint-disable */
 
-import { Grids, SpaceTimeController, Text3d, Text3dBatch, Vector3d } from "@wwtelescope/engine";
+import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d } from "@wwtelescope/engine";
 
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
@@ -22,5 +22,28 @@ export function makeAltAzGridText() {
     directions.forEach(([v, text]) => {
       Grids._altAzTextBatch.add(new Text3d(Vector3d.create(...v), up, text, 75, 0.00018));
     });
+  }
+}
+
+export function initializeConstellationNames() {
+  if (Constellations.constellationCentroids == null) {
+      return;
+  }
+  Constellations._namesBatch = new Text3dBatch(Settings.get_active().get_constellationLabelsHeight());
+  const keep = ["BOO", "CRB"];
+  for (const constellation of Object.keys(Constellations.constellationCentroids)) {
+      
+      if (!keep.includes(constellation)) {
+        continue;
+      }
+
+      const centroid = Constellations.constellationCentroids[constellation];
+      const center = Coordinates.raDecTo3dAu(centroid.get_RA(), centroid.get_dec(), 1);
+      const up = Vector3d.create(0, 1, 0);
+      const name = centroid.get_name();
+      if (centroid.get_name() === 'Triangulum Australe') {
+          name = ss.replaceString(name, ' ', '\n   ');
+      }
+      Constellations._namesBatch.add(new Text3d(center, up, name, Settings.get_active().get_constellationLabelsHeight(), 0.000125));
   }
 }

@@ -188,7 +188,7 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { makeAltAzGridText } from "./wwt-hacks";
+import { initializeConstellationNames, makeAltAzGridText } from "./wwt-hacks";
 
 
 type SheetType = "text" | "video";
@@ -236,10 +236,13 @@ onMounted(() => {
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
+    initializeConstellationNames();
+
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
     store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
+    store.applySetting(["showConstellationLabels", true]);
     updateHorizon(showHorizon.value);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
