@@ -182,13 +182,14 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
-import { Color, Grids, Settings, WWTControl } from "@wwtelescope/engine";
+import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
+import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
 // import { useDisplay } from "vuetify";
 
-import { createHorizon, removeHorizon } from "./horizon";
-import { LocationRad } from "./types";
+import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
+import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
 import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
 
@@ -227,10 +228,27 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
+const timePlaying = ref(true);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
+
+const sunPlace = new Place();
+sunPlace.set_names(["Sun"]);
+sunPlace.set_classification(Classification.solarSystem);
+sunPlace.set_target(SolarSystemObjects.sun);
+sunPlace.set_zoomLevel(20);
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const wwtSettings: Settings = Settings.get_active();
+function getWWTLocation(): LocationRad {
+  return {
+    longitudeRad: wwtSettings.get_locationLng() * D2R,
+    latitudeRad: wwtSettings.get_locationLat() * D2R,
+  };
+}
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -241,13 +259,15 @@ onMounted(() => {
 
     initializeConstellationNames();
 
+    store.setClockRate(1000);
+
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
     store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
     store.applySetting(["showConstellationLabels", showConstellations.value]);
     store.applySetting(["showConstellationFigures", showConstellations.value]);
-    updateHorizon(showHorizon.value);
+    updateHorizonAndSky();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -276,6 +296,12 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame();
     setupConstellationFigures();
 
+    setInterval(() => {
+      if (timePlaying.value) {
+        updateHorizonAndSky(store.currentTime); 
+      }
+    }, 100);
+
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
     // TODO: What is a better way to do this?
@@ -292,6 +318,21 @@ const ready = computed(() => layersLoaded.value && positionSet.value);
 
 /* `isLoading` is a bit redundant here, but it could potentially have independent logic */
 const isLoading = computed(() => !ready.value);
+
+function getSunPosition(when: Date | null): EquatorialRad & HorizontalRad {
+  const location = getWWTLocation();
+  const sunAltAz = equatorialToHorizontal(sunPlace.get_RA() * 15 * D2R,
+    sunPlace.get_dec() * D2R,
+    location.latitudeRad,
+    location.longitudeRad,
+    when ?? store.currentTime);
+
+  return {
+    raRad: sunPlace.get_RA() * 15 * D2R,
+    decRad: sunPlace.get_dec() * D2R,
+    ...sunAltAz
+  };
+}
 
 /* Properties related to device/screen characteristics */
 // TODO: This seems to be giving the wrong value? Investigate why
@@ -353,29 +394,47 @@ function selectSheet(sheetType: SheetType | null) {
   }
 }
 
-function updateHorizon(show: boolean) {
-  if (show) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const settings: Settings = Settings.get_active();
-    const location: LocationRad = {
-      longitudeRad: settings.get_locationLng() * D2R,
-      latitudeRad: settings.get_locationLat() * D2R,
-    };
-    createHorizon({ location, when: store.currentTime });
-  } else {
+function removeSky() {
+  store.clearAnnotations();
+}
+
+
+function updateHorizonAndSky(when: Date | null = null) {
+  try {
     removeHorizon();
+    removeSky();
+  } finally {
+    const location = getWWTLocation();
+    if (showHorizon.value) {
+      const time = when || store.currentTime;
+      createHorizon({ location, when: time });
+      const sunPosition = getSunPosition(time);
+      const opacity = skyOpacityForSunAlt(sunPosition.altRad);
+      store.setForegroundOpacity((1 - opacity) * 100);
+      createSky({ location, when: time, opacity });
+    }
   }
 }
 
-watch(showHorizon, updateHorizon);
+function skyOpacityForSunAlt(sunAltRad: number) {
+  const civilTwilight = -6 * D2R;
+  const astronomicalTwilight = 3 * civilTwilight;
+  
+  return (1 + Math.atan(Math.PI * sunAltRad / (-astronomicalTwilight))) / 2;
+}
+
+
+watch(showHorizon, (_show) => updateHorizonAndSky());
+
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
 });
+
 watch(showConstellations, (show) => {
   store.applySetting(["showConstellationLabels", show]);
   store.applySetting(["showConstellationFigures", show]);
 });
+
 </script>
 
 <style lang="less">
