@@ -211,8 +211,8 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
   initialCameraParams: () => {
     return {
-      raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
-      decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
+      raRad: 4.001238944138198,
+      decRad: 0.5307600894728279,
       zoomDeg: 60
     };
   }
@@ -234,6 +234,7 @@ const showConstellations = ref(true);
 
 onMounted(() => {
   store.waitForReady().then(async () => {
+    console.log(store);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
     // If there are layers to set up, do that here!
