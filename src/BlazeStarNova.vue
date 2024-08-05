@@ -49,6 +49,11 @@
         <div id="center-buttons">
         </div>
         <div id="right-buttons">
+          <v-chip
+            v-if="crbBelowHorizon"
+          >
+            Corona Borealis is Set
+          </v-chip>
         </div>
       </div>
 
@@ -233,6 +238,7 @@ const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
+const crbBelowHorizon = ref(true);
 
 const sunPlace = new Place();
 sunPlace.set_names(["Sun"]);
@@ -303,6 +309,7 @@ onMounted(() => {
     setInterval(() => {
       if (timePlaying.value) {
         updateHorizonAndSky(store.currentTime); 
+        updateCrbBelowHorizon(store.currentTime);
       }
     }, 100);
 
@@ -336,6 +343,18 @@ function getSunPosition(when: Date | null): EquatorialRad & HorizontalRad {
     decRad: sunPlace.get_dec() * D2R,
     ...sunAltAz
   };
+}
+
+function getCrbAlt(when: Date | null = null) {
+  const location = getWWTLocation();
+  const crbAltAz = equatorialToHorizontal(
+    crbPlace.get_RA() * 15 * D2R,
+    crbPlace.get_dec() * D2R,
+    location.latitudeRad,
+    location.longitudeRad,
+    when ?? store.currentTime);
+
+  return crbAltAz.altRad;
 }
 
 /* Properties related to device/screen characteristics */
@@ -410,7 +429,7 @@ function updateHorizonAndSky(when: Date | null = null) {
   } finally {
     const location = getWWTLocation();
     if (showHorizon.value) {
-      const time = when || store.currentTime;
+      const time = when ?? store.currentTime;
       createHorizon({ location, when: time });
       const sunPosition = getSunPosition(time);
       const opacity = skyOpacityForSunAlt(sunPosition.altRad);
@@ -418,6 +437,11 @@ function updateHorizonAndSky(when: Date | null = null) {
       createSky({ location, when: time, opacity });
     }
   }
+}
+
+function updateCrbBelowHorizon(when: Date | null = null) {
+  const alt = getCrbAlt(when);
+  crbBelowHorizon.value = alt <= 0;
 }
 
 function skyOpacityForSunAlt(sunAltRad: number) {
@@ -560,9 +584,9 @@ body {
   width: calc(100% - 2rem);
   pointer-events: none;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: flex-start;
+  gap: 10px;
 }
 
 #left-buttons {
@@ -750,6 +774,13 @@ video {
   overflow: hidden;
   padding: 0px;
   z-index: 10;
+}
+
+#left-buttons, #right-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
 }
 
 .bottom-sheet {
