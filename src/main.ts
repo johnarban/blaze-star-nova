@@ -7,6 +7,8 @@ import vuetify from "../plugins/vuetify";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import SplashScreen from "./SplashScreen.vue";
+
 import { WWTComponent, wwtPinia } from "@wwtelescope/engine-pinia";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -58,6 +60,7 @@ createApp(BlazeStarNova, {
   .component('icon-button', IconButton)
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
+  .component('splash-screen', SplashScreen)
 
   // Mount
   .mount("#app");
