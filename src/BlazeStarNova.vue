@@ -240,6 +240,10 @@ sunPlace.set_classification(Classification.solarSystem);
 sunPlace.set_target(SolarSystemObjects.sun);
 sunPlace.set_zoomLevel(20);
 
+const crbPlace = new Place();
+crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
+crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const wwtSettings: Settings = Settings.get_active();
