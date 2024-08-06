@@ -213,7 +213,7 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
     return {
       raRad: 4.001238944138198,
       decRad: 0.5307600894728279,
-      zoomDeg: 60
+      zoomDeg: 180
     };
   }
 });
