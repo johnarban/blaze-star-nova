@@ -40,6 +40,22 @@
 
       <!-- Date Picker -->
        <div id="empty-space"></div>
+       <div id="playback-controls">
+          <icon-button 
+            :fa-icon="playbackControl.isPlaying.value ? 'pause' : 'play'"
+            :color="buttonColor" 
+            tooltip-text="Play"
+            tooltip-location="start" 
+            @activate="()=>{playbackControl.togglePlay()}" />
+       </div>
+       
+       <geolocation-button
+        id="geolocation-button"
+        debug
+        size="30px"
+        density="default"
+        elevation="5"
+      />
        
        <div id="date-picker">
         <VueDatePicker 
@@ -47,26 +63,28 @@
           dark
         />
        </div>
-
+      
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
-
+      
       <div id="bottom-content">
-        <credit-logos logo-size="3vmin"/>
+        <credit-logos logo-size="25px"/>
         <div id="controls" class="control-icon-wrapper">
           <div id="controls-top-row">
             <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
               @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
           </div>
-    
+          
           <div v-if="showControls" id="control-checkboxes">
             <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
               label="Sky Grid" hide-details />
             <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
               label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
           </div>
         </div>
       </div>
-
+    
 
       <!-- This dialog contains the video that is displayed when the video icon is clicked -->
 
@@ -181,9 +199,10 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 // import { useDisplay } from "vuetify";
 
 import { createHorizon, removeHorizon } from "./horizon";
-import { LocationRad } from "./types";
+import { LocationRad, EquatorialRad } from "./types";
 import { Annotation2 } from "./Annotation2";
 import { makeAltAzGridText } from "./wwt-hacks";
+import { usePlaybackControl } from "./wwt_playback_control";
 import VueDatePicker from '@vuepic/vue-datepicker';
 
 
@@ -197,6 +216,11 @@ export interface MainComponentProps {
 const store = engineStore();
 
 useWWTKeyboardControls(store);
+
+const playbackControl = usePlaybackControl(store);
+playbackControl.setSpeed(1000);
+
+
 
 const touchscreen = supportsTouchscreen();
 // const { smAndDown } = useDisplay();
@@ -224,6 +248,13 @@ const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
+const showConstellations = ref(true);
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const blazeStarLocation: EquatorialRad = {
+  raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
+  decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
+};
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
   // get's today's date and 
@@ -245,6 +276,8 @@ onMounted(() => {
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
+    store.applySetting(["showConstellationFigures", showConstellations.value]);
+    store.applySetting(["showConstellationLabels", showConstellations.value]);
     updateHorizon(showHorizon.value);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -271,7 +304,10 @@ onMounted(() => {
       Annotation2.drawBatch(this.renderContext);
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
-
+    
+    playbackControl.play();
+    
+    // playbackControl.pause();
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
     // TODO: What is a better way to do this?
@@ -335,7 +371,7 @@ const showVideoSheet = computed({
   when the splash screen is closed
 */
 function closeSplashScreen() {
-    showSplashScreen.value = false;
+  showSplashScreen.value = false;
 }
 
 function selectSheet(sheetType: SheetType | null) {
@@ -367,6 +403,10 @@ function updateHorizon(show: boolean) {
 watch(showHorizon, updateHorizon);
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
+});
+watch(showConstellations, (show) => {
+  store.applySetting(["showConstellationFigures", show]);
+  store.applySetting(["showConstellationLabels", show]);
 });
 </script>
 
@@ -411,6 +451,8 @@ body {
   overflow: hidden;
 
   transition: height 0.1s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 #app {
@@ -483,15 +525,15 @@ body {
 }
 
 #top-content {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: calc(100% - 2rem);
+  position: relative;
+  flex-grow:0;
+  margin: 1rem;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
+  border: 1px solid red;
 }
 
 #left-buttons {
@@ -500,18 +542,33 @@ body {
   gap: 10px;
 }
 
+#empty-space {
+  flex-grow:1;
+  // background-color: #7b15153c;
+}
+
+#playback-controls {
+  position: relative;
+  pointer-events: auto;
+}
+
 #bottom-content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  width: calc(100% - 2rem);
+  // position: absolute;
+  position: relative;
+  // bottom: 1rem;
+  // right: 1rem;
+  // width: calc(100% - 2rem);
+  flex-grow: 0;
   height: fit-content;
   pointer-events: none;
   align-items: center;
   gap: 5px;
+  border: 1px solid red;
+}
+
 #date-picker {
   margin: 1rem;
 }
