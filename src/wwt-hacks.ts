@@ -265,10 +265,12 @@ export function renderOneFrame() {
     this.textOverlays = makeTextOverlays();
   }
 
-  if (Grids._altAzTextBatch.viewTransform != undefined) {
-    this.textOverlays.viewTransform = Grids._altAzTextBatch.viewTransform;
+  if (Settings.get_active().get_showConstellationLabels()) {
+    if (Grids._altAzTextBatch.viewTransform != undefined) {
+      this.textOverlays.viewTransform = Grids._altAzTextBatch.viewTransform;
+    }
+    this.textOverlays.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
   }
-  this.textOverlays.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
 
   Annotation2.prepBatch(this.renderContext);
   for (const item of Annotation2.annotations) {
