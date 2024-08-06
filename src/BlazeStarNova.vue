@@ -51,7 +51,7 @@
        
        <geolocation-button
         id="geolocation-button"
-        debug
+        :debug="false"
         size="30px"
         density="default"
         elevation="5"
@@ -533,7 +533,6 @@ body {
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
-  border: 1px solid red;
 }
 
 #left-buttons {
@@ -544,7 +543,6 @@ body {
 
 #empty-space {
   flex-grow:1;
-  // background-color: #7b15153c;
 }
 
 #playback-controls {
@@ -556,11 +554,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  // position: absolute;
   position: relative;
-  // bottom: 1rem;
-  // right: 1rem;
-  // width: calc(100% - 2rem);
   flex-grow: 0;
   height: fit-content;
   pointer-events: none;

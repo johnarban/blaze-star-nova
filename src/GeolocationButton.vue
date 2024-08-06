@@ -12,8 +12,8 @@
       @click="getCurrentLocation" 
     />
     
-    <div class="geolocation-debug">
-      <div v-if="debug">
+    <div v-if="debug" class="geolocation-debug">
+      <div>
         <div>isSupported: {{ isSupported }}</div>
         <div>permissionsRequested: {{ permissionsRequested }}</div>
         <div>isPermissionGranted: {{ isPermissionGranted }}</div>
