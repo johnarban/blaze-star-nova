@@ -191,12 +191,10 @@ import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
 import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
-// import { useDisplay } from "vuetify";
 
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
-import { Annotation2 } from "./Annotation2";
-import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs } from "./wwt-hacks";
+import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs, renderOneFrame } from "./wwt-hacks";
 import { makeTextOverlays } from "./text";
 
 
@@ -286,36 +284,17 @@ onMounted(() => {
     const textOverlays = makeTextOverlays();
     useCustomGlyphs(textOverlays);
 
+    // We need to render one frame ahead of time
+    // as there's a lot of setup done on the first frame
+    // render that we need to use
+    WWTControl.singleton.renderOneFrame();
+
     // Hack the engine to display our Annotation2 annotations
     // which go in front of the planet layer
+    // as well as our custom text overlays
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const originalFrameRenderer = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
-    function renderOneFrame() {
-      originalFrameRenderer();
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      textOverlays.viewTransform = Grids._altAzTextBatch.viewTransform;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      textOverlays.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      Annotation2.prepBatch(this.renderContext);
-      for (const item of Annotation2.annotations) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        item.draw(this.renderContext);
-      }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      Annotation2.drawBatch(this.renderContext);
-
-    }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
-    WWTControl.singleton.renderOneFrame();
     setupConstellationFigures();
 
     setInterval(() => {
@@ -442,7 +421,7 @@ function updateHorizonAndSky(when: Date | null = null) {
     const location = getWWTLocation();
     if (showHorizon.value) {
       const time = when ?? store.currentTime;
-      createHorizon({ location, when: time });
+      createHorizon({ location, opacity: 0.95, when: time });
       const sunPosition = getSunPosition(time);
       const opacity = skyOpacityForSunAlt(sunPosition.altRad);
       store.setForegroundOpacity((1 - opacity) * 100);
