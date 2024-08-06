@@ -218,7 +218,7 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
     return {
       raRad: 4.001238944138198,
       decRad: 0.5307600894728279,
-      zoomDeg: 60
+      zoomDeg: 180
     };
   }
 });
@@ -238,6 +238,9 @@ const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
+
+// For now, we're not allowing a user to change this
+const clockRate = 1000;
 
 const sunPlace = new Place();
 sunPlace.set_names(["Sun"]);
@@ -266,8 +269,8 @@ onMounted(() => {
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
-    store.setClockRate(1000);
     store.setClockSync(timePlaying.value);
+    store.setClockRate(clockRate);
 
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
@@ -453,6 +456,8 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationLabels", show]);
   store.applySetting(["showConstellationFigures", show]);
 });
+
+watch(timePlaying, (play) => store.setClockSync(play));
 
 </script>
 
