@@ -3,7 +3,7 @@ export interface LocationRad {
   latitudeRad: number;
 }
 
-export interface HorizonOptions {
+export interface HorizonSkyOptions {
   location: LocationRad;
   when?: Date;
   color?: string;

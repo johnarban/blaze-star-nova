@@ -75,6 +75,11 @@
               
         </div>
         <div id="right-buttons">
+          <v-chip
+            v-if="crbBelowHorizon"
+          >
+            Corona Borealis is Set
+          </v-chip>
         </div>
       </div>
 
@@ -127,6 +132,8 @@
               label="Sky Grid" hide-details />
             <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
               label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
           </div>
         </div>
       </div>
@@ -239,18 +246,19 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
-import { Color, Grids, Settings, WWTControl } from "@wwtelescope/engine";
+import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
+import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 // import { useDisplay } from "vuetify";
 
-import { createHorizon, removeHorizon } from "./horizon";
-import { LocationRad, EquatorialRad } from "./types";
+import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
+import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { makeAltAzGridText } from "./wwt-hacks";
+import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
+
 import { usePlaybackControl } from "./wwt_playback_control";
 import VueDatePicker from '@vuepic/vue-datepicker';
-
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -275,9 +283,9 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
   initialCameraParams: () => {
     return {
-      raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
-      decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
-      zoomDeg: 60
+      raRad: 4.001238944138198,
+      decRad: 0.5307600894728279,
+      zoomDeg: 180
     };
   }
 });
@@ -291,9 +299,35 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
+const timePlaying = ref(false);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
+const showConstellations = ref(true);
+const crbBelowHorizon = ref(true);
+
+// For now, we're not allowing a user to change this
+const clockRate = 1000;
+
+const sunPlace = new Place();
+sunPlace.set_names(["Sun"]);
+sunPlace.set_classification(Classification.solarSystem);
+sunPlace.set_target(SolarSystemObjects.sun);
+sunPlace.set_zoomLevel(20);
+
+const crbPlace = new Place();
+crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
+crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const wwtSettings: Settings = Settings.get_active();
+function getWWTLocation(): LocationRad {
+  return {
+    longitudeRad: wwtSettings.get_locationLng() * D2R,
+    latitudeRad: wwtSettings.get_locationLat() * D2R,
+  };
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const blazeStarLocation: EquatorialRad = {
@@ -324,10 +358,18 @@ onMounted(() => {
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
+    initializeConstellationNames();
+
+    store.setClockSync(timePlaying.value);
+    store.setClockRate(clockRate);
+
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
+    store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
-    updateHorizon(showHorizon.value);
+    store.applySetting(["showConstellationLabels", showConstellations.value]);
+    store.applySetting(["showConstellationFigures", showConstellations.value]);
+    updateHorizonAndSky();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -357,6 +399,16 @@ onMounted(() => {
     // playbackControl.play();
     
     // playbackControl.pause();
+    WWTControl.singleton.renderOneFrame();
+    setupConstellationFigures();
+
+    setInterval(() => {
+      if (timePlaying.value) {
+        updateHorizonAndSky(store.currentTime); 
+        updateCrbBelowHorizon(store.currentTime);
+      }
+    }, 100);
+
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
     // TODO: What is a better way to do this?
@@ -373,6 +425,33 @@ const ready = computed(() => layersLoaded.value && positionSet.value);
 
 /* `isLoading` is a bit redundant here, but it could potentially have independent logic */
 const isLoading = computed(() => !ready.value);
+
+function getSunPosition(when: Date | null): EquatorialRad & HorizontalRad {
+  const location = getWWTLocation();
+  const sunAltAz = equatorialToHorizontal(sunPlace.get_RA() * 15 * D2R,
+    sunPlace.get_dec() * D2R,
+    location.latitudeRad,
+    location.longitudeRad,
+    when ?? store.currentTime);
+
+  return {
+    raRad: sunPlace.get_RA() * 15 * D2R,
+    decRad: sunPlace.get_dec() * D2R,
+    ...sunAltAz
+  };
+}
+
+function getCrbAlt(when: Date | null = null) {
+  const location = getWWTLocation();
+  const crbAltAz = equatorialToHorizontal(
+    crbPlace.get_RA() * 15 * D2R,
+    crbPlace.get_dec() * D2R,
+    location.latitudeRad,
+    location.longitudeRad,
+    when ?? store.currentTime);
+
+  return crbAltAz.altRad;
+}
 
 /* Properties related to device/screen characteristics */
 // TODO: This seems to be giving the wrong value? Investigate why
@@ -434,26 +513,54 @@ function selectSheet(sheetType: SheetType | null) {
   }
 }
 
-function updateHorizon(show: boolean) {
-  if (show) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const settings: Settings = Settings.get_active();
-    const location: LocationRad = {
-      longitudeRad: settings.get_locationLng() * D2R,
-      latitudeRad: settings.get_locationLat() * D2R,
-    };
-    createHorizon({ location, when: store.currentTime });
-  } else {
-    removeHorizon();
-  }
+function removeSky() {
+  store.clearAnnotations();
 }
 
 
-watch(showHorizon, updateHorizon);
+function updateHorizonAndSky(when: Date | null = null) {
+  try {
+    removeHorizon();
+    removeSky();
+  } finally {
+    const location = getWWTLocation();
+    if (showHorizon.value) {
+      const time = when ?? store.currentTime;
+      createHorizon({ location, when: time });
+      const sunPosition = getSunPosition(time);
+      const opacity = skyOpacityForSunAlt(sunPosition.altRad);
+      store.setForegroundOpacity((1 - opacity) * 100);
+      createSky({ location, when: time, opacity });
+    }
+  }
+}
+
+function updateCrbBelowHorizon(when: Date | null = null) {
+  const alt = getCrbAlt(when);
+  crbBelowHorizon.value = alt <= 0;
+}
+
+function skyOpacityForSunAlt(sunAltRad: number) {
+  const civilTwilight = -6 * D2R;
+  const astronomicalTwilight = 3 * civilTwilight;
+  
+  return (1 + Math.atan(Math.PI * sunAltRad / (-astronomicalTwilight))) / 2;
+}
+
+
+watch(showHorizon, (_show) => updateHorizonAndSky());
+
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
 });
+
+watch(showConstellations, (show) => {
+  store.applySetting(["showConstellationLabels", show]);
+  store.applySetting(["showConstellationFigures", show]);
+});
+
+watch(timePlaying, (play) => store.setClockSync(play));
+
 </script>
 
 <style lang="less">
@@ -579,6 +686,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 10px;
 }
 
 #left-buttons {
@@ -753,6 +861,13 @@ video {
   overflow: hidden;
   padding: 0px;
   z-index: 10;
+}
+
+#left-buttons, #right-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: auto;
 }
 
 .bottom-sheet {
