@@ -80,14 +80,30 @@
           >
             Corona Borealis is Set
           </v-chip>
+          <button 
+            class="icon-wrapper jl_icon-button" 
+            @click="() => updateHorizonAndSky()"
+            >Update Horizon and Sky</button>
+          <button
+            class="icon-wrapper jl_icon-button"
+            @click="() => updateCrbBelowHorizon()"
+            >Update CRB Below Horizon</button>
+          <button
+            class="icon-wrapper jl_icon-button"
+            @click="() => WWTControl.singleton.renderOneFrame()"
+            >Render one frame</button>
         </div>
       </div>
 
       <!-- Date Picker -->
-       <div id="empty-space"></div>
+       <div id="empty-space">
+       </div>
        <div id="playback-controls">
+        <span>selected: {{ selectedDate }}</span>
+        <span>wwt: {{ store.currentTime }}</span>
+        <span>{{ selectedLocation }}</span>
           <icon-button 
-            :fa-icon="playbackControl.isPlaying.value ? 'pause' : 'play'"
+            :fa-icon="timePlaying ? 'pause' : 'play'"
             :color="buttonColor" 
             tooltip-text="Play"
             tooltip-location="start" 
@@ -271,10 +287,12 @@ const store = engineStore();
 
 useWWTKeyboardControls(store);
 
-const playbackControl = usePlaybackControl(store);
+const playbackControl = usePlaybackControl(store, true);
+// initialize playback. 
 playbackControl.setSpeed(1000);
-
-
+playbackControl.pause();
+// destructure playbackControl
+const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
 // const { smAndDown } = useDisplay();
@@ -299,7 +317,6 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
-const timePlaying = ref(false);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
@@ -339,7 +356,7 @@ function todayAt9pm() {
   // get's today's date and 
   // sets time time to 9pm local time
   const today = new Date();
-  today.setHours(21, 0, 0, 0);
+  today.setHours(13, 0, 0, 0);
   return today;
 }
 
@@ -353,12 +370,15 @@ const selectedLocation = ref<LocationDeg>({
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-    store.setTime(selectedDate.value);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
     initializeConstellationNames();
+
+    store.setTime(selectedDate.value);
+    wwtSettings.set_locationLat(selectedLocation.value.latitudeDeg * D2R);
+    wwtSettings.set_locationLng(selectedLocation.value.longitudeDeg * D2R);
 
     store.setClockSync(timePlaying.value);
     store.setClockRate(clockRate);
@@ -395,10 +415,6 @@ onMounted(() => {
       Annotation2.drawBatch(this.renderContext);
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
-    
-    // playbackControl.play();
-    
-    // playbackControl.pause();
     WWTControl.singleton.renderOneFrame();
     setupConstellationFigures();
 
@@ -559,7 +575,23 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationFigures", show]);
 });
 
-watch(timePlaying, (play) => store.setClockSync(play));
+
+watch(selectedDate, (date) => {
+  // if we are playing this already getting updated
+  playbackControl.pause();
+  store.setTime(date);
+  updateHorizonAndSky(date);
+  updateCrbBelowHorizon(date);
+  WWTControl.singleton.renderOneFrame();
+});
+
+watch(selectedLocation, (location) => {
+  wwtSettings.set_locationLat(location.latitudeDeg * D2R);
+  wwtSettings.set_locationLng(location.longitudeDeg * D2R);
+  updateHorizonAndSky();
+  updateCrbBelowHorizon();
+  WWTControl.singleton.renderOneFrame();
+});
 
 </script>
 

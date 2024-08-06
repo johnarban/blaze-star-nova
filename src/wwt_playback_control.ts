@@ -4,36 +4,46 @@
 import { ref, watch } from "vue";
 import { engineStore } from "@wwtelescope/engine-pinia";
 type WWTEngineStore = ReturnType<typeof engineStore>;
-export function usePlaybackControl(store: WWTEngineStore) {
+export function usePlaybackControl(store: WWTEngineStore, debug = false) {
   console.log("usePlaybackControl");
-  const playbackRate = ref(1);
-  const isPlaying = ref(false);
+  const clockRate = ref(1);
+  const timePlaying = ref(false);
   
-  const play = () => { isPlaying.value = true; };
+  const play = () => { timePlaying.value = true; };
   
-  const pause = () => { isPlaying.value = false; };
+  const pause = () => { timePlaying.value = false; };
 
-  const togglePlay = () => { isPlaying.value = !isPlaying.value; };
+  const togglePlay = () => { timePlaying.value = !timePlaying.value; };
   
   
   function setSpeed(rate: number) {
-    playbackRate.value = rate;
+    clockRate.value = rate;
   }
   
 
   store.waitForReady().then(() => {
-    watch(playbackRate, (newRate) => {
+    watch(clockRate, (newRate) => {
       console.log("playbackRate changed", newRate);
       store.setClockRate(newRate);
     });
 
-    watch(isPlaying, (newIsPlaying) => {
+    watch(timePlaying, (newIsPlaying) => {
       console.log("isPlaying changed", newIsPlaying);
       store.setClockSync(newIsPlaying);
     });
-    store.setClockRate(playbackRate.value);
-    store.setClockSync(isPlaying.value);
+    store.setClockRate(clockRate.value);
+    store.setClockSync(timePlaying.value);
   });
+  
+  // watch everything and log out what changes
+  if (debug) {
+    watch(clockRate, (newRate) => {
+      console.log("playbackRate changed", newRate);
+    });
+    watch(timePlaying, (newIsPlaying) => {
+      console.log("isPlaying changed", newIsPlaying);
+    });
+  }
 
   
   
@@ -47,8 +57,8 @@ export function usePlaybackControl(store: WWTEngineStore) {
     pause,
     togglePlay,
     setSpeed,
-    isPlaying,
-    playbackRate
+    timePlaying,
+    clockRate
   };
   
 }
