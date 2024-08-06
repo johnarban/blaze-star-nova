@@ -233,12 +233,15 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
-const timePlaying = ref(true);
+const timePlaying = ref(false);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
+
+// For now, we're not allowing a user to change this
+const clockRate = 1000;
 
 const sunPlace = new Place();
 sunPlace.set_names(["Sun"]);
@@ -269,7 +272,8 @@ onMounted(() => {
 
     initializeConstellationNames();
 
-    store.setClockRate(1000);
+    store.setClockSync(timePlaying.value);
+    store.setClockRate(clockRate);
 
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
@@ -462,6 +466,8 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationLabels", show]);
   store.applySetting(["showConstellationFigures", show]);
 });
+
+watch(timePlaying, (play) => store.setClockSync(play));
 
 </script>
 
