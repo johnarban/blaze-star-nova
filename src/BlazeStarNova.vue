@@ -267,6 +267,8 @@ onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
+    store.setBackgroundImageByName("USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)");
+
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
