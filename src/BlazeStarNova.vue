@@ -38,6 +38,15 @@
         </div>
       </div>
 
+      <!-- Date Picker -->
+       <div id="empty-space"></div>
+       
+       <div id="date-picker">
+        <VueDatePicker 
+          v-model="selectedDate"
+          dark
+        />
+       </div>
 
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
@@ -175,6 +184,7 @@ import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
 import { makeAltAzGridText } from "./wwt-hacks";
+import VueDatePicker from '@vuepic/vue-datepicker';
 
 
 type SheetType = "text" | "video";
@@ -214,6 +224,16 @@ const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
+// create selectedDate by default is today at 9pm localtime
+function todayAt9pm() {
+  // get's today's date and 
+  // sets time time to 9pm local time
+  const today = new Date();
+  today.setHours(21, 0, 0, 0);
+  return today;
+}
+
+const selectedDate = ref(todayAt9pm());
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -492,6 +512,8 @@ body {
   pointer-events: none;
   align-items: center;
   gap: 5px;
+#date-picker {
+  margin: 1rem;
 }
 
 #controls {

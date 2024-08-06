@@ -8,6 +8,8 @@ import vuetify from "../plugins/vuetify";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import SplashScreen from "./SplashScreen.vue";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 import { WWTComponent, wwtPinia } from "@wwtelescope/engine-pinia";
 
@@ -61,6 +63,7 @@ createApp(BlazeStarNova, {
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
   .component('splash-screen', SplashScreen)
+  .component('vue-date-picker', VueDatePicker)
 
   // Mount
   .mount("#app");
