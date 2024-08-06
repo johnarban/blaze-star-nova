@@ -3,7 +3,7 @@
 
 /* eslint-disable */
 
-import { Color, Constellations, Coordinates, Grids, Settings, SimpleLineList, SpaceTimeController, Text3d, Text3dBatch, Texture, Vector3d, WebFile, WWTControl } from "@wwtelescope/engine";
+import { Color, Constellations, Coordinates, GlyphCache, Grids, Settings, SimpleLineList, SpaceTimeController, Text3d, Text3dBatch, Texture, Vector3d, WebFile, WWTControl } from "@wwtelescope/engine";
 
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
@@ -100,19 +100,19 @@ function drawConstellations(renderContext, showOnlySelected, focusConstellation,
 
 
 export function setupConstellationFigures() {
-  console.log(WWTControl.constellationsFigures);
-  console.log(WWTControl.constellationsFigures._constellationVertexBuffers);
   WWTControl.constellationsFigures._drawSingleConstellation = drawSingleConstellation.bind(WWTControl.constellationsFigures);
   WWTControl.constellationsFigures.draw = drawConstellations.bind(WWTControl.constellationsFigures);
 }
 
 export function useCustomGlyphs(batch: Text3dBatch) {
   batch.prepareBatch();
-  console.log(batch._glyphCache);
   const cache = batch._glyphCache;
+  cache._glyphItems = {};
   const origin = window.location.origin;
   const imageUrl = `${origin}/glyphs2.png`;
   const xmlUrl = `${origin}/glyphs2.xml`;
   cache._texture = Texture.fromUrl(imageUrl);
   cache._webFile = new WebFile(xmlUrl);
+  cache._webFile.onStateChange = GlyphCache.prototype._glyphXmlReady.bind(cache);
+  cache._webFile.send();
 }
