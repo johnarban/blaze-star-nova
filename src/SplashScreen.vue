@@ -25,7 +25,8 @@ import { defineProps, defineModel, defineEmits, withDefaults } from 'vue';
 console.log('SplashScreen.vue');
 
 export interface Props {
-  cssVars?: object;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  cssVars?: any;
 }
 
 const props = withDefaults(defineProps<Props>(),{
