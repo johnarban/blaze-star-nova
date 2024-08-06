@@ -1,6 +1,6 @@
 import Vue, { createApp, type Plugin } from "vue";
 
-import { FundingAcknowledgement, IconButton, CreditLogos } from "@cosmicds/vue-toolkit";
+import { FundingAcknowledgement, IconButton, CreditLogos, LocationSelector } from "@cosmicds/vue-toolkit";
 import BlazeStarNova from "./BlazeStarNova.vue";
 
 import vuetify from "../plugins/vuetify";
@@ -22,7 +22,11 @@ import {
   faTimes,
   faVideo,
   faPlay,
-  faPause
+  faPause,
+  faLocation,
+  faLocationDot,
+  faClock,
+  faSquareXmark
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faBookOpen);
@@ -32,6 +36,10 @@ library.add(faTimes);
 library.add(faVideo);
 library.add(faPlay);
 library.add(faPause);
+library.add(faLocation);
+library.add(faLocationDot);
+library.add(faClock);
+library.add(faSquareXmark);
 
 /** v-hide directive taken from https://www.ryansouthgate.com/2020/01/30/vue-js-v-hide-element-whilst-keeping-occupied-space/ */
 // Extract the function out, up here, so I'm not writing it twice
@@ -70,6 +78,7 @@ createApp(BlazeStarNova, {
   .component('splash-screen', SplashScreen)
   .component('vue-date-picker', VueDatePicker)
   .component('geolocation-button', GeolocationButton)
+  .component('location-selector', LocationSelector)
 
   // Mount
   .mount("#app");

@@ -1,5 +1,5 @@
 <template>
-  <span :id="`geolocation-wrapper+${id}`" class="jl_geolocation">
+  <span :id="'geolocation-wrapper' + (id ? '_' : '') + id" class="jl_geolocation">
     <VBtn 
       class="geolocation-button"
       :density="density"
@@ -9,7 +9,7 @@
       :loading="isLoading"
       :icon="icon"
       :color="hasError ? 'red' : color"
-      @click="getCurrentLocation" 
+      @click.stop="getCurrentLocation" 
     />
     
     <div v-if="debug" class="geolocation-debug">
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults, defineProps, computed } from 'vue';
+import { withDefaults, defineProps, computed, defineEmits, watch } from 'vue';
 import { VBtn } from 'vuetify/components/VBtn';
 import { useGeolocation } from './geolocation';
 
@@ -93,6 +93,15 @@ const {
 } = useGeolocation(true);
 
 const icon = computed(() => geolocationSuccess.value ? props.trueIcon : props.falseIcon);
+
+
+const emits = defineEmits(['location']);
+
+watch(position, (newVal) => {
+  if (newVal) {
+    emits('location', newVal);
+  }
+});
 
 </script>
 

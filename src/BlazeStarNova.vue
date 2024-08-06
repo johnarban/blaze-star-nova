@@ -33,6 +33,46 @@
           </icon-button>
         </div>
         <div id="center-buttons">
+          <icon-button
+            v-model="showLocationSelector"
+            fa-icon="location-dot"
+            :color="buttonColor"
+            tooltip-text="Select Location"
+            tooltip-location="start"
+            ></icon-button>
+
+              <v-dialog
+                v-model="showLocationSelector"
+                max-width="fit-content"
+                transition="slide-y-transition"
+                id="eclipse-prediction-sheet"
+              >
+                <v-card>
+                    <font-awesome-icon
+                      style="position: absolute; right: 12px; top: 12px; cursor: pointer; padding: 1em; margin: -1em; z-index: 1000;"
+                      icon="square-xmark"
+                      size="xl"
+                      @click="showLocationSelector = false"
+                      @keyup.enter="showLocationSelector = false"
+                      tabindex="0"
+                      color="black"
+                    ></font-awesome-icon>
+                    <location-selector
+                      v-model="selectedLocation"
+                      />
+                    <geolocation-button
+                      :debug="false"
+                      size="30px"
+                      density="default"
+                      elevation="5"
+                      color="black"
+                      @location="selectedLocation = {longitudeDeg: $event.longitude, latitudeDeg: $event.latitude}"
+                    />
+                </v-card>
+              </v-dialog>
+                
+
+              
         </div>
         <div id="right-buttons">
         </div>
@@ -46,16 +86,24 @@
             :color="buttonColor" 
             tooltip-text="Play"
             tooltip-location="start" 
-            @activate="()=>{playbackControl.togglePlay()}" />
+            @activate="()=>{playbackControl.togglePlay()}" 
+            />
+          
+          <!-- reset time to now button -->
+           <button 
+            class="icon-wrapper jl_icon-button"
+            @click="selectedDate = new Date()"
+            :style="{color: buttonColor}"
+            ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
+            <!-- reset to 9pm button -->
+            <button
+            class="icon-wrapper jl_icon-button"
+            @click="selectedDate = todayAt9pm()"
+            :style="{color: buttonColor}"
+            ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
        </div>
        
-       <geolocation-button
-        id="geolocation-button"
-        :debug="false"
-        size="30px"
-        density="default"
-        elevation="5"
-      />
+       
        
        <div id="date-picker">
         <VueDatePicker 
@@ -193,7 +241,7 @@
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
-import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
+import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 // import { useDisplay } from "vuetify";
 
 import { createHorizon, removeHorizon } from "./horizon";
@@ -262,6 +310,11 @@ function todayAt9pm() {
 }
 
 const selectedDate = ref(todayAt9pm());
+const showLocationSelector = ref(false);
+const selectedLocation = ref<LocationDeg>({
+  longitudeDeg: -71.1056,
+  latitudeDeg: 42.3581,
+});
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -396,6 +449,7 @@ function updateHorizon(show: boolean) {
   }
 }
 
+
 watch(showHorizon, updateHorizon);
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
@@ -522,15 +576,47 @@ body {
   margin: 1rem;
   pointer-events: none;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: flex-start;
 }
 
 #left-buttons {
   display: flex;
   flex-direction: column;
+  flex-grow: .333;
   gap: 10px;
+  align-items: flex-start;
+}
+
+#center-buttons {
+  display: flex;
+  flex-direction: column;
+  flex-grow: .333;
+  gap: 10px;
+  align-items: center;
+}
+
+.map-container {
+  width: 60svw;
+  width:60vw;
+  height: 60svh;
+  height: 60vh;
+}
+
+#geolocation-wrapper {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1000;
+}
+
+#right-buttons {
+  display: flex;
+  flex-direction: column;
+  flex-grow: .333;
+  gap: 10px;
+  align-items: flex-end;
 }
 
 #empty-space {
@@ -540,6 +626,10 @@ body {
 #playback-controls {
   position: relative;
   pointer-events: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
 }
 
 #bottom-content {
@@ -552,7 +642,6 @@ body {
   pointer-events: none;
   align-items: center;
   gap: 5px;
-  border: 1px solid red;
 }
 
 #date-picker {
@@ -738,5 +827,16 @@ video {
   .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__prev {
     display: none;
   }
+}
+
+.icon-wrapper {
+  width: fit-content;
+  min-width: 50px;
+}
+
+.jl_icon-button {
+  border-radius: 20px;
+  border:2px solid  var(--accent-color);
+  background-color: black;
 }
 </style>
