@@ -197,6 +197,7 @@ import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from 
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
 import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
+import { makeTextOverlays } from "./text";
 
 
 type SheetType = "text" | "video";
@@ -283,6 +284,9 @@ onMounted(() => {
     // @ts-ignore
     Grids._makeAltAzGridText = makeAltAzGridText;
 
+    const textOverlays = makeTextOverlays();
+    console.log(textOverlays);
+
     // Hack the engine to display our Annotation2 annotations
     // which go in front of the planet layer
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -290,6 +294,14 @@ onMounted(() => {
     const originalFrameRenderer = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
     function renderOneFrame() {
       originalFrameRenderer();
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      textOverlays.viewTransform = Grids._altAzTextBatch.viewTransform;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      textOverlays.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
+
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       Annotation2.prepBatch(this.renderContext);
@@ -301,6 +313,7 @@ onMounted(() => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       Annotation2.drawBatch(this.renderContext);
+
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
     WWTControl.singleton.renderOneFrame();
