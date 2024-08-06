@@ -196,7 +196,7 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
+import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures, useCustomGlyphs } from "./wwt-hacks";
 import { makeTextOverlays } from "./text";
 
 
@@ -285,7 +285,7 @@ onMounted(() => {
     Grids._makeAltAzGridText = makeAltAzGridText;
 
     const textOverlays = makeTextOverlays();
-    console.log(textOverlays);
+    useCustomGlyphs(textOverlays);
 
     // Hack the engine to display our Annotation2 annotations
     // which go in front of the planet layer

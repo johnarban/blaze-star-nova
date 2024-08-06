@@ -1,6 +1,19 @@
 import { Color, RenderContext } from "@wwtelescope/engine";
 
 declare module "@wwtelescope/engine" {
+
+  export class WebFile {
+    constructor(url: string);
+  }
+
+  export class GlyphCache {
+    constructor(glyphHeight: number);
+    _texture: Texture;
+    _webFile: WebFile;
+
+    static getCache(height: number): GlyphCache;
+  }
+
   export class Grids {
     static drawAltAzGrid(renderContext: RenderContext, opacity: number, drawColor: Color): void;
     static _makeAltAzGridText(): void;
@@ -9,6 +22,7 @@ declare module "@wwtelescope/engine" {
 
   export class Text3dBatch {
     constructor(height: number);
+    _glyphCache: GlyphCache;
   }
 
   export class Text3d {

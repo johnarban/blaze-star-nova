@@ -3,7 +3,7 @@
 
 /* eslint-disable */
 
-import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d, WWTControl } from "@wwtelescope/engine";
+import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d, WebFile, WWTControl } from "@wwtelescope/engine";
 
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
@@ -74,4 +74,16 @@ export function setupConstellationFigures() {
         this._drawSingleConstellation(renderContext, lsSelected, 1);
     }
   }.bind(WWTControl.constellationsFigures);
+}
+
+export function useCustomGlyphs(batch: Text3dBatch) {
+  const cache = batch._glyphCache;
+  const origin = window.location.origin;
+  const imageUrl = `${origin}/
+  const imageUrl = require("./assets/glyphs2.png");
+  const xmlUrl = require("./assets/glyphs2.xml");
+  console.log(imageUrl);
+  console.log(xmlUrl);
+  cache._texture = Texture.fromUrl(imageUrl);
+  cache._webFile = new WebFile(xmlUrl);
 }
