@@ -11,8 +11,8 @@ export function makeTextOverlays(): Text3dBatch {
   const batch = new Text3dBatch(glyphHeight);
   const up = Vector3d.create(0, 1, 0);
   const textItems = [
-    "Blaze",
-    "Approximate nova brightness",
+    "Blaze Star",
+    "Nova will be roughly this bright",
   ];
   const locations = [
     Coordinates.raDecTo3d(15 * (15 + 59 / 60 + 30.1622 / 3600), 25 + 55 / 60 + 12.613 / 3600),

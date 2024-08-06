@@ -23,6 +23,8 @@ declare module "@wwtelescope/engine" {
   export class Text3dBatch {
     constructor(height: number);
     _glyphCache: GlyphCache;
+
+    prepareBatch(): void;
   }
 
   export class Text3d {

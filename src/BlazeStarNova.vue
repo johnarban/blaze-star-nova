@@ -196,7 +196,7 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures, useCustomGlyphs } from "./wwt-hacks";
+import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs } from "./wwt-hacks";
 import { makeTextOverlays } from "./text";
 
 
@@ -234,7 +234,7 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
-const timePlaying = ref(true);
+const timePlaying = ref(false);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
@@ -268,9 +268,8 @@ onMounted(() => {
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
-    initializeConstellationNames();
-
     store.setClockRate(1000);
+    store.setClockSync(timePlaying.value);
 
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);

@@ -3,7 +3,7 @@
 
 /* eslint-disable */
 
-import { Constellations, Coordinates, Grids, Settings, SpaceTimeController, Text3d, Text3dBatch, Vector3d, WebFile, WWTControl } from "@wwtelescope/engine";
+import { Color, Constellations, Coordinates, Grids, Settings, SimpleLineList, SpaceTimeController, Text3d, Text3dBatch, Texture, Vector3d, WebFile, WWTControl } from "@wwtelescope/engine";
 
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
@@ -25,32 +25,56 @@ export function makeAltAzGridText() {
   }
 }
 
-export function initializeConstellationNames() {
-  if (Constellations.constellationCentroids == null) {
-      return;
-  }
-  Constellations._namesBatch = new Text3dBatch(Settings.get_active().get_constellationLabelsHeight());
-  const keep = ["BOO", "CRB"];
-  for (const constellation of Object.keys(Constellations.constellationCentroids)) {
-      
-      if (!keep.includes(constellation)) {
-        continue;
+function drawSingleConstellation(renderContext, ls, opacity, color=null) {
+  const reverse = false;
+  const name = ls.get_name();
+  const centroid = Constellations.constellationCentroids[name];
+  if (centroid != null) {
+      var pos = Coordinates.raDecTo3d((reverse) ? -centroid.get_RA() - 6 : centroid.get_RA(), (reverse) ? centroid.get_dec() : centroid.get_dec());
+      if (Vector3d.dot(renderContext.get_viewPoint(), pos) < Constellations._maxSeperation) {
+          return;
       }
-
-      const centroid = Constellations.constellationCentroids[constellation];
-      const center = Coordinates.raDecTo3dAu(centroid.get_RA(), centroid.get_dec(), 1);
-      const up = Vector3d.create(0, 1, 0);
-      const name = centroid.get_name();
-      if (centroid.get_name() === 'Triangulum Australe') {
-          name = ss.replaceString(name, ' ', '\n   ');
-      }
-      Constellations._namesBatch.add(new Text3d(center, up, name, Settings.get_active().get_constellationLabelsHeight(), 0.000125));
   }
+  if (!(name in this._constellationVertexBuffers)) {
+    var count = ls.points.length;
+    var linelist = new SimpleLineList();
+    linelist.set_depthBuffered(false);
+    this._constellationVertexBuffers[name] = linelist;
+    var currentPoint = new Vector3d();
+    var temp;
+    for (var i = 0; i < count; i++) {
+        if (!ls.points[i].pointType || !i) {
+            currentPoint = Coordinates.raDecTo3d(ls.points[i].RA, ls.points[i].dec);
+        }
+        else {
+            temp = Coordinates.raDecTo3d(ls.points[i].RA, ls.points[i].dec);
+            linelist.addLine(currentPoint, temp);
+            currentPoint = temp;
+        }
+    }
+    if (this._boundry) {
+        temp = Coordinates.raDecTo3d(ls.points[0].RA, ls.points[0].dec);
+        linelist.addLine(currentPoint, temp);
+    }
+  }
+  var col = 'red';
+  if (this._boundry) {
+      if (Constellations._constToDraw !== name) {
+          col = Settings.get_globalSettings().get_constellationBoundryColor();
+      }
+      else {
+          col = Settings.get_globalSettings().get_constellationSelectionColor();
+      }
+  } else {
+      col = color ?? Settings.get_globalSettings().get_constellationFigureColor();
+  }
+  this._constellationVertexBuffers[name].drawLines(renderContext, opacity, Color.load(col));
 }
 
-export function setupConstellationFigures() {
-  WWTControl.constellationsFigures.draw = function (renderContext, showOnlySelected, focusConstellation, clearExisting) {
-    const keep = ["BOO", "CRB"];
+
+function drawConstellations(renderContext, showOnlySelected, focusConstellation, clearExisting) {
+    const highlight = ["BOO", "CRB"];
+    const highlightColor = "#ffff00";
     Constellations._maxSeperation = Math.max(0.6, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
     this._drawCount = 0;
     var lsSelected = null;
@@ -60,30 +84,35 @@ export function setupConstellationFigures() {
     Constellations._constToDraw = focusConstellation;
     for (const ls of this.lines) {
         const name = ls.get_name();
-        if (!keep.includes(name)) {
-          continue;
-        }
+        const highlighted = highlight.includes(name);
+        const color = highlighted ? highlightColor : null;
         if (Constellations._constToDraw === name && this._boundry) {
             lsSelected = ls;
         }
         else if (!showOnlySelected || !this._boundry) {
-            this._drawSingleConstellation(renderContext, ls, 1);
+            this._drawSingleConstellation(renderContext, ls, 1, color);
         }
     }
     if (lsSelected != null) {
-        this._drawSingleConstellation(renderContext, lsSelected, 1);
+        this._drawSingleConstellation(renderContext, lsSelected, 1, color);
     }
-  }.bind(WWTControl.constellationsFigures);
+  }
+
+
+export function setupConstellationFigures() {
+  console.log(WWTControl.constellationsFigures);
+  console.log(WWTControl.constellationsFigures._constellationVertexBuffers);
+  WWTControl.constellationsFigures._drawSingleConstellation = drawSingleConstellation.bind(WWTControl.constellationsFigures);
+  WWTControl.constellationsFigures.draw = drawConstellations.bind(WWTControl.constellationsFigures);
 }
 
 export function useCustomGlyphs(batch: Text3dBatch) {
+  batch.prepareBatch();
+  console.log(batch._glyphCache);
   const cache = batch._glyphCache;
   const origin = window.location.origin;
-  const imageUrl = `${origin}/
-  const imageUrl = require("./assets/glyphs2.png");
-  const xmlUrl = require("./assets/glyphs2.xml");
-  console.log(imageUrl);
-  console.log(xmlUrl);
+  const imageUrl = `${origin}/glyphs2.png`;
+  const xmlUrl = `${origin}/glyphs2.xml`;
   cache._texture = Texture.fromUrl(imageUrl);
   cache._webFile = new WebFile(xmlUrl);
 }
