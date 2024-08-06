@@ -68,6 +68,8 @@
               label="Sky Grid" hide-details />
             <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
               label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
           </div>
         </div>
       </div>
@@ -188,7 +190,7 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 import { createHorizon, removeHorizon } from "./horizon";
 import { LocationRad } from "./types";
 import { Annotation2 } from "./Annotation2";
-import { makeAltAzGridText } from "./wwt-hacks";
+import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
 
 
 type SheetType = "text" | "video";
@@ -209,9 +211,9 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
   initialCameraParams: () => {
     return {
-      raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
-      decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
-      zoomDeg: 60
+      raRad: 4.001238944138198,
+      decRad: 0.5307600894728279,
+      zoomDeg: 180
     };
   }
 });
@@ -228,6 +230,7 @@ const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
+const showConstellations = ref(true);
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -236,9 +239,14 @@ onMounted(() => {
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
 
+    initializeConstellationNames();
+
     store.applySetting(["localHorizonMode", true]);
     store.applySetting(["showAltAzGrid", showAltAzGrid.value]);
+    store.applySetting(["showAltAzGridText", showAltAzGrid.value]);
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
+    store.applySetting(["showConstellationLabels", showConstellations.value]);
+    store.applySetting(["showConstellationFigures", showConstellations.value]);
     updateHorizon(showHorizon.value);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -265,6 +273,8 @@ onMounted(() => {
       Annotation2.drawBatch(this.renderContext);
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+    WWTControl.singleton.renderOneFrame();
+    setupConstellationFigures();
 
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
@@ -361,6 +371,10 @@ function updateHorizon(show: boolean) {
 watch(showHorizon, updateHorizon);
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
+});
+watch(showConstellations, (show) => {
+  store.applySetting(["showConstellationLabels", show]);
+  store.applySetting(["showConstellationFigures", show]);
 });
 </script>
 
