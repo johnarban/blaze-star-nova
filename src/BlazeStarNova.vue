@@ -266,6 +266,7 @@ const selectedDate = ref(todayAt9pm());
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    store.setTime(selectedDate.value);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
@@ -300,7 +301,7 @@ onMounted(() => {
     }
     WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
     
-    playbackControl.play();
+    // playbackControl.play();
     
     // playbackControl.pause();
     // We want to make sure that the location change happens AFTER
