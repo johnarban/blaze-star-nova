@@ -19,6 +19,8 @@ import {
   faBookOpen,
   faChevronDown,
   faGear,
+  faPause,
+  faPlay,
   faTimes,
   faVideo,
   faPlay,
@@ -32,6 +34,8 @@ import {
 library.add(faBookOpen);
 library.add(faChevronDown);
 library.add(faGear);
+library.add(faPause);
+library.add(faPlay);
 library.add(faTimes);
 library.add(faVideo);
 library.add(faPlay);
