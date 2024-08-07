@@ -370,7 +370,6 @@ const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
-const showTextSheet = ref(true);
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -537,14 +536,14 @@ const cssVars = computed(() => {
   computed wrappers around modifying/querying that which can be used as
   dialog v-model values
 */
-// const showTextSheet = computed({
-//   get() {
-//     return sheet.value === "text";
-//   },
-//   set(_value: boolean) {
-//     selectSheet("text");
-//   }
-// });
+const showTextSheet = computed({
+  get() {
+    return sheet.value === "text";
+  },
+  set(_value: boolean) {
+    selectSheet("text");
+  }
+});
 
 const showVideoSheet = computed({
   get() {
