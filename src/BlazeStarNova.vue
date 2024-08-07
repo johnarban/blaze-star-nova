@@ -623,8 +623,8 @@ watch(selectedLocation, (location: LocationDeg) => {
 }
 
 :root {
-  --default-font-size: clamp(0.7rem, min(1.7vh, 1.7vw), 1.1rem);
-  --default-line-height: clamp(1rem, min(2.2vh, 2.2vw), 1.6rem);
+  --default-font-size: clamp(0.9rem, min(2.2vh, 2.2vw), 1.4rem);
+  --default-line-height: clamp(1.3rem, min(2.8vh, 2.8vw), 2.1rem);
 }
 
 html {
