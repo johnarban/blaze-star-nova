@@ -75,7 +75,7 @@ p.highlight {
   background-color: #000000;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   align-content: center;
   justify-content: space-around;
 
