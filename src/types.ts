@@ -19,3 +19,9 @@ export interface EquatorialRad {
   raRad: number;
   decRad: number;
 }
+
+
+export interface LocationDeg {
+  longitudeDeg: number;
+  latitudeDeg: number;
+}

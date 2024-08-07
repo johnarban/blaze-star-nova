@@ -5,25 +5,11 @@
 
 
       <!-- This contains the splash screen content -->
-
-      <v-overlay :model-value="showSplashScreen" absolute opacity="0.6" :style="cssVars" id="splash-overlay">
-        <div id="splash-screen" v-click-outside="closeSplashScreen" :style="cssVars">
-          <div id="close-splash-button" @click="closeSplashScreen">&times;
-          </div>
-          <div id="splash-screen-text">
-            <p>Splash Screen Content</p>
-          </div>
-          <div id="splash-screen-acknowledgements" class="small">
-            This Data Story is brought to you by <a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
-              rel="noopener noreferrer">Cosmic Data Stories</a> and <a href="https://www.worldwidetelescope.org/home/"
-              target="_blank" rel="noopener noreferrer">WorldWide Telescope</a>.
-
-            <div id="splash-screen-logos">
-              <credit-logos logo-size="5vmin" />
-            </div>
-          </div>
-        </div>
-      </v-overlay>
+      <splash-screen
+        v-model="showSplashScreen"
+        @close="closeSplashScreen"
+        :css-vars="cssVars"
+      />
 
       <transition name="fade">
         <div class="modal" id="modal-loading" v-show="isLoading">
@@ -47,6 +33,46 @@
           </icon-button>
         </div>
         <div id="center-buttons">
+          <icon-button
+            v-model="showLocationSelector"
+            fa-icon="location-dot"
+            :color="buttonColor"
+            tooltip-text="Select Location"
+            tooltip-location="start"
+            ></icon-button>
+
+              <v-dialog
+                v-model="showLocationSelector"
+                max-width="fit-content"
+                transition="slide-y-transition"
+                id="eclipse-prediction-sheet"
+              >
+                <v-card>
+                    <font-awesome-icon
+                      style="position: absolute; right: 12px; top: 12px; cursor: pointer; padding: 1em; margin: -1em; z-index: 1000;"
+                      icon="square-xmark"
+                      size="xl"
+                      @click="showLocationSelector = false"
+                      @keyup.enter="showLocationSelector = false"
+                      tabindex="0"
+                      color="black"
+                    ></font-awesome-icon>
+                    <location-selector
+                      v-model="selectedLocation"
+                      />
+                    <geolocation-button
+                      :debug="false"
+                      size="30px"
+                      density="default"
+                      elevation="5"
+                      color="black"
+                      @location="selectedLocation = {longitudeDeg: $event.longitude, latitudeDeg: $event.latitude}"
+                    />
+                </v-card>
+              </v-dialog>
+                
+
+              
         </div>
         <div id="right-buttons">
           <v-chip
@@ -54,20 +80,73 @@
           >
             Corona Borealis is Set
           </v-chip>
+          <button 
+            class="icon-wrapper jl_icon-button jl_debug" 
+            @click="() => updateHorizonAndSky()"
+            >Update Horizon and Sky</button>
+          <button
+            class="icon-wrapper jl_icon-button jl_debug"
+            @click="() => updateCrbBelowHorizon()"
+            >Update CRB Below Horizon</button>
+          <button
+            class="icon-wrapper jl_icon-button jl_debug"
+            @click="() => logWWTState()"
+            >Log WWT State</button>
+          <button
+            class="icon-wrapper jl_icon-button jl_debug"
+            @click="() => WWTControl.singleton.renderOneFrame()"
+            >Render one frame</button>
         </div>
       </div>
 
-
+      <!-- Date Picker -->
+       <div id="empty-space">
+       </div>
+       <div id="playback-controls">
+        <span class="jl_debug">selected: {{ selectedDate }}</span>
+        <span  class="jl_debug">wwt: {{ store.currentTime }}</span>
+        <span class="jl_debug">{{ selectedLocation }}</span>
+          <icon-button 
+            :fa-icon="timePlaying ? 'pause' : 'play'"
+            :color="buttonColor" 
+            tooltip-text="Play"
+            tooltip-location="start" 
+            @activate="()=>{playbackControl.togglePlay()}" 
+            />
+          
+          <!-- reset time to now button -->
+           <button 
+            class="icon-wrapper jl_icon-button jl_debug"
+            @click="selectedDate = new Date()"
+            :style="{color: buttonColor}"
+            ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
+            <!-- reset to 9pm button -->
+            <button
+            class="icon-wrapper jl_icon-button jl_debug"
+            @click="selectedDate = todayAt9pm()"
+            :style="{color: buttonColor}"
+            ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
+       </div>
+       
+       
+       
+       <div id="date-picker">
+        <VueDatePicker 
+          v-model="selectedDate"
+          dark
+        />
+       </div>
+      
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
-
+      
       <div id="bottom-content">
-        <credit-logos logo-size="3vmin"/>
+        <credit-logos logo-size="25px"/>
         <div id="controls" class="control-icon-wrapper">
           <div id="controls-top-row">
             <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
               @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
           </div>
-    
+          
           <div v-if="showControls" id="control-checkboxes">
             <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
               label="Sky Grid" hide-details />
@@ -78,7 +157,7 @@
           </div>
         </div>
       </div>
-
+    
 
       <!-- This dialog contains the video that is displayed when the video icon is clicked -->
 
@@ -190,13 +269,15 @@ import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
 import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
-import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R } from "@cosmicds/vue-toolkit";
+import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs, renderOneFrame } from "./wwt-hacks";
 import { makeTextOverlays } from "./text";
 
+import { usePlaybackControl } from "./wwt_playback_control";
+import VueDatePicker from '@vuepic/vue-datepicker';
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -208,6 +289,13 @@ export interface MainComponentProps {
 const store = engineStore();
 
 useWWTKeyboardControls(store);
+
+const playbackControl = usePlaybackControl(store, true);
+// initialize playback. 
+playbackControl.setSpeed(1000);
+playbackControl.pause();
+// destructure playbackControl
+const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
 // const { smAndDown } = useDisplay();
@@ -232,7 +320,6 @@ const positionSet = ref(false);
 const accentColor = ref("#ffffff");
 const buttonColor = ref("#ffffff");
 const tab = ref(0);
-const timePlaying = ref(false);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
@@ -262,12 +349,46 @@ function getWWTLocation(): LocationRad {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const blazeStarLocation: EquatorialRad = {
+  raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
+  decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
+};
+// create selectedDate by default is today at 9pm localtime
+function todayAt9pm() {
+  // get's today's date and 
+  // sets time time to 9pm local time
+  const today = new Date();
+  today.setHours(21, 0, 0, 0);
+  return today;
+}
+
+const selectedDate = ref(todayAt9pm());
+const showLocationSelector = ref(false);
+
+const selectedLocation = ref<LocationDeg>({
+  longitudeDeg: -71.1056,
+  latitudeDeg: 42.3581,
+});
+
+
+function setWWTLocation(location: LocationDeg) {
+  wwtSettings.set_locationLat(location.latitudeDeg);
+  wwtSettings.set_locationLng(location.longitudeDeg);
+  console.log("Setting location to", location);
+}
+
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
+    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
+
+    store.setTime(selectedDate.value);
+    setWWTLocation(selectedLocation.value);
 
     store.setClockSync(timePlaying.value);
     store.setClockRate(clockRate);
@@ -315,7 +436,7 @@ onMounted(() => {
         ...props.initialCameraParams,
         instant: true
       }).then(() => positionSet.value = true);
-    }, 500);
+    }, 50);
   });
 });
 
@@ -446,6 +567,25 @@ function skyOpacityForSunAlt(sunAltRad: number) {
 }
 
 
+
+function logWWTState() {
+  const loc = getWWTLocation();
+  const locDeg = {
+    latitudeDeg: loc.latitudeRad * 180 / Math.PI,
+    longitudeDeg: loc.longitudeRad * 180 / Math.PI,
+  };
+  console.log(getWWTLocation());
+  console.table({
+    time: store.currentTime,
+    location: locDeg,
+    selectedLocation: selectedLocation.value,
+    showHorizon: showHorizon.value,
+    showAltAzGrid: showAltAzGrid.value,
+    showConstellations: showConstellations.value,
+    crbBelowHorizon: crbBelowHorizon.value,
+  });
+}
+
 watch(showHorizon, (_show) => updateHorizonAndSky());
 
 watch(showAltAzGrid, (show) => {
@@ -457,7 +597,22 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationFigures", show]);
 });
 
-watch(timePlaying, (play) => store.setClockSync(play));
+
+watch(selectedDate, (date) => {
+  // if we are playing this already getting updated
+  playbackControl.pause();
+  store.setTime(date);
+  updateHorizonAndSky(date);
+  updateCrbBelowHorizon(date);
+  WWTControl.singleton.renderOneFrame();
+});
+
+watch(selectedLocation, (location: LocationDeg) => {
+  setWWTLocation(location);
+  updateHorizonAndSky();
+  updateCrbBelowHorizon();
+  WWTControl.singleton.renderOneFrame();
+});
 
 </script>
 
@@ -502,6 +657,8 @@ body {
   overflow: hidden;
 
   transition: height 0.1s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 #app {
@@ -574,12 +731,12 @@ body {
 }
 
 #top-content {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  width: calc(100% - 2rem);
+  position: relative;
+  flex-grow:0;
+  margin: 1rem;
   pointer-events: none;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
@@ -588,21 +745,68 @@ body {
 #left-buttons {
   display: flex;
   flex-direction: column;
+  flex-grow: .333;
   gap: 10px;
+  align-items: flex-start;
+}
+
+#center-buttons {
+  display: flex;
+  flex-direction: column;
+  flex-grow: .333;
+  gap: 10px;
+  align-items: center;
+}
+
+.map-container {
+  width: 60svw;
+  width:60vw;
+  height: 60svh;
+  height: 60vh;
+}
+
+#geolocation-wrapper {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1000;
+}
+
+#right-buttons {
+  display: flex;
+  flex-direction: column;
+  flex-grow: .333;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+#empty-space {
+  flex-grow:1;
+}
+
+#playback-controls {
+  position: relative;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
 }
 
 #bottom-content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-  width: calc(100% - 2rem);
+  position: relative;
+  flex-grow: 0;
   height: fit-content;
   pointer-events: none;
   align-items: center;
   gap: 5px;
+}
+
+#date-picker {
+  margin: 1rem;
 }
 
 #controls {
@@ -667,66 +871,6 @@ body {
     width: 100%;
     flex-direction: row;
     justify-content: flex-end;
-  }
-}
-
-#splash-overlay {
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#splash-screen {
-  color: #FFFFFF;
-  background-color: #000000;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  align-content: center;
-  justify-content: space-around;
-
-  font-family: 'Highway Gothic Narrow', 'Roboto', sans-serif;
-  font-size: min(8vw, 7vh);
-
-  border-radius: 10%;
-  border: min(1.2vw, 0.9vh) solid var(--accent-color);
-  overflow: auto;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
-
-  @media (max-width: 699px) {
-    max-height: 80vh;
-    max-width: 90vw;
-  }
-
-  @media (min-width: 700px) {
-    max-height: 85vh;
-    max-width: min(70vw, 800px);
-  }
-
-  div {
-    margin-inline: auto;
-    text-align: center;
-  }
-
-  .small {
-    font-size: var(--default-font-size);
-    font-weight: bold;
-  }
-
-  #close-splash-button {
-    position: absolute;
-    top: 0.5rem;
-    right: 1.75rem;
-    text-align: end;
-    color: var(--accent-color);
-    font-size: min(8vw, 5vh);
-
-    &:hover {
-      cursor: pointer;
-    }
   }
 }
 
@@ -851,5 +995,21 @@ video {
   .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__prev {
     display: none;
   }
+}
+
+.icon-wrapper {
+  width: fit-content;
+  min-width: 50px;
+}
+
+.jl_icon-button {
+  border-radius: 20px;
+  border:2px solid  var(--accent-color);
+  background-color: black;
+}
+
+.jl_debug {
+  outline: 3px solid red !important;
+  background-color: teal;
 }
 </style>
