@@ -3,73 +3,79 @@
   <div class="dtp__container">
     <div class="dtp__grid-container">
       <!-- <div class="dtp__rollers up-rollers"> -->
-      <button id="dtp_year-up" class="dtp_grid-item" @click="increment('year')">
+      <button id="dtp__year-up" class="dtp__grid-item" @click="increment('year')">
+        <span class="dtp__button-label">year</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
-      <button id="dtp_month-up" class="dtp_grid-item" @click="increment('month')">
+      <button id="dtp__month-up" class="dtp__grid-item" @click="increment('month')">
+        <span class="dtp__button-label">&nbsp;mon.</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
-      <button id="dtp_day-up" class="dtp_grid-item" @click="increment('day')">
+      <button id="dtp__day-up" class="dtp__grid-item" @click="increment('day')">
+        <span class="dtp__button-label">day</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <slot name="top-middle"><span></span></slot>
-      <button id="dtp_hour-up" class="dtp_grid-item" @click="increment('hour')">
+      <button id="dtp__hour-up" class="dtp__grid-item" @click="increment('hour')">
+        <span class="dtp__button-label">hour</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
-      <button id="dtp_minute-up" class="dtp_grid-item" @click="increment('minute')">
+      <button id="dtp__minute-up" class="dtp__grid-item" @click="increment('minute')">
+        <span class="dtp__button-label">min</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
-      <button id="dtp_second-up" class="dtp_grid-item" @click="increment('second')">
+      <button id="dtp__second-up" class="dtp__grid-item" @click="increment('second')">
+        <span class="dtp__button-label">sec</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <!-- </div> -->
 
-      <!-- <span class="dtp_time-string"> -->
-      <span id="dtp_year" class="dtp_grid-item dtp_time_part">{{ year }}</span>
+      <!-- <span class="dtp__time-string"> -->
+      <span id="dtp__year" class="dtp__grid-item dtp__time_part">{{ year }}</span>
       <span>-</span>
-      <span id="dtp_month" class="dtp_grid-item dtp_time_part">{{ pad2(month) }}</span>
+      <span id="dtp__month" class="dtp__grid-item dtp__time_part">{{ pad2(month) }}</span>
       <span>-</span>
-      <span id="dtp_day" class="dtp_grid-item dtp_time_part">{{ pad2(day) }}</span> 
+      <span id="dtp__day" class="dtp__grid-item dtp__time_part">{{ pad2(day) }}</span> 
       <span class="dtp__middle-slot"><slot name="center-middle"></slot></span>
-      <span id="dtp_hour" class="dtp_grid-item dtp_time_part">{{ pad2(hour) }}</span>
+      <span id="dtp__hour" class="dtp__grid-item dtp__time_part">{{ pad2(hour) }}</span>
       <span>:</span>
-      <span id="dtp_minute" class="dtp_grid-item dtp_time_part">{{ pad2(minute) }}</span>
+      <span id="dtp__minute" class="dtp__grid-item dtp__time_part">{{ pad2(minute) }}</span>
       <span>:</span>
-      <span id="dtp_second" class="dtp_grid-item dtp_time_part">{{ pad2(second) }}</span>
+      <span id="dtp__second" class="dtp__grid-item dtp__time_part">{{ pad2(second) }}</span>
       <!-- </span> -->
 
-      <button id="dtp_year-up" class="dtp_grid-item" @click="decrement('year')">
+      <button id="dtp__year-up" class="dtp__grid-item" @click="decrement('year')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
       <span></span>
-      <button id="dtp_month-up" class="dtp_grid-item" @click="decrement('month')">
+      <button id="dtp__month-up" class="dtp__grid-item" @click="decrement('month')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
       <slot name="bottom-middle"><span></span></slot>
-      <button id="dtp_day-up" class="dtp_grid-item" @click="decrement('day')">
+      <button id="dtp__day-up" class="dtp__grid-item" @click="decrement('day')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
       <span></span>
-      <button id="dtp_hour-up" class="dtp_grid-item" @click="decrement('hour')">
+      <button id="dtp__hour-up" class="dtp__grid-item" @click="decrement('hour')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
       <span></span>
-      <button id="dtp_minute-up" class="dtp_grid-item" @click="decrement('minute')">
+      <button id="dtp__minute-up" class="dtp__grid-item" @click="decrement('minute')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
       <span></span>
-      <button id="dtp_second-up" class="dtp_grid-item" @click="decrement('second')">
+      <button id="dtp__second-up" class="dtp__grid-item" @click="decrement('second')">
         <v-icon>mdi-menu-down</v-icon>
       </button>
     </div>
     <div class="dtp__bottom-content">
       <slot></slot>
     </div>
-    <div v-if="props.debug" class="dtp_debug">
+    <div v-if="props.debug" class="dtp__debug">
       <span>Local: {{ year }}-{{ pad2(month) }}-{{ pad2(day) }} {{ pad2(hour) }}:{{ pad2(minute) }}:{{ pad2(second) }}</span>
       <span>UTC: {{ utcDate(date) }} </span>
     </div>
@@ -200,7 +206,7 @@ watch(date, () => {
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@500&display=swap');
 
 .dtp__container {
-  padding-top: 10px;
+  padding-top: 1.5em;
   padding-bottom: 5px;
   padding-inline: 15px;
 }
@@ -211,6 +217,8 @@ watch(date, () => {
   justify-items: center;
   justify-content: center;
   font-family: 'Noto Sans Mono', monospace;
+  gap: 2px;
+  margin-bottom: 10px;
 }
 
 .dtp__grid-container > * {
@@ -228,4 +236,21 @@ watch(date, () => {
   justify-content: center;
   align-items: center;
 }
+
+.dtp__grid-item {
+  position: relative;
+  // outline: 1px solid red;
+  text-align: center;
+}
+
+span.dtp__button-label {
+  font-size: 0.8em;
+  // display: none;
+  position:absolute;
+  top: -5px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  // outline: 1px solid red;
+}
+
 </style>
