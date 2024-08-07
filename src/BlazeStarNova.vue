@@ -90,6 +90,10 @@
             >Update CRB Below Horizon</button>
           <button
             class="icon-wrapper jl_icon-button"
+            @click="() => logWWTState()"
+            >Log WWT State</button>
+          <button
+            class="icon-wrapper jl_icon-button"
             @click="() => WWTControl.singleton.renderOneFrame()"
             >Render one frame</button>
         </div>
@@ -356,16 +360,24 @@ function todayAt9pm() {
   // get's today's date and 
   // sets time time to 9pm local time
   const today = new Date();
-  today.setHours(13, 0, 0, 0);
+  today.setHours(21, 0, 0, 0);
   return today;
 }
 
 const selectedDate = ref(todayAt9pm());
 const showLocationSelector = ref(false);
+
 const selectedLocation = ref<LocationDeg>({
   longitudeDeg: -71.1056,
   latitudeDeg: 42.3581,
 });
+
+
+function setWWTLocation(location: LocationDeg) {
+  wwtSettings.set_locationLat(location.latitudeDeg);
+  wwtSettings.set_locationLng(location.longitudeDeg);
+  console.log("Setting location to", location);
+}
 
 onMounted(() => {
   store.waitForReady().then(async () => {
@@ -377,8 +389,7 @@ onMounted(() => {
     initializeConstellationNames();
 
     store.setTime(selectedDate.value);
-    wwtSettings.set_locationLat(selectedLocation.value.latitudeDeg * D2R);
-    wwtSettings.set_locationLng(selectedLocation.value.longitudeDeg * D2R);
+    setWWTLocation(selectedLocation.value);
 
     store.setClockSync(timePlaying.value);
     store.setClockRate(clockRate);
@@ -433,7 +444,7 @@ onMounted(() => {
         ...props.initialCameraParams,
         instant: true
       }).then(() => positionSet.value = true);
-    }, 500);
+    }, 50);
   });
 });
 
@@ -564,6 +575,25 @@ function skyOpacityForSunAlt(sunAltRad: number) {
 }
 
 
+
+function logWWTState() {
+  const loc = getWWTLocation();
+  const locDeg = {
+    latitudeDeg: loc.latitudeRad * 180 / Math.PI,
+    longitudeDeg: loc.longitudeRad * 180 / Math.PI,
+  };
+  console.log(getWWTLocation());
+  console.table({
+    time: store.currentTime,
+    location: locDeg,
+    selectedLocation: selectedLocation.value,
+    showHorizon: showHorizon.value,
+    showAltAzGrid: showAltAzGrid.value,
+    showConstellations: showConstellations.value,
+    crbBelowHorizon: crbBelowHorizon.value,
+  });
+}
+
 watch(showHorizon, (_show) => updateHorizonAndSky());
 
 watch(showAltAzGrid, (show) => {
@@ -585,9 +615,8 @@ watch(selectedDate, (date) => {
   WWTControl.singleton.renderOneFrame();
 });
 
-watch(selectedLocation, (location) => {
-  wwtSettings.set_locationLat(location.latitudeDeg * D2R);
-  wwtSettings.set_locationLng(location.longitudeDeg * D2R);
+watch(selectedLocation, (location: LocationDeg) => {
+  setWWTLocation(location);
   updateHorizonAndSky();
   updateCrbBelowHorizon();
   WWTControl.singleton.renderOneFrame();
