@@ -97,7 +97,7 @@ function drawSingleConstellation(renderContext, ls, opacity, color=null) {
 
 
 function drawConstellations(renderContext, showOnlySelected, focusConstellation, clearExisting) {
-    const highlight = ["BOO", "CRB"];
+    const highlight = ["CRB"];
     const highlightColor = "#ffff00";
     Constellations._maxSeperation = Math.max(0.6, Math.cos((renderContext.get_fovAngle() * 2) / 180 * Math.PI));
     this._drawCount = 0;
