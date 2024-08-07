@@ -81,19 +81,19 @@
             Corona Borealis is Set
           </v-chip>
           <button 
-            class="icon-wrapper jl_icon-button" 
+            class="icon-wrapper jl_icon-button jl_debug" 
             @click="() => updateHorizonAndSky()"
             >Update Horizon and Sky</button>
           <button
-            class="icon-wrapper jl_icon-button"
+            class="icon-wrapper jl_icon-button jl_debug"
             @click="() => updateCrbBelowHorizon()"
             >Update CRB Below Horizon</button>
           <button
-            class="icon-wrapper jl_icon-button"
+            class="icon-wrapper jl_icon-button jl_debug"
             @click="() => logWWTState()"
             >Log WWT State</button>
           <button
-            class="icon-wrapper jl_icon-button"
+            class="icon-wrapper jl_icon-button jl_debug"
             @click="() => WWTControl.singleton.renderOneFrame()"
             >Render one frame</button>
         </div>
@@ -103,9 +103,9 @@
        <div id="empty-space">
        </div>
        <div id="playback-controls">
-        <span>selected: {{ selectedDate }}</span>
-        <span>wwt: {{ store.currentTime }}</span>
-        <span>{{ selectedLocation }}</span>
+        <span class="jl_debug">selected: {{ selectedDate }}</span>
+        <span  class="jl_debug">wwt: {{ store.currentTime }}</span>
+        <span class="jl_debug">{{ selectedLocation }}</span>
           <icon-button 
             :fa-icon="timePlaying ? 'pause' : 'play'"
             :color="buttonColor" 
@@ -116,13 +116,13 @@
           
           <!-- reset time to now button -->
            <button 
-            class="icon-wrapper jl_icon-button"
+            class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = new Date()"
             :style="{color: buttonColor}"
             ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
             <!-- reset to 9pm button -->
             <button
-            class="icon-wrapper jl_icon-button"
+            class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = todayAt9pm()"
             :style="{color: buttonColor}"
             ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
@@ -1014,5 +1014,10 @@ video {
   border-radius: 20px;
   border:2px solid  var(--accent-color);
   background-color: black;
+}
+
+.jl_debug {
+  outline: 3px solid red !important;
+  background-color: teal;
 }
 </style>
