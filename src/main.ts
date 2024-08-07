@@ -18,17 +18,16 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBookOpen,
   faChevronDown,
+  faClock,
   faGear,
+  faLocation,
+  faLocationDot,
   faPlay,
+  faPause,
+  faSquareXmark,
   faStop,
   faTimes,
   faVideo,
-  faPlay,
-  faPause,
-  faLocation,
-  faLocationDot,
-  faClock,
-  faSquareXmark
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faBookOpen);

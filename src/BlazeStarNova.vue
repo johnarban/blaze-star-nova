@@ -336,11 +336,14 @@ const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
 
-let beforeTourLocation: EquatorialRad = { raRad: 0, decRad: 0 };
+let beforeTourPosition: EquatorialRad = { raRad: 0, decRad: 0 };
 let beforeTourHorizon = true;
 let beforeTourGrid = true;
 let beforeTourTime = new Date();
 let beforeTourConstellations = true;
+
+const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
+const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -436,7 +439,7 @@ onMounted(() => {
     // as well as our custom text overlays
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+    WWTControl.singleton.renderOneFrame = newFrameRender;
     setupConstellationFigures();
 
     console.log(`${window.location.origin}/FindingCoronaBorealis.wtt`);
@@ -589,25 +592,24 @@ function skyOpacityForSunAlt(sunAltRad: number) {
 
 function playPauseTour() {
   if (!isTourPlaying.value) {
+    WWTControl.singleton.renderOneFrame = originalFrameRender;
     beforeTourTime = store.currentTime;
     beforeTourGrid = showAltAzGrid.value;
     beforeTourHorizon = showHorizon.value;
     beforeTourConstellations = showConstellations.value;
-    beforeTourLocation = { raRad: store.raRad, decRad: store.decRad };
-    console.log(beforeTourLocation);
-    store.loadTour({ url: `${window.location.origin}/Finding%20Corona%20Borealis.wtt`, play: true });
+    beforeTourPosition = { raRad: store.raRad, decRad: store.decRad };
+    store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
     showHorizon.value = false;
   } else {
     store.toggleTourPlayPauseState();
+    WWTControl.singleton.renderOneFrame = newFrameRender;
     store.applySetting(["localHorizonMode", true]);
-    console.log(beforeTourLocation);
     store.gotoRADecZoom({
-      ...beforeTourLocation,
+      ...beforeTourPosition,
       zoomDeg: store.zoomDeg,
       rollRad: 0,
       instant: true
     }).then(() => {
-      console.log(store.raRad, store.decRad);
       showAltAzGrid.value = beforeTourGrid;
       showConstellations.value = beforeTourConstellations;
       showHorizon.value = beforeTourHorizon;
