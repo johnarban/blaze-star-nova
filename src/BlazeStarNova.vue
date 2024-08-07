@@ -31,6 +31,23 @@
           <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
           </icon-button>
+          
+          <div id="controls" class="control-icon-wrapper">
+          <div id="controls-top-row">
+            <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
+              @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
+          </div>
+          
+          <div v-if="showControls" id="control-checkboxes">
+            <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
+              label="Sky Grid" hide-details />
+            <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
+              label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
+          </div>
+        </div>
+          
         </div>
         <div id="center-buttons">
           <icon-button
@@ -103,9 +120,7 @@
        <div id="empty-space">
        </div>
        <div id="playback-controls">
-        <span class="jl_debug">selected: {{ selectedDate }}</span>
-        <span  class="jl_debug">wwt: {{ store.currentTime }}</span>
-        <span class="jl_debug">{{ selectedLocation }}</span>
+        
           <icon-button 
             :fa-icon="timePlaying ? 'pause' : 'play'"
             :color="buttonColor" 
@@ -130,32 +145,36 @@
        
        
        
-       <div id="date-picker">
-        <VueDatePicker 
-          v-model="selectedDate"
-          dark
-        />
-       </div>
+       
       
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos logo-size="25px"/>
-        <div id="controls" class="control-icon-wrapper">
-          <div id="controls-top-row">
-            <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
-              @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
-          </div>
-          
-          <div v-if="showControls" id="control-checkboxes">
-            <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
-              label="Sky Grid" hide-details />
-            <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
-              label="Horizon" hide-details />
-            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
-              label="Constellations" hide-details />
-          </div>
+        <credit-logos style="margin:1em;" logo-size="25px"/>
+        
+        <div id="date-picker">
+            <v-overlay 
+            activator="parent"
+            location-strategy="connected"
+            location="top end"
+            origin="bottom end"
+            :scrim="false"
+            :style="cssVars"
+            >
+            <template #activator="{props}">
+              <!-- any props added are passed directly to v-card -->
+              <time-display v-bind="props" :date="selectedDate" ampm elevation="5" />
+            </template>
+              <v-card width="fit-content" elevation="5">
+                <date-time-picker v-model="selectedDate">
+                  <button class="dtp__button" @click="set9pm" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
+                  <button class="dtp__button" @click="setMidnight" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                </date-time-picker>
+              </v-card>
+            </v-overlay>
         </div>
+        
+        
       </div>
     
 
@@ -271,6 +290,7 @@ import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 // import { useDisplay } from "vuetify";
+import {throttle} from './debounce';
 
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
@@ -278,7 +298,6 @@ import { Annotation2 } from "./Annotation2";
 import { initializeConstellationNames, makeAltAzGridText, setupConstellationFigures } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
-import VueDatePicker from '@vuepic/vue-datepicker';
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -300,6 +319,8 @@ const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
 // const { smAndDown } = useDisplay();
+
+
 
 const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
@@ -326,6 +347,7 @@ const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
+const _showDatePicker= ref(false);
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -365,12 +387,20 @@ function todayAt9pm() {
 }
 
 const selectedDate = ref(todayAt9pm());
+
+function updateDate(value: Date) {
+  selectedDate.value = value;
+}
+const throttledUpdateDate = throttle(updateDate, 500);
+
 const showLocationSelector = ref(false);
 
 const selectedLocation = ref<LocationDeg>({
   longitudeDeg: -71.1056,
   latitudeDeg: 42.3581,
 });
+
+
 
 
 function setWWTLocation(location: LocationDeg) {
@@ -433,6 +463,7 @@ onMounted(() => {
       if (timePlaying.value) {
         updateHorizonAndSky(store.currentTime); 
         updateCrbBelowHorizon(store.currentTime);
+        throttledUpdateDate(new Date(store.currentTime));
       }
     }, 100);
 
@@ -594,6 +625,22 @@ function logWWTState() {
   });
 }
 
+
+function set9pm() {
+  console.log("Setting time to 9pm");
+  const time = new Date(selectedDate.value.getTime());
+  time.setHours(21, 0, 0, 0);
+  selectedDate.value = time;
+}
+
+function setMidnight(){
+  console.log("Setting time to midnight");
+  const time = new Date(selectedDate.value.getTime());
+  time.setHours(23, 59, 0, 0);
+  selectedDate.value = time;
+}
+
+
 watch(showHorizon, (_show) => updateHorizonAndSky());
 
 watch(showAltAzGrid, (show) => {
@@ -608,7 +655,7 @@ watch(showConstellations, (show) => {
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
-  playbackControl.pause();
+  console.log("selectedDate changed", date);
   store.setTime(date);
   updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);
@@ -809,12 +856,13 @@ body {
   flex-grow: 0;
   height: fit-content;
   pointer-events: none;
-  align-items: center;
+  align-items: flex-end;
   gap: 5px;
 }
 
 #date-picker {
   margin: 1rem;
+  pointer-events: auto;
 }
 
 #controls {
@@ -1019,5 +1067,15 @@ video {
 .jl_debug {
   outline: 3px solid red !important;
   background-color: teal;
+}
+
+.dtp__button {
+  background-color: var(--accent-color);
+  font-size: 0.85em;
+  color: black;
+  border-radius: 5px;
+  padding: 4px;
+  margin: 4px;
+  cursor: pointer;
 }
 </style>
