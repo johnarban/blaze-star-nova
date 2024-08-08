@@ -19,10 +19,10 @@
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
           <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
-              <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
-              <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
-              <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
-            </ImageSet>
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
+          </ImageSet>
         </BackgroundImageSet>
       </Place>
       <EndTarget Name="End Place" DataSetType="Sky" RA="12.1134944381349" Dec="55.3092895922342" Constellation="UMA" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.906298802707" Rotation="0.546637121724625" Angle="0" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
@@ -41,8 +41,10 @@ Borealis...</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="12.1134944381349" Dec="55.3092895922342" Constellation="UMA" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.906298802707" Rotation="0.546637121724625" Angle="0" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -64,8 +66,10 @@ Borealis...</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="12.1134944381349" Dec="55.3092895922342" Constellation="UMA" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.906298802707" Rotation="0.546637121724625" Angle="0" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -88,8 +92,10 @@ the handle</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="12.1134944381349" Dec="55.3092895922342" Constellation="UMA" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.906298802707" Rotation="0.546637121724625" Angle="0" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -102,8 +108,10 @@ the handle</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="13.4139840034923" Dec="40.8988038576661" Constellation="CVN" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="332.734957076144" Rotation="0.113097335529232" Angle="-0.0314159265358979" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -129,8 +137,10 @@ star, Arcturus</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="13.4139840034923" Dec="40.8988038576661" Constellation="CVN" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="332.734957076144" Rotation="0.113097335529232" Angle="-0.0314159265358979" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -152,8 +162,10 @@ Bootes</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="13.4139840034923" Dec="40.8988038576661" Constellation="CVN" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="332.734957076144" Rotation="0.113097335529232" Angle="-0.0314159265358979" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
@@ -166,8 +178,10 @@ Bootes</TextObject>
       <Place Name="End Place" DataSetType="Sky" RA="15.0657480567828" Dec="28.43334691571" Constellation="BOO" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.953137203853" Rotation="0.113097335529232" Angle="-0.0414159265358979" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
-          <ImageSet Generic="False" DataSetType="Sky" BandPass="Visible" Name="USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)" Url="http://www.worldwidetelescope.org/wwtweb/tiles.aspx?q={1},{2},{3},USNOBToast_6" DemUrl="" BaseTileLevel="0" TileLevels="6" BaseDegreesPerTile="180" FileType=".png" BottomsUp="False" Projection="Toast" QuadTreeMap="" CenterX="0" CenterY="0" OffsetX="0" OffsetY="0" Rotation="0" Sparse="False" ElevationModel="False" StockSet="False" WidthFactor="1" MeanRadius="0" ReferenceFrame="Sky">
-            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=usnob</ThumbnailUrl>
+          <ImageSet AltUrl="http://www.worldwidetelescope.org/wwtweb/tychooct.aspx?q={1},{2},{3}" BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Tycho (Synthetic, Optical)" Projection="Toast" QuadTreeMap="0123" Rotation="0" Sparse="False" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wts0000000131{Q}?g=131" WidthFactor="2">
+            <Credits>NASA/Goddard Space Flight Center Scientific Visualization Studio</Credits>
+            <CreditsUrl>http://svs.gsfc.nasa.gov/vis/a000000/a003400/a003442/</CreditsUrl>
+            <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=tychobrahe</ThumbnailUrl>
           </ImageSet>
         </BackgroundImageSet>
       </Place>
