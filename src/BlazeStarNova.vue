@@ -132,6 +132,17 @@
                 <span style="font-size:1.15em; padding-inline: 1em;">Show me how to find the Nova!</span>
               </template>
           </icon-button>
+          <!-- icon button to go to TCrB -->
+          <icon-button
+            @activate="() => goToTCrB()"
+            :fa-icon="'star'"
+            :color="buttonColor"
+            :tooltip-text="'Go to T CrB'"
+            tooltip-location="start">
+              <template #button>
+                <span style="font-size:1.15em; padding-inline: 1em;">Go to T CrB</span>
+              </template>
+          </icon-button>
           
           <!-- reset time to now button -->
            <button 
@@ -190,9 +201,9 @@
             </template>
               <v-card width="fit-content" elevation="5">
                 <date-time-picker v-model="selectedDate">
-                  <button class="dtp__button" @click="set9pm" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
-                  <button class="dtp__button" @click="setMidnight" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
-                  <button class="dtp__button" @click="selectedDate = new Date()" name="set-now" aria-label="Set time to Now">Now</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); set9pm(); goToTCrB()}" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); setMidnight(); goToTCrB()}" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); selectedDate = new Date(); goToTCrB()}" name="set-now" aria-label="Set time to Now">Now</button>
                 </date-time-picker>
               </v-card>
             </v-overlay>
@@ -329,9 +340,19 @@ function getWWTLocation(): LocationRad {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const blazeStarLocation: EquatorialRad = {
-  raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
+  raRad: (15 + 59 / 60 + 30.1622 / 3600) * 15 * D2R,
   decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
 };
+
+
+function goToTCrB(instant=false) {
+  store.gotoRADecZoom({
+    raRad: blazeStarLocation.raRad,
+    decRad: blazeStarLocation.decRad,
+    zoomDeg: 180,
+    instant: instant,
+  });
+}
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
   // get's today's date and 
