@@ -2,7 +2,7 @@
   <v-dialog :style="cssVars" class="bottom-sheet" id="text-bottom-sheet" hide-overlay persistent no-click-animation
   absolute width="100%" :scrim="false" location="bottom" v-model="showTextSheet"
   transition="dialog-bottom-transition">
-  <v-card height="100%">
+  <v-card id="bottom-sheet-card" height="100%">
     <v-tabs v-model="tab" height="32px" :color="accentColor" :slider-color="accentColor" id="tabs" dense>
       <v-tab class="info-tabs" tabindex="0">
         <h3>Information</h3>
@@ -13,7 +13,7 @@
     </v-tabs>
     <font-awesome-icon id="close-text-icon" class="control-icon" icon="times" size="lg"
       @click="showTextSheet = false" @keyup.enter="showTextSheet = false" tabindex="0"></font-awesome-icon>
-          <v-card-text v-if="tab==0" class="info-text no-bottom-border-radius scrollable">
+          <v-card-text v-if="tab==0" class="info-text tab-items no-bottom-border-radius scrollable">
             <p>You may have heard that a star in our night sky is going to "go nova" soon. Learn what this means and how you can see the nova!</p>
 
             <h4>What is a nova?</h4>
@@ -61,7 +61,7 @@
               rel="noopener noreferrer">paper</a> by Mary Proctor.
             </p>
           </v-card-text>
-          <v-card-text v-if="tab==1" class="info-text no-bottom-border-radius scrollable">
+          <v-card-text v-if="tab==1" class="info-text tab-items no-bottom-border-radius scrollable">
             <v-container>
               <v-row align="center">
                 <v-col cols="4">
@@ -200,21 +200,19 @@ watch(() => showTextSheet, (newVal) => {
     overflow-y: auto;
   }
 
-  #tab-items {
-    // padding-bottom: 2px !important;
 
-    .v-card-text {
-      font-size: ~"max(14px, calc(0.7em + 0.3vw))";
-      padding-top: ~"max(2vw, 16px)";
-      padding-left: ~"max(4vw, 16px)";
-      padding-right: ~"max(4vw, 16px)";
 
-      .end-spacer {
-        height: 25px;
-      }
+  #bottom-sheet-card .tab-items.v-card-text {
+    font-size: ~"max(14px, calc(0.7em + 0.3vw))";
+    padding-top: ~"max(2vw, 16px)";
+    padding-left: ~"max(4vw, 16px)";
+    padding-right: ~"max(4vw, 16px)";
+
+    .end-spacer {
+      height: 25px;
     }
-
   }
+
 
   #close-text-icon {
     position: absolute;
