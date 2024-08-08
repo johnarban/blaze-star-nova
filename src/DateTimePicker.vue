@@ -1,6 +1,7 @@
 <!-- Design Inspired by Date/Time Picker at Stellarium Web https://stellarium-web.org/ -->
 <template>
   <div class="dtp__container">
+    <div class="dtp__row">
     <div class="dtp__grid-container">
       <!-- <div class="dtp__rollers up-rollers"> -->
       <button id="dtp__year-up" class="dtp__grid-item" @click="increment('year')">
@@ -72,6 +73,23 @@
         <v-icon>mdi-menu-down</v-icon>
       </button>
     </div>
+    
+    <div class="dtp__ampm" v-if="props.useAmpm">
+      <button 
+        name="set-am" 
+        :class='["dtp__ampm-button", "dtp__ampm-am", { "dtp__ampm-active": isAm }]' 
+        @click="isAm = true" 
+        aria-label="Set AM"
+        >AM</button>
+      <button 
+        name="set-pm" 
+        :class='["dtp__ampm-button", "dtp__ampm-pm", { "dtp__ampm-active": !isAm }]' 
+        @click="isAm = false" 
+        aria-label="Set PM"
+        >PM</button>
+    </div>
+  </div>
+    
     <div class="dtp__bottom-content">
       <slot></slot>
     </div>
@@ -91,12 +109,13 @@ import { ref, watch, computed, withDefaults } from 'vue';
 
 export interface Props {
   debug?: boolean;
+  useAmpm?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   debug: false,
+  useAmpm: true,
 });
-
 
 
 const date = defineModel({default: new Date('2027-01-01 12:00:00 UTC')});
@@ -107,6 +126,26 @@ const day = ref(date.value.getDate());
 const hour = ref(date.value.getHours());
 const minute = ref(date.value.getMinutes());
 const second = ref(date.value.getSeconds());
+
+const ampm = ref(hour.value >= 12);
+
+
+const isAm = computed({
+  get: () => hour.value < 12,
+  set: (value) => {
+    if (value) {
+      for (let i = 0; i < 12; i++) {
+        decrement('hour');
+      }
+    } else {
+      for (let i = 0; i < 12; i++) {
+        increment('hour');
+      }
+    }
+  }
+});
+
+watch(ampm, (value) => { isAm.value = value;});
 
 const values = {
   year: year,
@@ -156,6 +195,14 @@ function changeValue(unit: Unit, increment: boolean) {
   }
 }
 
+const _displayHour = computed(() => {
+  if (props.useAmpm) {
+    const h = hour.value % 12;
+    return h === 0 ? 12 : h;
+  } else {
+    return hour.value;
+  }
+});
 function increment(value: Unit) {
   changeValue(value, true);
 }
@@ -221,6 +268,13 @@ watch(date, () => {
   margin-bottom: 10px;
 }
 
+.dtp__row {
+  display: grid;
+  grid-template-columns: 0fr 0fr;
+  align-items: center;
+  gap: 1em;
+}
+
 .dtp__grid-container > * {
   margin: 0;
   padding: 0;
@@ -251,6 +305,40 @@ span.dtp__button-label {
   left: 50%;
   transform: translate(-50%, -50%);
   // outline: 1px solid red;
+}
+
+.dtp__ampm {
+  display: grid;
+  grid-template-columns: 3em;
+  grid-template-rows: 0fr 0fr;
+  gap: 1px;
+}
+
+.dtp__ampm-button {
+  background-color: #444;
+  padding: 0;
+  align-self: center;
+  font-size: .9em;
+  width: 4ch;
+}
+
+// for dtp__ampm-am/pm add only left right and top/bottom border raidus
+.dtp__ampm-am {
+  border: 1px solid var(--accent-color);
+  border-top-left-radius: .75ch;
+  border-top-right-radius: .75ch;
+  border-bottom: none
+}
+
+.dtp__ampm-pm {
+  border: 1px solid var(--accent-color);
+  border-bottom-left-radius: .75ch;
+  border-bottom-right-radius: .75ch;
+  border-top: none
+}
+
+.dtp__ampm-active {
+  color: var(--accent-color);
 }
 
 </style>

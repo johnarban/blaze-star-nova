@@ -162,7 +162,7 @@
           <icon-button 
             :fa-icon="timePlaying ? 'pause' : 'play'"
             :color="buttonColor" 
-            tooltip-text="Play"
+            tooltip-text="Let time move forward"
             tooltip-location="start" 
             @activate="()=>{playbackControl.togglePlay()}" 
             />
@@ -176,7 +176,16 @@
             >
             <template #activator="{props}">
               <!-- any props added are passed directly to v-card -->
-              <time-display v-bind="props" :date="selectedDate" ampm elevation="5" />
+              <v-card 
+                v-bind="props"
+                class="td__card"
+                width="fit-content"
+                rounded="lg"
+                elevation="5"
+                >
+                <time-display :date="selectedDate" ampm />
+                <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
+              </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
                 <date-time-picker v-model="selectedDate">
@@ -991,5 +1000,17 @@ video {
   padding: 4px;
   margin: 4px;
   cursor: pointer;
+}
+
+.td__card {
+  border: 1px solid var(--accent-color);
+  text-align: right;
+  position: relative;
+}
+
+.td__icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
 }
 </style>
