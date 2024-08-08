@@ -38,6 +38,23 @@
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
             tooltip-location="start">
           </icon-button>
+          
+          <div id="controls" class="control-icon-wrapper">
+          <div id="controls-top-row">
+            <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
+              @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
+          </div>
+          
+          <div v-if="showControls" id="control-checkboxes">
+            <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
+              label="Sky Grid" hide-details />
+            <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
+              label="Horizon" hide-details />
+            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
+              label="Constellations" hide-details />
+          </div>
+        </div>
+          
         </div>
         <div id="center-buttons">
           <icon-button
@@ -110,9 +127,7 @@
        <div id="empty-space">
        </div>
        <div id="playback-controls">
-        <span class="jl_debug">selected: {{ selectedDate }}</span>
-        <span  class="jl_debug">wwt: {{ store.currentTime }}</span>
-        <span class="jl_debug">{{ selectedLocation }}</span>
+        
           <icon-button 
             :fa-icon="timePlaying ? 'pause' : 'play'"
             :color="buttonColor" 
@@ -137,32 +152,36 @@
        
        
        
-       <div id="date-picker">
-        <VueDatePicker 
-          v-model="selectedDate"
-          dark
-        />
-       </div>
+       
       
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos logo-size="25px"/>
-        <div id="controls" class="control-icon-wrapper">
-          <div id="controls-top-row">
-            <font-awesome-icon size="lg" :color="accentColor" :icon="showControls ? `chevron-down` : `gear`"
-              @click="showControls = !showControls" @keyup.enter="showControls = !showControls" tabindex="0" />
-          </div>
-          
-          <div v-if="showControls" id="control-checkboxes">
-            <v-checkbox :color="accentColor" v-model="showAltAzGrid" @keyup.enter="showAltAzGrid = !showAltAzGrid"
-              label="Sky Grid" hide-details />
-            <v-checkbox :color="accentColor" v-model="showHorizon" @keyup.enter="showHorizon = !showHorizon"
-              label="Horizon" hide-details />
-            <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
-              label="Constellations" hide-details />
-          </div>
+        <credit-logos style="margin:1em;" logo-size="25px"/>
+        
+        <div id="date-picker">
+            <v-overlay 
+            activator="parent"
+            location-strategy="connected"
+            location="top end"
+            origin="bottom end"
+            :scrim="false"
+            :style="cssVars"
+            >
+            <template #activator="{props}">
+              <!-- any props added are passed directly to v-card -->
+              <time-display v-bind="props" :date="selectedDate" ampm elevation="5" />
+            </template>
+              <v-card width="fit-content" elevation="5">
+                <date-time-picker v-model="selectedDate">
+                  <button class="dtp__button" @click="set9pm" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
+                  <button class="dtp__button" @click="setMidnight" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                </date-time-picker>
+              </v-card>
+            </v-overlay>
         </div>
+        
+        
       </div>
     
 
@@ -182,90 +201,13 @@
 
 
       <!-- This dialog contains the informational content that is displayed when the book icon is clicked -->
-
-      <v-dialog :style="cssVars" class="bottom-sheet" id="text-bottom-sheet" hide-overlay persistent no-click-animation
-        absolute width="100%" :scrim="false" location="bottom" v-model="showTextSheet"
-        transition="dialog-bottom-transition">
-        <v-card height="100%">
-          <v-tabs v-model="tab" height="32px" :color="accentColor" :slider-color="accentColor" id="tabs" dense>
-            <v-tab class="info-tabs" tabindex="0">
-              <h3>Information</h3>
-            </v-tab>
-            <v-tab class="info-tabs" tabindex="0">
-              <h3>Using WWT</h3>
-            </v-tab>
-          </v-tabs>
-          <font-awesome-icon id="close-text-icon" class="control-icon" icon="times" size="lg"
-            @click="showTextSheet = false" @keyup.enter="showTextSheet = false" tabindex="0"></font-awesome-icon>
-          <v-window v-model="tab" id="tab-items" class="pb-2 no-bottom-border-radius">
-            <v-window-item>
-              <v-card class="no-bottom-border-radius scrollable">
-                <v-card-text class="info-text no-bottom-border-radius">
-                  Information goes here
-                </v-card-text>
-              </v-card>
-            </v-window-item>
-            <v-window-item>
-              <v-card class="no-bottom-border-radius scrollable">
-                <v-card-text class="info-text no-bottom-border-radius">
-                  <v-container>
-                    <v-row align="center">
-                      <v-col cols="4">
-                        <v-chip label outlined>
-                          Pan
-                        </v-chip>
-                      </v-col>
-                      <v-col cols="8" class="pt-1">
-                        <strong>{{ touchscreen ? "press + drag" : "click + drag" }}</strong> {{ touchscreen ? ":" : "or"
-                        }} <strong>{{ touchscreen ? ":" : "W-A-S-D" }}</strong> {{ touchscreen ? ":" : "keys" }}<br>
-                      </v-col>
-                    </v-row>
-                    <v-row align="center">
-                      <v-col cols="4">
-                        <v-chip label outlined>
-                          Zoom
-                        </v-chip>
-                      </v-col>
-                      <v-col cols="8" class="pt-1">
-                        <strong>{{ touchscreen ? "pinch in and out" : "scroll in and out" }}</strong> {{ touchscreen ? ":"
-                          : "or" }} <strong>{{ touchscreen ? ":" : "I-O" }}</strong> {{ touchscreen ? ":" : "keys" }}<br>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col cols="12">
-                        <div class="credits">
-                          <h3>Credits:</h3>
-                          <h4><a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
-                              rel="noopener noreferrer">CosmicDS</a> Vue Data Stories Team:</h4>
-                          John Lewis<br>
-                          Jon Carifio<br>
-                          Pat Udomprasert<br>
-                          Alyssa Goodman<br>
-                          Mary Dussault<br>
-                          Harry Houghton<br>
-                          Anna Nolin<br>
-                          Evaluator: Sue Sunbury<br>
-                          <br>
-                          <h4>WorldWide Telescope Team:</h4>
-                          Peter Williams<br>
-                          A. David Weigel<br>
-                          Jon Carifio<br>
-                        </div>
-                        <v-spacer class="end-spacer"></v-spacer>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <funding-acknowledgement />
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-              </v-card>
-            </v-window-item>
-          </v-window>
-        </v-card>
-      </v-dialog>
+      <bottom-sheet
+        :cssVars="cssVars"
+        v-model="showTextSheet"
+        :accent-color="accentColor"
+        :touchscreen="touchscreen"
+       />
+     
 
     </div>
   </v-app>
@@ -279,13 +221,14 @@ import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 
+import {throttle} from './debounce';
+
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs, renderOneFrame } from "./wwt-hacks";
 import { makeTextOverlays } from "./text";
 
 import { usePlaybackControl } from "./wwt_playback_control";
-import VueDatePicker from '@vuepic/vue-datepicker';
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -309,6 +252,8 @@ const { timePlaying } = playbackControl;
 const touchscreen = supportsTouchscreen();
 // const { smAndDown } = useDisplay();
 
+
+
 const props = withDefaults(defineProps<MainComponentProps>(), {
   wwtNamespace: "MainComponent",
   initialCameraParams: () => {
@@ -326,14 +271,15 @@ const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const sheet = ref<SheetType | null>(null);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
-const accentColor = ref("#ffffff");
-const buttonColor = ref("#ffffff");
-const tab = ref(0);
+const accentColor = ref("#f7bb48");
+const buttonColor = ref("#f7bb48");
+// const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
+const _showDatePicker= ref(false);
 
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
 const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
@@ -379,12 +325,20 @@ function todayAt9pm() {
 }
 
 const selectedDate = ref(todayAt9pm());
+
+function updateDate(value: Date) {
+  selectedDate.value = value;
+}
+const throttledUpdateDate = throttle(updateDate, 500);
+
 const showLocationSelector = ref(false);
 
 const selectedLocation = ref<LocationDeg>({
   longitudeDeg: -71.1056,
   latitudeDeg: 42.3581,
 });
+
+
 
 
 function setWWTLocation(location: LocationDeg) {
@@ -440,6 +394,7 @@ onMounted(() => {
       if (timePlaying.value) {
         updateHorizonAndSky(store.currentTime); 
         updateCrbBelowHorizon(store.currentTime);
+        throttledUpdateDate(new Date(store.currentTime));
       }
     }, 100);
 
@@ -493,6 +448,7 @@ function getCrbAlt(when: Date | null = null) {
 
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
+  // get the text-bottom-sheet id height and subtract it from 100vh
   return {
     "--accent-color": accentColor.value,
     "--app-content-height": showTextSheet.value ? "66%" : "100%",
@@ -637,6 +593,22 @@ function logWWTState() {
   });
 }
 
+
+function set9pm() {
+  console.log("Setting time to 9pm");
+  const time = new Date(selectedDate.value.getTime());
+  time.setHours(21, 0, 0, 0);
+  selectedDate.value = time;
+}
+
+function setMidnight(){
+  console.log("Setting time to midnight");
+  const time = new Date(selectedDate.value.getTime());
+  time.setHours(23, 59, 0, 0);
+  selectedDate.value = time;
+}
+
+
 watch(showHorizon, (_show) => updateHorizonAndSky());
 watch(isTourPlaying, onTourPlayingChange);
 
@@ -652,7 +624,7 @@ watch(showConstellations, (show) => {
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
-  playbackControl.pause();
+  console.log("selectedDate changed", date);
   store.setTime(date);
   updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);
@@ -675,8 +647,8 @@ watch(selectedLocation, (location: LocationDeg) => {
 }
 
 :root {
-  --default-font-size: clamp(0.7rem, min(1.7vh, 1.7vw), 1.1rem);
-  --default-line-height: clamp(1rem, min(2.2vh, 2.2vw), 1.6rem);
+  --default-font-size: clamp(0.9rem, min(2.2vh, 2.2vw), 1.4rem);
+  --default-line-height: clamp(1.3rem, min(2.8vh, 2.8vw), 2.1rem);
 }
 
 html {
@@ -700,6 +672,16 @@ body {
   overflow: hidden;
 
   font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+p {
+  margin-bottom: 0.5rem;
 }
 
 #main-content {
@@ -853,12 +835,13 @@ body {
   flex-grow: 0;
   height: fit-content;
   pointer-events: none;
-  align-items: center;
+  align-items: flex-end;
   gap: 5px;
 }
 
 #date-picker {
   margin: 1rem;
+  pointer-events: auto;
 }
 
 #controls {
@@ -974,81 +957,6 @@ video {
   gap: 10px;
   pointer-events: auto;
 }
-
-.bottom-sheet {
-  .v-overlay__content {
-    align-self: flex-end;
-    padding: 0;
-    margin: 0;
-    max-width: 100%;
-    height: 34%;
-  }
-
-  #tabs {
-    width: calc(100% - 3em);
-    align-self: left;
-  }
-
-  .info-text {
-    height: 33vh;
-    padding-bottom: 25px;
-
-    & a {
-      text-decoration: none;
-    }
-  }
-
-  .close-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 15;
-
-    &:hover {
-      cursor: pointer;
-    }
-
-    &:focus {
-      color: white;
-      border: 2px solid white;
-    }
-  }
-
-  .scrollable {
-    overflow-y: auto;
-  }
-
-  #tab-items {
-    // padding-bottom: 2px !important;
-
-    .v-card-text {
-      font-size: ~"max(14px, calc(0.7em + 0.3vw))";
-      padding-top: ~"max(2vw, 16px)";
-      padding-left: ~"max(4vw, 16px)";
-      padding-right: ~"max(4vw, 16px)";
-
-      .end-spacer {
-        height: 25px;
-      }
-    }
-
-  }
-
-  #close-text-icon {
-    position: absolute;
-    top: 0.25em;
-    right: calc((3em - 0.6875em) / 3); // font-awesome-icons have width 0.6875em
-    color: white;
-  }
-
-  // This prevents the tabs from having some extra space to the left when the screen is small
-  // (around 400px or less)
-  .v-tabs:not(.v-tabs--vertical).v-tabs--right>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__next,
-  .v-tabs:not(.v-tabs--vertical):not(.v-tabs--right)>.v-slide-group--is-overflowing.v-tabs-bar--is-mobile:not(.v-slide-group--has-affixes) .v-slide-group__prev {
-    display: none;
-  }
-}
-
 .icon-wrapper {
   width: fit-content;
   min-width: 50px;
@@ -1063,5 +971,15 @@ video {
 .jl_debug {
   outline: 3px solid red !important;
   background-color: teal;
+}
+
+.dtp__button {
+  background-color: var(--accent-color);
+  font-size: 0.85em;
+  color: black;
+  border-radius: 5px;
+  padding: 4px;
+  margin: 4px;
+  cursor: pointer;
 }
 </style>

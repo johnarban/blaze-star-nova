@@ -1,16 +1,20 @@
 import Vue, { createApp, type Plugin } from "vue";
 
 import { FundingAcknowledgement, IconButton, CreditLogos, LocationSelector } from "@cosmicds/vue-toolkit";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import BlazeStarNova from "./BlazeStarNova.vue";
 
 import vuetify from "../plugins/vuetify";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import BottomSheet from "./BottomSheet.vue";
 import SplashScreen from "./SplashScreen.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import GeolocationButton from "./GeolocationButton.vue";
+import TimeDisplay from "./TimeDisplay.vue";
+import DateTimePicker from "./DateTimePicker.vue";
 
 import { WWTComponent, wwtPinia } from "@wwtelescope/engine-pinia";
 
@@ -75,6 +79,7 @@ createApp(BlazeStarNova, {
   // Components
   .component("WorldWideTelescope", WWTComponent)
   .component('font-awesome-icon', FontAwesomeIcon)
+  .component('bottom-sheet', BottomSheet)
   .component('icon-button', IconButton)
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
@@ -82,6 +87,8 @@ createApp(BlazeStarNova, {
   .component('vue-date-picker', VueDatePicker)
   .component('geolocation-button', GeolocationButton)
   .component('location-selector', LocationSelector)
+  .component('time-display', TimeDisplay)
+  .component('date-time-picker', DateTimePicker)
 
   // Mount
   .mount("#app");
