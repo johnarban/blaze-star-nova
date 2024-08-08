@@ -296,7 +296,6 @@ export interface MainComponentProps {
 
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
-console.log(isTourPlaying);
 
 useWWTKeyboardControls(store);
 
@@ -336,14 +335,9 @@ const showControls = ref(false);
 const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
 
-let beforeTourPosition: EquatorialRad = { raRad: 0, decRad: 0 };
-let beforeTourHorizon = true;
-let beforeTourGrid = true;
-let beforeTourTime = new Date();
-let beforeTourConstellations = true;
-
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
 const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
+let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -442,8 +436,7 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame = newFrameRender;
     setupConstellationFigures();
 
-    console.log(`${window.location.origin}/FindingCoronaBorealis.wtt`);
-
+    console.log(WWTControl.singleton);
 
     setInterval(() => {
       if (timePlaying.value) {
@@ -592,32 +585,30 @@ function skyOpacityForSunAlt(sunAltRad: number) {
 
 function playPauseTour() {
   if (!isTourPlaying.value) {
-    WWTControl.singleton.renderOneFrame = originalFrameRender;
     beforeTourTime = store.currentTime;
-    beforeTourGrid = showAltAzGrid.value;
-    beforeTourHorizon = showHorizon.value;
-    beforeTourConstellations = showConstellations.value;
-    beforeTourPosition = { raRad: store.raRad, decRad: store.decRad };
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
-    showHorizon.value = false;
   } else {
-    store.toggleTourPlayPauseState();
-    WWTControl.singleton.renderOneFrame = newFrameRender;
+    // NB: Both of these calls are necessary
+    WWTControl.singleton.stopCurrentTour();
+    WWTControl.singleton.uiController = null;
+  }
+}
+
+function onTourPlayingChange(playing: boolean) {
+  WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
+  if (!playing) {
     store.applySetting(["localHorizonMode", true]);
     store.gotoRADecZoom({
-      ...beforeTourPosition,
+      raRad: store.raRad,
+      decRad: store.decRad,
       zoomDeg: store.zoomDeg,
       rollRad: 0,
-      instant: true
-    }).then(() => {
-      showAltAzGrid.value = beforeTourGrid;
-      showConstellations.value = beforeTourConstellations;
-      showHorizon.value = beforeTourHorizon;
-      store.setTime(beforeTourTime);
-      updateHorizonAndSky();
+      instant: true,
     });
+    store.setTime(beforeTourTime);
+    WWTControl.singleton.renderOneFrame();
+    nextTick(() => updateHorizonAndSky());
   }
-  console.log(store);
 }
 
 
@@ -640,6 +631,7 @@ function logWWTState() {
 }
 
 watch(showHorizon, (_show) => updateHorizonAndSky());
+watch(isTourPlaying, onTourPlayingChange);
 
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);
