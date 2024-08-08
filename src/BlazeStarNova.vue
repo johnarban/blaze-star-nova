@@ -129,7 +129,7 @@
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
             tooltip-location="start">
               <template #button>
-                <span style="font-size:1.15em; padding-inline: 1em;">Show me how to find the Nova!</span>
+                <span class="jl_icon_button_text">Show me how to find the Nova!</span>
               </template>
           </icon-button>
           <!-- icon button to go to TCrB -->
@@ -140,7 +140,7 @@
             :tooltip-text="'Go to T CrB'"
             tooltip-location="start">
               <template #button>
-                <span style="font-size:1.15em; padding-inline: 1em;">Go to T CrB</span>
+                <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
               </template>
           </icon-button>
           
@@ -1012,7 +1012,14 @@ video {
   background-color: black;
 }
 
+.jl_icon_button_text {
+  font-size : 1.15em; 
+  padding-inline: 1em; 
+  max-width: 20ch; text-align: center;
+}
+
 .jl_debug {
+  display: none;
   outline: 3px solid red !important;
   background-color: teal;
 }
