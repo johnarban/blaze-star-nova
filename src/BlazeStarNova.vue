@@ -2,6 +2,8 @@
   <v-app id="app" :style="cssVars">
     <div id="main-content">
       <WorldWideTelescope :wwt-namespace="wwtNamespace"></WorldWideTelescope>
+      
+      <tour-layer :store="store" />
 
 
       <!-- This contains the splash screen content -->
@@ -606,9 +608,11 @@ function logWWTState() {
     latitudeDeg: loc.latitudeRad * 180 / Math.PI,
     longitudeDeg: loc.longitudeRad * 180 / Math.PI,
   };
+  const zoom = store.zoomDeg;
   console.log(getWWTLocation());
   console.table({
     time: store.currentTime,
+    zoom: zoom,
     location: locDeg,
     selectedLocation: selectedLocation.value,
     showHorizon: showHorizon.value,

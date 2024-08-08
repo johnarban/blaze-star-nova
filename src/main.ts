@@ -15,6 +15,7 @@ import '@vuepic/vue-datepicker/dist/main.css';
 import GeolocationButton from "./GeolocationButton.vue";
 import TimeDisplay from "./TimeDisplay.vue";
 import DateTimePicker from "./DateTimePicker.vue";
+import TourLayer from "./TourLayer.vue";
 
 import { WWTComponent, wwtPinia } from "@wwtelescope/engine-pinia";
 
@@ -89,6 +90,7 @@ createApp(BlazeStarNova, {
   .component('location-selector', LocationSelector)
   .component('time-display', TimeDisplay)
   .component('date-time-picker', DateTimePicker)
+  .component('tour-layer', TourLayer)
 
   // Mount
   .mount("#app");
