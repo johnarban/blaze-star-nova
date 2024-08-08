@@ -7,6 +7,7 @@ import vuetify from "../plugins/vuetify";
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import BottomSheet from "./BottomSheet.vue";
 import SplashScreen from "./SplashScreen.vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
@@ -72,6 +73,7 @@ createApp(BlazeStarNova, {
   // Components
   .component("WorldWideTelescope", WWTComponent)
   .component('font-awesome-icon', FontAwesomeIcon)
+  .component('bottom-sheet', BottomSheet)
   .component('icon-button', IconButton)
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
