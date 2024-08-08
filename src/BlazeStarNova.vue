@@ -436,8 +436,6 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame = newFrameRender;
     setupConstellationFigures();
 
-    console.log(WWTControl.singleton);
-
     setInterval(() => {
       if (timePlaying.value) {
         updateHorizonAndSky(store.currentTime); 
@@ -583,20 +581,27 @@ function skyOpacityForSunAlt(sunAltRad: number) {
   return (1 + Math.atan(Math.PI * sunAltRad / (-astronomicalTwilight))) / 2;
 }
 
+function clearCurrentTour() {
+  // NB: Both of these calls are necessary
+  WWTControl.singleton.stopCurrentTour();
+  WWTControl.singleton.uiController = null;
+}
+
 function playPauseTour() {
   if (!isTourPlaying.value) {
     beforeTourTime = store.currentTime;
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
-    // NB: Both of these calls are necessary
-    WWTControl.singleton.stopCurrentTour();
-    WWTControl.singleton.uiController = null;
+    clearCurrentTour();
   }
 }
 
 function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
+  console.log(`onTourPlayingChange: ${playing}`);
+  console.log(WWTControl.singleton);
   if (!playing) {
+    clearCurrentTour();
     store.applySetting(["localHorizonMode", true]);
     store.gotoRADecZoom({
       raRad: store.raRad,
@@ -607,7 +612,9 @@ function onTourPlayingChange(playing: boolean) {
     });
     store.setTime(beforeTourTime);
     WWTControl.singleton.renderOneFrame();
-    nextTick(() => updateHorizonAndSky());
+
+    // Not a huge fan of this, but `nextTick` wasn't working
+    setTimeout(updateHorizonAndSky, 100);
   }
 }
 
