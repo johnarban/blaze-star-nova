@@ -31,6 +31,13 @@
           <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
           </icon-button>
+          <icon-button
+            @activate="() => playPauseTour()"
+            :fa-icon="isTourPlaying ? 'stop' : 'play'"
+            :color="buttonColor"
+            :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
+            tooltip-location="start">
+          </icon-button>
           
           <div id="controls" class="control-icon-wrapper">
           <div id="controls-top-row">
@@ -207,6 +214,7 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
 import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
@@ -230,6 +238,7 @@ export interface MainComponentProps {
 }
 
 const store = engineStore();
+const { isTourPlaying } = storeToRefs(store);
 
 useWWTKeyboardControls(store);
 
@@ -272,6 +281,10 @@ const showConstellations = ref(true);
 const crbBelowHorizon = ref(true);
 const _showDatePicker= ref(false);
 
+const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
+const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
+let beforeTourTime: Date = new Date();
+
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
 
@@ -284,6 +297,8 @@ sunPlace.set_zoomLevel(20);
 const crbPlace = new Place();
 crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
 crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
+
+
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -372,7 +387,7 @@ onMounted(() => {
     // as well as our custom text overlays
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    WWTControl.singleton.renderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+    WWTControl.singleton.renderOneFrame = newFrameRender;
     setupConstellationFigures();
 
     setInterval(() => {
@@ -522,6 +537,42 @@ function skyOpacityForSunAlt(sunAltRad: number) {
   return (1 + Math.atan(Math.PI * sunAltRad / (-astronomicalTwilight))) / 2;
 }
 
+function clearCurrentTour() {
+  // NB: Both of these calls are necessary
+  WWTControl.singleton.stopCurrentTour();
+  WWTControl.singleton.uiController = null;
+}
+
+function playPauseTour() {
+  if (!isTourPlaying.value) {
+    beforeTourTime = store.currentTime;
+    store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
+  } else {
+    clearCurrentTour();
+  }
+}
+
+function onTourPlayingChange(playing: boolean) {
+  WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
+  console.log(`onTourPlayingChange: ${playing}`);
+  console.log(WWTControl.singleton);
+  if (!playing) {
+    clearCurrentTour();
+    store.applySetting(["localHorizonMode", true]);
+    store.gotoRADecZoom({
+      raRad: store.raRad,
+      decRad: store.decRad,
+      zoomDeg: store.zoomDeg,
+      rollRad: 0,
+      instant: true,
+    });
+    store.setTime(beforeTourTime);
+    WWTControl.singleton.renderOneFrame();
+
+    // Not a huge fan of this, but `nextTick` wasn't working
+    setTimeout(updateHorizonAndSky, 100);
+  }
+}
 
 
 function logWWTState() {
@@ -559,6 +610,7 @@ function setMidnight(){
 
 
 watch(showHorizon, (_show) => updateHorizonAndSky());
+watch(isTourPlaying, onTourPlayingChange);
 
 watch(showAltAzGrid, (show) => {
   store.applySetting(["showAltAzGrid", show]);

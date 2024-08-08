@@ -22,20 +22,23 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faBookOpen,
   faChevronDown,
+  faClock,
   faGear,
-  faTimes,
-  faVideo,
-  faPlay,
-  faPause,
   faLocation,
   faLocationDot,
-  faClock,
-  faSquareXmark
+  faPlay,
+  faPause,
+  faSquareXmark,
+  faStop,
+  faTimes,
+  faVideo,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faBookOpen);
 library.add(faChevronDown);
 library.add(faGear);
+library.add(faPlay);
+library.add(faStop);
 library.add(faTimes);
 library.add(faVideo);
 library.add(faPlay);

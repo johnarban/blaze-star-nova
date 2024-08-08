@@ -235,11 +235,9 @@ export function renderOneFrame() {
     this.uiController.render(this.renderContext);
   }
   else {
-    const index = 0;
     Annotation.prepBatch(this.renderContext);
     for (const item of this._annotations) {
       item.draw(this.renderContext);
-      index++;
     }
     Annotation.drawBatch(this.renderContext);
     if ((Date.now() - this._lastMouseMove) > 400) {
