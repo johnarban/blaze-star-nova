@@ -31,13 +31,7 @@
           <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
           </icon-button>
-          <icon-button
-            @activate="() => playPauseTour()"
-            :fa-icon="isTourPlaying ? 'stop' : 'play'"
-            :color="buttonColor"
-            :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
-            tooltip-location="start">
-          </icon-button>
+          
           
           <div id="controls" class="control-icon-wrapper">
           <div id="controls-top-row">
@@ -127,14 +121,17 @@
        <div id="empty-space">
        </div>
        <div id="playback-controls">
-        
-          <icon-button 
-            :fa-icon="timePlaying ? 'pause' : 'play'"
-            :color="buttonColor" 
-            tooltip-text="Play"
-            tooltip-location="start" 
-            @activate="()=>{playbackControl.togglePlay()}" 
-            />
+            
+            <icon-button
+            @activate="() => playPauseTour()"
+            :fa-icon="isTourPlaying ? 'stop' : 'play'"
+            :color="buttonColor"
+            :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
+            tooltip-location="start">
+              <template #button>
+                <span style="font-size:1.15em; padding-inline: 1em;">Show me how to find the Nova!</span>
+              </template>
+          </icon-button>
           
           <!-- reset time to now button -->
            <button 
@@ -159,7 +156,16 @@
       <div id="bottom-content">
         <credit-logos style="margin:1em;" logo-size="25px"/>
         
+        
+        
         <div id="date-picker">
+          <icon-button 
+            :fa-icon="timePlaying ? 'pause' : 'play'"
+            :color="buttonColor" 
+            tooltip-text="Play"
+            tooltip-location="start" 
+            @activate="()=>{playbackControl.togglePlay()}" 
+            />
             <v-overlay 
             activator="parent"
             location-strategy="connected"
@@ -176,6 +182,7 @@
                 <date-time-picker v-model="selectedDate">
                   <button class="dtp__button" @click="set9pm" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
                   <button class="dtp__button" @click="setMidnight" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                  <button class="dtp__button" @click="selectedDate = new Date()" name="set-now" aria-label="Set time to Now">Now</button>
                 </date-time-picker>
               </v-card>
             </v-overlay>
@@ -842,6 +849,9 @@ p {
 #date-picker {
   margin: 1rem;
   pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 #controls {
