@@ -170,6 +170,10 @@ watch(() => showTextSheet, (newVal) => {
     width: calc(100% - 3em);
     align-self: left;
   }
+  
+  .info-tabs {
+    border-bottom: 2px solid var(--accent-color);
+  }
 
   .info-text {
     height: 33vh;
