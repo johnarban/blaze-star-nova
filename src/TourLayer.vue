@@ -1,7 +1,9 @@
 <template>
   
   <div id="tour-layer">
+    <div id="marker-layer"></div>
     <button class="tour-layer-button button1" @click="updateMarkers">Update Markers</button>
+    <button class="tour-layer-button button2" @click="loadStarData">Load Stars</button>
         
   </div>
   
@@ -10,14 +12,23 @@
 <style>
 
 #tour-layer {
-  z-index: 1;
+  z-index: 0;
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
   pointer-events: none;
-  /* border: 2px solid red; */
+  contain: strict;
+}
+
+#marker-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
 }
 
 .marker {
@@ -27,7 +38,33 @@
   background-color: transparent;
   border-radius: 50%;
   border: 2px solid red;
-  z-index: 1000;
+  z-index: 1;
+}
+
+.star_marker {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: yellow;
+  border: none;
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  outline: 1px solid white;
+}
+
+.star_marker:hover {
+  background-color: red;
+}
+
+.star_marker::before {
+  /* label with ra dec */
+  /* content: attr(data-ra) " " attr(data-dec); */
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  font-size: 10px;
 }
 
 .tour-layer-button {
@@ -54,7 +91,7 @@
 
 
 <script setup lang="ts">
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ref, watch } from 'vue';
 import { engineStore } from "@wwtelescope/engine-pinia";
 type WWTEngineStore = ReturnType<typeof engineStore>;
@@ -98,47 +135,69 @@ function getScreenCenterPixel() {
   };
 }
 
-function addMarker(loc: Equatorial) {
+function getMarkerLayer() {
+  return document.getElementById("marker-layer");
+}
+
+function createMarker(loc: Equatorial, class_name='') {
   const screen = worldToScreen(loc);
   const marker = document.createElement("div");
   marker.className = "marker";
+  // append a class
+  if (class_name) {
+    marker.classList.add(class_name);
+  }
   marker.style.left = `${screen.x}px`;
   marker.style.top = `${screen.y}px`;
   // add equatorial coordinates to marker
   marker.dataset.ra = loc.ra.toString();
   marker.dataset.dec = loc.dec.toString();
-  document.getElementById("tour-layer")?.appendChild(marker);
-  markers.value.push(marker as Marker);
+  return marker as Marker;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function removeMarker(marker: Marker) {
-  marker.remove();
-  markers.value = markers.value.filter((m) => m !== marker);
+function isMarkerOnScreen(marker: Marker) {
+  const screen = worldToScreen({
+    ra: parseFloat(marker.dataset.ra),
+    dec: parseFloat(marker.dataset.dec),
+  });
+  return screen.x >= 0 && screen.x <= window.innerWidth && screen.y >= 0 && screen.y <= window.innerHeight;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function hideMarkers() {
-  markers.value.forEach((marker) => {
-    marker.style.display = "none";
+function addMarkerTo(el: HTMLElement, marker: Marker) {
+  el.appendChild(marker);
+}
+
+function createMarkerLayer() {
+  const markerLayer = document.createElement("div");
+  markerLayer.id = "marker-layer";
+  return markerLayer;
+}
+
+function addMarkersTo(markers: Marker[], el: HTMLElement) {
+  markers.forEach((marker) => {
+    addMarkerTo(el, marker);
   });
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function showMarkers() {
-  markers.value.forEach((marker) => {
-    marker.style.display = "block";
-  });
-}
 
+
+function updateMarker(marker: Marker) {
+  const ra = parseFloat(marker.dataset.ra);
+  const dec = parseFloat(marker.dataset.dec);
+  const screen = worldToScreen({ ra, dec });
+  marker.style.left = `${screen.x}px`;
+  marker.style.top = `${screen.y}px`;
+}
 function updateMarkers() {
-  console.log("updating markers");
+
   markers.value.forEach((marker) => {
-    const ra = parseFloat(marker.dataset.ra);
-    const dec = parseFloat(marker.dataset.dec);
-    const screen = worldToScreen({ ra, dec });
-    marker.style.left = `${screen.x}px`;
-    marker.style.top = `${screen.y}px`;
+    if (!isMarkerOnScreen(marker)) {
+      marker.style.display = "none";
+    } else {
+      marker.style.display = "block";
+      updateMarker(marker);
+    }
   });
+  
 }
 
 // functin to convert world coordinates to screen coordinates
@@ -155,7 +214,12 @@ const screenToWorld = (screen: Screen) => {
 
 
 store.waitForReady().then(() => {
-  addMarker(blazeStarLocation);
+  const tcrbMarker = createMarker(blazeStarLocation);
+  markers.value.push(tcrbMarker);
+  const markerLayer = getMarkerLayer();
+  if (markerLayer) {
+    addMarkerTo(markerLayer, tcrbMarker);
+  }
 });
 
 // resize observer to update markers on window resize
@@ -167,6 +231,39 @@ resizeObserver.observe(document.body);
 watch(store, () => {
   updateMarkers();
 });
+
+const starJson = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json";
+const starDataLoaded = ref(false);
+
+function loadStarData() {
+  fetch(starJson)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data['features'];
+    })
+    .then((features) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      features.forEach((feature: any) => {
+        if (feature.properties.mag > 4) {
+          return;
+        }
+        const ra = feature.geometry.coordinates[0];
+        const dec = feature.geometry.coordinates[1];
+        // console.log(ra, dec);
+        const star = createMarker({ ra, dec }, 'star_marker');
+        markers.value.push(star);
+      });
+      starDataLoaded.value = true;
+    })
+    .then(() => {
+      const makerLayer = getMarkerLayer();
+      if (makerLayer) {
+        addMarkersTo(markers.value, makerLayer);
+      }
+      updateMarkers();
+    });
+}
 
 
 </script>
