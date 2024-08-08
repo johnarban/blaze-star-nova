@@ -13,10 +13,7 @@
     </v-tabs>
     <font-awesome-icon id="close-text-icon" class="control-icon" icon="times" size="lg"
       @click="showTextSheet = false" @keyup.enter="showTextSheet = false" tabindex="0"></font-awesome-icon>
-    <v-window v-model="tab" id="tab-items" class="pb-2 no-bottom-border-radius">
-      <v-window-item>
-        <v-card class="no-bottom-border-radius scrollable">
-          <v-card-text class="info-text no-bottom-border-radius">
+          <v-card-text v-if="tab==0" class="info-text no-bottom-border-radius scrollable">
             <p>You may have heard that a star in our night sky is going to "go nova" soon. Learn what this means and how you can see the nova!</p>
 
             <h4>What is a nova?</h4>
@@ -64,11 +61,7 @@
               rel="noopener noreferrer">paper</a> by Mary Proctor.
             </p>
           </v-card-text>
-        </v-card>
-      </v-window-item>
-      <v-window-item>
-        <v-card class="no-bottom-border-radius scrollable">
-          <v-card-text class="info-text no-bottom-border-radius">
+          <v-card-text v-if="tab==1" class="info-text no-bottom-border-radius scrollable">
             <v-container>
               <v-row align="center">
                 <v-col cols="4">
@@ -122,9 +115,6 @@
               </v-row>
             </v-container>
           </v-card-text>
-        </v-card>
-      </v-window-item>
-    </v-window>
   </v-card>
   </v-dialog>
 </template>
