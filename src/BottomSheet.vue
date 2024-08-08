@@ -149,8 +149,6 @@ const showTextSheet = defineModel({default: true});
 
 const store = engineStore();
 
-// This function IS used in the the template, but ESLint doesn't want to pick that up
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function playTour() {
   store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
 }
