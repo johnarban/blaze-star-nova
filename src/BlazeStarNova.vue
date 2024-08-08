@@ -156,16 +156,17 @@
       <div id="bottom-content">
         <credit-logos style="margin:1em;" logo-size="25px"/>
         
+        <div style="flex-grow:1;"></div>
         
-        
+        <icon-button 
+          :fa-icon="timePlaying ? 'pause' : 'play'"
+          :color="buttonColor" 
+          tooltip-text="Let time move forward"
+          tooltip-location="start" 
+          @activate="()=>{playbackControl.togglePlay()}" 
+          style="align-self: center;"
+        />
         <div id="date-picker">
-          <icon-button 
-            :fa-icon="timePlaying ? 'pause' : 'play'"
-            :color="buttonColor" 
-            tooltip-text="Let time move forward"
-            tooltip-location="start" 
-            @activate="()=>{playbackControl.togglePlay()}" 
-            />
             <v-overlay 
             activator="parent"
             location-strategy="connected"
@@ -412,7 +413,7 @@ onMounted(() => {
         updateCrbBelowHorizon(store.currentTime);
         throttledUpdateDate(new Date(store.currentTime));
       }
-    }, 100);
+    }, 10);
 
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
@@ -851,10 +852,13 @@ p {
   flex-grow: 0;
   height: fit-content;
   pointer-events: none;
-  align-items: flex-end;
+  align-items: center;
   gap: 5px;
 }
 
+#logo-credits {
+  align-self: flex-end;
+}
 #date-picker {
   margin: 1rem;
   pointer-events: auto;
