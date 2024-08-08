@@ -4,7 +4,9 @@
         <div id="close-splash-button" @click="closeSplashScreen">&times;
         </div>
         <div id="splash-screen-text">
-          <p>Splash Screen Content</p>
+          <p>Coming soon:</p> 
+          <p class="highlight">Blaze Star Nova</p>
+          <p>Learn where in the sky to watch for a "new" star!</p>
         </div>
         <div id="splash-screen-acknowledgements" class="small">
           This Data Story is brought to you by <a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
@@ -58,19 +60,29 @@ function closeSplashScreen() {
   justify-content: center;
 }
 
+p.highlight {
+    color: var(--accent-color);
+    text-transform: uppercase;
+    font-weight: bolder;
+
+    @media (max-width: 750px) {
+      font-weight: bold;
+    }
+}
+
 #splash-screen {
   color: #FFFFFF;
   background-color: #000000;
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   align-content: center;
   justify-content: space-around;
 
   font-family: 'Highway Gothic Narrow', 'Roboto', sans-serif;
-  font-size: min(8vw, 7vh);
+  font-size: min(9vw, 6vh);
 
-  border-radius: 10%;
+  border-radius: 30px;
   border: min(1.2vw, 0.9vh) solid var(--accent-color);
   overflow: auto;
   padding-top: 4rem;
@@ -83,23 +95,28 @@ function closeSplashScreen() {
 
   @media (min-width: 700px) {
     max-height: 85vh;
-    max-width: min(70vw, 800px);
+    max-width: min(65vw, 800px);
   }
 
   div {
-    margin-inline: auto;
+    margin-inline: 7%;
     text-align: center;
   }
 
   .small {
     font-size: var(--default-font-size);
     font-weight: bold;
+    margin-top: 1rem;
+  }
+
+  #splash-screen-logos {
+    margin-top: 1.5rem;
   }
 
   #close-splash-button {
     position: absolute;
     top: 0.5rem;
-    right: 1.75rem;
+    right: 0;
     text-align: end;
     color: var(--accent-color);
     font-size: min(8vw, 5vh);

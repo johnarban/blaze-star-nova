@@ -339,8 +339,8 @@ const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const sheet = ref<SheetType | null>(null);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
-const accentColor = ref("#ffffff");
-const buttonColor = ref("#ffffff");
+const accentColor = ref("#f7bb48");
+const buttonColor = ref("#f7bb48");
 const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
@@ -671,8 +671,8 @@ watch(selectedLocation, (location: LocationDeg) => {
 }
 
 :root {
-  --default-font-size: clamp(0.7rem, min(1.7vh, 1.7vw), 1.1rem);
-  --default-line-height: clamp(1rem, min(2.2vh, 2.2vw), 1.6rem);
+  --default-font-size: clamp(0.9rem, min(2.2vh, 2.2vw), 1.4rem);
+  --default-line-height: clamp(1.3rem, min(2.8vh, 2.8vw), 2.1rem);
 }
 
 html {
