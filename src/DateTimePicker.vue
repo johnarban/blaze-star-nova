@@ -42,7 +42,7 @@
       <span>-</span>
       <span id="dtp__day" class="dtp__grid-item dtp__time_part">{{ pad2(day) }}</span> 
       <span class="dtp__middle-slot"><slot name="center-middle"></slot></span>
-      <span id="dtp__hour" class="dtp__grid-item dtp__time_part">{{ pad2(hour) }}</span>
+      <span id="dtp__hour" class="dtp__grid-item dtp__time_part">{{ pad2(displayHour) }}</span>
       <span>:</span>
       <span id="dtp__minute" class="dtp__grid-item dtp__time_part">{{ pad2(minute) }}</span>
       <span>:</span>
@@ -195,7 +195,7 @@ function changeValue(unit: Unit, increment: boolean) {
   }
 }
 
-const _displayHour = computed(() => {
+const displayHour = computed(() => {
   if (props.useAmpm) {
     const h = hour.value % 12;
     return h === 0 ? 12 : h;
