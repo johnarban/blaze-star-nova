@@ -24,6 +24,7 @@
             <p>
               The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed, the "Blaze Star." As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." This guide(TODO: link to the tour) explains how you can find Corona Borealis in your night sky.
             </p>
+            <v-btn @click="$emit('toggle-blaze')">{{ `${showBlazeOverlay ? 'Hide' : 'Show'} T CrB label` }}</v-btn>
             <p>
               On a clear night, go out and look for Corona Borealis, so you can get used to its U-shape in the sky. Once T CrB goes nova, which can be any day now, or possibly weeks or months from now, it will seem as if a new star appeared just to the lower left of the U shape of the constellation.
             </p>
@@ -31,6 +32,7 @@
             <p>
               At its normal brightness, T CrB is about a 10th magnitude star. This is about 30-40 times fainter than the faintest star a person could see from a dark sky, so you would need a telescope to see it. When it goes nova, it is predicted to be about 2-2.5 magnitudes. It is comparable in brightness to Alphecca, the brightest star you can see in the crown of Corona Borealis.(TODO: add a link to turn on the layer that shows the brightness comparison.)
             </p>
+            <v-btn @click="$emit('toggle-alpha')">{{ `${showAlphaOverlay ? 'Hide' : 'Show'} alpha label` }}</v-btn>
             <h4>What causes a nova?</h4>
             <v-row>
               <v-col cols="7">
@@ -131,15 +133,19 @@ export interface Props {
   accentColor?: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   touchscreen?: any;
+  showBlazeOverlay: boolean;
+  showAlphaOverlay: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(),{
   cssVars: () => ({}),
   accentColor: () => 'accent',
-  touchscreen: () => false
+  touchscreen: () => false,
+  showBlazeOverlay: false,
+  showalphaOverlay: false,
 });
 
-const emits = defineEmits(['close']);
+const emits = defineEmits(['close', 'toggle-blaze', 'toggle-alpha']);
 
 const { cssVars, accentColor, touchscreen } = props;
 

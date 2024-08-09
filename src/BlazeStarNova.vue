@@ -210,6 +210,10 @@
         v-model="showTextSheet"
         :accent-color="accentColor"
         :touchscreen="touchscreen"
+        :show-blaze-overlay="showBlazeOverlay"
+        :show-alpha-overlay="showAlphaOverlay"
+        @toggle-blaze="showBlazeOverlay = !showBlazeOverlay"
+        @toggle-alpha="showAlphaOverlay = !showAlphaOverlay"
        />
      
 
@@ -229,8 +233,7 @@ import {throttle} from './debounce';
 
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
-import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs, renderOneFrame } from "./wwt-hacks";
-import { makeTextOverlays } from "./text";
+import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
 
@@ -288,9 +291,10 @@ const crbBelowHorizon = ref(true);
 const _showDatePicker= ref(false);
 
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
+const boundRenderOneFrame = renderOneFrame.bind(WWTControl.singleton);
 const newFrameRender = function() { 
-  renderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
-}.bind(WWTControl.singleton);
+  boundRenderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
+};
 let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this

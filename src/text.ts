@@ -28,11 +28,8 @@ export function makeTextOverlays(): Text3dBatch[] {
   textItems.forEach((items, index) => {
     const batch = batches[index];
     const locs = locations[index];
+    console.log(items);
     items.forEach((item, idx) => batch.add(new Text3d(locs[idx], up, item, glyphHeight, scale)));
-  });
-
-  textItems.forEach((item, index) => {
-    batch.add(new Text3d(locations[index], up, item, glyphHeight, scale));
   });
 
   return batches;
