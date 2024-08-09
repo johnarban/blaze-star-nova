@@ -284,6 +284,12 @@ watch(date, () => {
   padding-inline: 15px;
 }
 
+@media (max-width: 350px) {
+  .dtp__container {
+    font-size: 5vw;
+  }
+}
+
 .dtp__grid-container {
   display: grid;
   grid-template-columns: repeat(11, 0fr);
@@ -301,6 +307,16 @@ watch(date, () => {
   gap: 1em;
 }
 
+@media (max-width: 350px) {
+  .dtp__row {
+    display: grid;
+    grid-template-columns: 0fr;
+    grid-template-rows: 0fr 0fr;
+    justify-items: center;
+    gap: 2px;
+  }
+}
+
 .dtp__grid-container > * {
   margin: 0;
   padding: 0;
@@ -308,7 +324,7 @@ watch(date, () => {
 }
 
 .dtp__middle-slot {
-  width: 2em;
+  width: 1.5em;
 }
 
 .dtp__bottom-content {
@@ -362,6 +378,31 @@ span.dtp__button-label {
   border-bottom-left-radius: .75ch;
   border-bottom-right-radius: .75ch;
   border-top: none
+}
+
+@media (max-width: 350px) { 
+  .dtp__ampm {
+    grid-template-columns: 0fr 0fr;
+    grid-template-rows: 0fr;
+    margin-bottom: 0.5em;
+  }
+  
+  .dtp__ampm-am {
+    border: 1px solid var(--accent-color);
+    border-radius: 0;
+    border-top-left-radius: .75ch;
+    border-bottom-left-radius: .75ch;
+    border-right: none;
+  }
+  
+  .dtp__ampm-pm {
+    border: 1px solid var(--accent-color);
+    border-radius: 0;
+    border-top-right-radius: .75ch;
+    border-bottom-right-radius: .75ch;
+    border-left: none;
+  }
+  
 }
 
 .dtp__ampm-active {
