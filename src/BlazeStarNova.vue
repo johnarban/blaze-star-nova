@@ -830,11 +830,10 @@ p {
 }
 
 #center-buttons {
-  display: flex;
-  flex-direction: column;
-  flex-grow: .333;
-  gap: 10px;
-  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .map-container {
