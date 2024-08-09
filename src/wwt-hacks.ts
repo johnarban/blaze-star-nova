@@ -141,7 +141,7 @@ export function useCustomGlyphs(batch: Text3dBatch) {
   cache._webFile.send();
 }
 
-export function renderOneFrame() {
+export function renderOneFrame(showBlazeOverlay=true, showAlphaOverlay=true) {
   if (this.renderContext.get_backgroundImageset() != null) {
     this.renderType = this.renderContext.get_backgroundImageset().get_dataSetType();
   } else {
@@ -259,15 +259,19 @@ export function renderOneFrame() {
   Planets.drawPlanets(this.renderContext, 1);
   this._drawSkyOverlays();
 
-  if (this.textOverlays === undefined) {
-    this.textOverlays = makeTextOverlays();
+  if (this.blazeOverlay === undefined || this.alphaOverlay === undefined) {
+    const textOverlays = makeTextOverlays();
+    textOverlays.forEach(useCustomGlyphs);
+    [this.blazeOverlay, this.alphaOverlay] = textOverlays;
   }
 
-  if (Settings.get_active().get_showConstellationLabels()) {
-    if (Grids._altAzTextBatch.viewTransform != undefined) {
-      this.textOverlays.viewTransform = Grids._altAzTextBatch.viewTransform;
-    }
-    this.textOverlays.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
+  if (showBlazeOverlay) {
+    this.blazeOverlay.viewTransform = Grids._altAzTextBatch?.viewTransform;
+    this.blazeOverlay.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
+  }
+  if (showAlphaOverlay) {
+    this.alphaOverlay.viewTransform = Grids._altAzTextBatch?.viewTransform;
+    this.alphaOverlay.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
   }
 
   Annotation2.prepBatch(this.renderContext);

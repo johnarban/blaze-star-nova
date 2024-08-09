@@ -52,6 +52,10 @@
               label="Horizon" hide-details />
             <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
               label="Constellations" hide-details />
+            <v-checkbox :color="accentColor" v-model="showBlazeOverlay" @keyup.enter="showBlazeOverlay = !showBlazeOverlay"
+              label="Blaze Star Location" hide-details />
+            <v-checkbox :color="accentColor" v-model="showAlphaOverlay" @keyup.enter="showAlphaOverlay = !showAlphaOverlay"
+              label="Alphecca Location" hide-details />
           </div>
         </div>
           
@@ -206,6 +210,10 @@
         v-model="showTextSheet"
         :accent-color="accentColor"
         :touchscreen="touchscreen"
+        :show-blaze-overlay="showBlazeOverlay"
+        :show-alpha-overlay="showAlphaOverlay"
+        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 90, instant: false })"
+        @toggle-alpha="() => store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 90, instant: false })"
        />
      
 
@@ -225,8 +233,7 @@ import {throttle} from './debounce';
 
 import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
-import { makeAltAzGridText, setupConstellationFigures, useCustomGlyphs, renderOneFrame } from "./wwt-hacks";
-import { makeTextOverlays } from "./text";
+import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
 
@@ -278,11 +285,16 @@ const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
+const showBlazeOverlay = ref(true);
+const showAlphaOverlay = ref(true);
 const crbBelowHorizon = ref(true);
 const _showDatePicker= ref(false);
 
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
-const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
+const boundRenderOneFrame = renderOneFrame.bind(WWTControl.singleton);
+const newFrameRender = function() { 
+  boundRenderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
+};
 let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
@@ -373,9 +385,6 @@ onMounted(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Grids._makeAltAzGridText = makeAltAzGridText;
-
-    const textOverlays = makeTextOverlays();
-    useCustomGlyphs(textOverlays);
 
     // We need to render one frame ahead of time
     // as there's a lot of setup done on the first frame
