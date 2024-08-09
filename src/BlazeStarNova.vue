@@ -1009,7 +1009,6 @@ video {
 }
 
 .jl_debug {
-  display: none;
   outline: 3px solid red !important;
   background-color: teal;
 }
