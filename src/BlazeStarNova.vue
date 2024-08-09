@@ -212,8 +212,8 @@
         :touchscreen="touchscreen"
         :show-blaze-overlay="showBlazeOverlay"
         :show-alpha-overlay="showAlphaOverlay"
-        @toggle-blaze="showBlazeOverlay = !showBlazeOverlay"
-        @toggle-alpha="showAlphaOverlay = !showAlphaOverlay"
+        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 90, instant: false })"
+        @toggle-alpha="() => store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 90, instant: false })"
        />
      
 
