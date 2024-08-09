@@ -452,7 +452,10 @@ onMounted(() => {
       store.gotoRADecZoom({
         ...props.initialCameraParams,
         instant: true
-      }).then(() => positionSet.value = true);
+      }).then(() => {
+        updateHorizonAndSky();
+        positionSet.value = true;
+      });
     }, 50);
   });
 });
@@ -1025,6 +1028,7 @@ video {
 }
 
 .jl_debug {
+  display: none;
   outline: 3px solid red !important;
   background-color: teal;
 }
