@@ -28,9 +28,9 @@
           <icon-button v-model="showTextSheet" fa-icon="book-open" :color="buttonColor"
             :tooltip-text="showTextSheet ? 'Hide Info' : 'Learn More'" tooltip-location="start">
           </icon-button>
-          <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
+          <!-- <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
-          </icon-button>
+          </icon-button> -->
           
           
           <div id="controls" class="control-icon-wrapper">
