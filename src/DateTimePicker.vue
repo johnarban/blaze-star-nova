@@ -170,7 +170,7 @@ type Unit = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
 const limits = computed(() => ({
   year: { min: 1, max: Infinity },
   month: { min: 1, max: 12 },
-  day: { min: 1, max: () => _daysInMonth(month.value, year.value) },
+  day: { min: 1, max: _daysInMonth(month.value, year.value) },
   hour: { min: 0, max: 23 },
   minute: { min: 0, max: 59 },
   second: { min: 0, max: 59 },
@@ -180,7 +180,7 @@ const units: Unit[] = ['second', 'minute', 'hour', 'day', 'month', 'year'];
 
 function changeValue(unit: Unit, increment: boolean) {
   // recursive logic help courtesy of chatgpt :)
-  const limit = typeof limits.value[unit].max === 'function' ? limits.value[unit].max() : limits.value[unit].max;
+  const limit = limits.value[unit].max;
   const min = limits.value[unit].min;
 
   if (increment) {
@@ -198,7 +198,7 @@ function changeValue(unit: Unit, increment: boolean) {
       const prevUnit = units[units.indexOf(unit) + 1];
       if (prevUnit) {
         changeValue(prevUnit, increment);
-        values[unit].value = typeof limits.value[unit].max === 'function' ? limits.value[unit].max() : limits.value[unit].max;
+        values[unit].value = limits.value[unit].max;
       }
     }
   }
