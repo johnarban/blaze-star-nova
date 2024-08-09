@@ -452,7 +452,10 @@ onMounted(() => {
       store.gotoRADecZoom({
         ...props.initialCameraParams,
         instant: true
-      }).then(() => positionSet.value = true);
+      }).then(() => {
+        updateHorizonAndSky();
+        positionSet.value = true;
+      });
     }, 50);
   });
 });
