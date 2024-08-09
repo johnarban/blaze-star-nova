@@ -554,8 +554,6 @@ function playPauseTour() {
 
 function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
-  console.log(`onTourPlayingChange: ${playing}`);
-  console.log(WWTControl.singleton);
   if (!playing) {
     clearCurrentTour();
     store.applySetting(["localHorizonMode", true]);
