@@ -22,7 +22,7 @@
             </p>
             <h4>How do I see this nova?</h4>
             <p>
-              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed, the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." This guide(TODO: link to the tour) explains how you can find Corona Borealis in your night sky.
+              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed, the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." <a href="#" onclick="return false;" @click="() => playTour()">This guide</a> explains how you can find Corona Borealis in your night sky.
             </p>
             <!-- <v-btn @click="$emit('toggle-blaze')">{{ `${showBlazeOverlay ? 'Hide' : 'Show'} T CrB label` }}</v-btn> -->
             <p>
@@ -34,19 +34,19 @@
             </p>
             <!-- <v-btn @click="$emit('toggle-alpha')">{{ `${showAlphaOverlay ? 'Hide' : 'Show'} alpha label` }}</v-btn> -->
             <h4>What causes a nova?</h4>
-            <v-row>
-              <v-col cols="7">
-                <p>
-                  Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The graviational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
-                </p>
-              </v-col>
-              <v-col cols="5">
-                <v-img
-                  src="https://www.nasa.gov/wp-content/uploads/2024/06/novacyg093500952-print.jpg"
-                ></v-img>
-                <p>TODO - this needs a caption with credit and alt text</p>
-              </v-col>
-            </v-row>
+            <p>
+              Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The graviational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
+            </p>
+            
+            <figure class="fig-right" style="width:40%;"> <!-- floats, the old magic, before flex-->
+              <v-img
+                src="https://www.nasa.gov/wp-content/uploads/2024/06/novacyg093500952-print.jpg"
+              ></v-img>
+              <figcaption>A red giant star and white dwarf orbit each other, similar to T Coronae Borealis, the Blaze Star. 
+                A disk of material is pulled off the red giant, into a disk, and then onto the white dwarf. <credit>(Credit: NASA / Goddard Space Flight Center)</credit>
+              </figcaption>
+            </figure>
+            
             <h4>How do we know this nova is getting ready to blow?</h4>
             <p>
               Luckily, novas only blow up the gas that has settled on the surface of the white dwarf, and NOT the white dwarf itself. This means that the white dwarf can pull a new round of gas from its companion star. In some nova systems, this cycle of collecting gas, going nova, collecting more gas, going nova again, happens at a repeatable timescale. For T CrB, this has happened roughly every 80 years. It last blew in 1946, and before that, it blew in 1866. Astronomers have observed changes in the star's overall brightness that suggest it is getting ready to go nova again soon!
@@ -123,8 +123,8 @@
 
 
 <script setup lang="ts">
-import { defineProps, defineEmits, withDefaults, defineModel, watch } from 'vue';
-import { ref } from 'vue';
+import { defineProps, defineEmits, withDefaults, defineModel, watch, ref } from 'vue';
+import { engineStore } from "@wwtelescope/engine-pinia";
 
 export interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -152,6 +152,12 @@ const { cssVars, accentColor, touchscreen } = props;
 const tab = ref(0);
 
 const showTextSheet = defineModel({default: true});
+
+const store = engineStore();
+
+function playTour() {
+  store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
+}
 
 watch(() => showTextSheet, (newVal) => {
   if (!newVal) {
@@ -239,5 +245,23 @@ watch(() => showTextSheet, (newVal) => {
   }
 }
 
+figure {
+  padding: 0.5em;
+  margin: 1em;
+  background-color: #151515;
+}
+
+.fig-right {
+  float: right;
+}
+
+.fig-left {
+  float: left;
+}
+
+figcaption {
+  font-size: 0.8em;
+  color: #ccc;
+}
 
 </style>
