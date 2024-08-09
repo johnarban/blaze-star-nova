@@ -28,9 +28,9 @@
           <icon-button v-model="showTextSheet" fa-icon="book-open" :color="buttonColor"
             :tooltip-text="showTextSheet ? 'Hide Info' : 'Learn More'" tooltip-location="start">
           </icon-button>
-          <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
+          <!-- <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
-          </icon-button>
+          </icon-button> -->
           
           
           <div id="controls" class="control-icon-wrapper">
@@ -204,7 +204,7 @@
               </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
-                <date-time-picker v-model="selectedDate">
+                <date-time-picker v-model="selectedDate" :editable-time="true">
                   <button class="dtp__button" @click="() => {playbackControl.pause(); set9pm(); goToTCrB()}" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); setMidnight(); goToTCrB()}" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); selectedDate = new Date(); goToTCrB()}" name="set-now" aria-label="Set time to Now">Now</button>
@@ -643,14 +643,12 @@ function logWWTState() {
 
 
 function set9pm() {
-  console.log("Setting time to 9pm");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(21, 0, 0, 0);
   selectedDate.value = time;
 }
 
 function setMidnight(){
-  console.log("Setting time to midnight");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(23, 59, 0, 0);
   selectedDate.value = time;
@@ -672,7 +670,6 @@ watch(showConstellations, (show) => {
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
-  console.log("selectedDate changed", date);
   store.setTime(date);
   updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);
@@ -833,11 +830,10 @@ p {
 }
 
 #center-buttons {
-  display: flex;
-  flex-direction: column;
-  flex-grow: .333;
-  gap: 10px;
-  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .map-container {
