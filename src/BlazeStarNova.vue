@@ -643,14 +643,12 @@ function logWWTState() {
 
 
 function set9pm() {
-  console.log("Setting time to 9pm");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(21, 0, 0, 0);
   selectedDate.value = time;
 }
 
 function setMidnight(){
-  console.log("Setting time to midnight");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(23, 59, 0, 0);
   selectedDate.value = time;
@@ -672,7 +670,6 @@ watch(showConstellations, (show) => {
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
-  console.log("selectedDate changed", date);
   store.setTime(date);
   updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);

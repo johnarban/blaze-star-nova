@@ -73,10 +73,6 @@ const parseValue = (value: string | number | CallableFunction) => {
 const minValue = ref(parseValue(props.min));
 const maxValue = ref(parseValue(props.max));
 const stepValue = ref(parseValue(props.step));
-console.log(value.value);
-console.log(minValue.value);
-console.log(maxValue.value);
-console.log(stepValue.value);
 
 function setValue(event: Event) {
   if (event.target) {
@@ -144,7 +140,6 @@ watch(input, (value) => {
 });
 
 watch(psuedoValue, (newValue, oldValue) => {
-  console.log('watching psuedoValue', newValue, oldValue);
   if (isValid.value) {
     value.value = psuedoValue.value;
     return;
