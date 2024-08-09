@@ -52,6 +52,10 @@
               label="Horizon" hide-details />
             <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
               label="Constellations" hide-details />
+            <v-checkbox :color="accentColor" v-model="showBlazeOverlay" @keyup.enter="showBlazeOverlay = !showBlazeOverlay"
+              label="Blaze Text" hide-details />
+            <v-checkbox :color="accentColor" v-model="showAlphaOverlay" @keyup.enter="showAlphaOverlay = !showAlphaOverlay"
+              label="Alpha Text" hide-details />
           </div>
         </div>
           
@@ -278,11 +282,15 @@ const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
 const showControls = ref(false);
 const showConstellations = ref(true);
+const showBlazeOverlay = ref(true);
+const showAlphaOverlay = ref(true);
 const crbBelowHorizon = ref(true);
 const _showDatePicker= ref(false);
 
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
-const newFrameRender = renderOneFrame.bind(WWTControl.singleton);
+const newFrameRender = function() { 
+  renderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
+}.bind(WWTControl.singleton);
 let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
@@ -373,9 +381,6 @@ onMounted(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     Grids._makeAltAzGridText = makeAltAzGridText;
-
-    const textOverlays = makeTextOverlays();
-    useCustomGlyphs(textOverlays);
 
     // We need to render one frame ahead of time
     // as there's a lot of setup done on the first frame
