@@ -4,14 +4,13 @@
         <div id="close-splash-button" @click="closeSplashScreen">&times;
         </div>
         <div id="splash-screen-text">
-          <p>Coming soon:</p> 
           <p class="highlight">Blaze Star Nova</p>
           <p>Learn where in the sky to watch for a "new" star!</p>
         </div>
         <div id="splash-screen-acknowledgements" class="small">
-          This Data Story is brought to you by <a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
+          <span>This Data Story is brought to you by <a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
             rel="noopener noreferrer">Cosmic Data Stories</a> and <a href="https://www.worldwidetelescope.org/home/"
-            target="_blank" rel="noopener noreferrer">WorldWide Telescope</a>.
+            target="_blank" rel="noopener noreferrer">WorldWide Telescope</a>.</span>
 
           <div id="splash-screen-logos">
             <credit-logos logo-size="5vmin" />
@@ -64,15 +63,23 @@ p.highlight {
     color: var(--accent-color);
     text-transform: uppercase;
     font-weight: bolder;
+    filter: drop-shadow(0 0 0.1rem black);
 
     @media (max-width: 750px) {
       font-weight: bold;
     }
 }
 
+p:not(.highlight) {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+}
 #splash-screen {
-  color: #FFFFFF;
+  color: black;
   background-color: #000000;
+  background-image: url('https://www.nasa.gov/wp-content/uploads/2024/06/novacyg093500952-print.jpg');
+  background-position: 80% bottom;
+
   display: flex;
   flex-direction: column;
   // flex-wrap: wrap;
@@ -107,6 +114,11 @@ p.highlight {
     font-size: var(--default-font-size);
     font-weight: bold;
     margin-top: 1rem;
+  }
+  
+  #splash-screen-acknowledgements > span {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
   }
 
   #splash-screen-logos {
