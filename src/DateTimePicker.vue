@@ -36,17 +36,23 @@
       <!-- </div> -->
 
       <!-- <span class="dtp__time-string"> -->
-      <span id="dtp__year" class="dtp__grid-item dtp__time_part">{{ year }}</span>
+      <!-- <span id="dtp__year" class="dtp__grid-item dtp__time_part">{{ year }}</span> -->
+      <tap-to-input :editable="props.editableTime" id="dtp__year" class="dtp__grid-item dtp__time_part" :min="limits.year.min" :max="limits.year.max" v-model="year" />
       <span>-</span>
-      <span id="dtp__month" class="dtp__grid-item dtp__time_part">{{ pad2(month) }}</span>
+      <!-- <span id="dtp__month" class="dtp__grid-item dtp__time_part">{{ pad2(month) }}</span> -->
+      <tap-to-input :editable="props.editableTime" id="dtp__month" class="dtp__grid-item dtp__time_part" :min="limits.month.min" :max="limits.month.max" pad2 v-model="month" />
       <span>-</span>
-      <span id="dtp__day" class="dtp__grid-item dtp__time_part">{{ pad2(day) }}</span> 
+      <!-- <span id="dtp__day" class="dtp__grid-item dtp__time_part">{{ pad2(day) }}</span>  -->
+      <tap-to-input :editable="props.editableTime" id="dtp__day" class="dtp__grid-item dtp__time_part" :min="limits.day.min" :max="limits.day.max" pad2 v-model="day" />
       <span class="dtp__middle-slot"><slot name="center-middle"></slot></span>
-      <span id="dtp__hour" class="dtp__grid-item dtp__time_part">{{ pad2(displayHour) }}</span>
+      <!-- <span id="dtp__hour" class="dtp__grid-item dtp__time_part">{{ pad2(displayHour) }}</span> -->
+      <tap-to-input :editable="props.editableTime" id="dtp__hour" class="dtp__grid-item dtp__time_part" :min="limits.hour.min" :max="limits.hour.max" pad2 v-model="displayHour" />
       <span>:</span>
-      <span id="dtp__minute" class="dtp__grid-item dtp__time_part">{{ pad2(minute) }}</span>
+      <!-- <span id="dtp__minute" class="dtp__grid-item dtp__time_part">{{ pad2(minute) }}</span> -->
+      <tap-to-input :editable="props.editableTime" id="dtp__minute" class="dtp__grid-item dtp__time_part" :min="limits.minute.min" :max="limits.minute.max" pad2 v-model="minute" />
       <span>:</span>
-      <span id="dtp__second" class="dtp__grid-item dtp__time_part">{{ pad2(second) }}</span>
+      <!-- <span id="dtp__second" class="dtp__grid-item dtp__time_part">{{ pad2(second) }}</span> -->
+      <tap-to-input :editable="props.editableTime" id="dtp__second" class="dtp__grid-item dtp__time_part" :min="limits.second.min" :max="limits.second.max" pad2 v-model="second" />
       <!-- </span> -->
 
       <button id="dtp__year-up" class="dtp__grid-item" @click="decrement('year')">
@@ -105,16 +111,19 @@
 
 <script setup lang="ts">
 import { ref, watch, computed, withDefaults } from 'vue';
+import TapToInput from './TapToInput.vue';
 
 
 export interface Props {
   debug?: boolean;
   useAmpm?: boolean;
+  editableTime?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   debug: false,
   useAmpm: true,
+  editableTime: true,
 });
 
 
@@ -127,7 +136,7 @@ const hour = ref(date.value.getHours());
 const minute = ref(date.value.getMinutes());
 const second = ref(date.value.getSeconds());
 
-const ampm = ref(hour.value >= 12);
+// const ampm = ref(hour.value >= 12);
 
 
 const isAm = computed({
@@ -145,7 +154,7 @@ const isAm = computed({
   }
 });
 
-watch(ampm, (value) => { isAm.value = value;});
+// watch(ampm, (value) => { isAm.value = value;});
 
 const values = {
   year: year,
@@ -195,12 +204,29 @@ function changeValue(unit: Unit, increment: boolean) {
   }
 }
 
-const displayHour = computed(() => {
-  if (props.useAmpm) {
-    const h = hour.value % 12;
-    return h === 0 ? 12 : h;
-  } else {
-    return hour.value;
+const displayHour = computed({
+  get() {
+    if (props.useAmpm) {
+      const h = hour.value % 12;
+      return h === 0 ? 12 : h;
+    } else {
+      return hour.value;
+    }
+  },
+  set(value: number) {
+    if (props.useAmpm) {
+      if (value > 12 && value < 24) {
+        hour.value = value;
+        return;
+      }
+      if (isAm.value) {
+        hour.value = value;
+      } else {
+        hour.value = value + 12;
+      }
+    } else {
+      hour.value = value;
+    }
   }
 });
 function increment(value: Unit) {
@@ -316,6 +342,7 @@ span.dtp__button-label {
 
 .dtp__ampm-button {
   background-color: #444;
+  color: #ccc;
   padding: 0;
   align-self: center;
   font-size: .9em;
@@ -339,6 +366,27 @@ span.dtp__button-label {
 
 .dtp__ampm-active {
   color: var(--accent-color);
+}
+
+/* Chrome, Safari, Edge, Opera */
+.dtp__container input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.dtp__container  input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input#dtp__year {
+  width: 4ch;
+}
+
+input.dtp__time_part {
+  width: 2.5ch;
 }
 
 </style>
