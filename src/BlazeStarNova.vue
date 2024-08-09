@@ -53,9 +53,9 @@
             <v-checkbox :color="accentColor" v-model="showConstellations" @keyup.enter="showConstellations = !showConstellations"
               label="Constellations" hide-details />
             <v-checkbox :color="accentColor" v-model="showBlazeOverlay" @keyup.enter="showBlazeOverlay = !showBlazeOverlay"
-              label="Blaze Text" hide-details />
+              label="Blaze Star Location" hide-details />
             <v-checkbox :color="accentColor" v-model="showAlphaOverlay" @keyup.enter="showAlphaOverlay = !showAlphaOverlay"
-              label="Alpha Text" hide-details />
+              label="Alphecca Location" hide-details />
           </div>
         </div>
           
