@@ -1,9 +1,4 @@
 <template>
-  <v-card 
-    class="td__card"
-    width="fit-content"
-    rounded="lg"
-    >
     <div class="td__container">
       <div class="td__time">
         <span class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
@@ -11,8 +6,7 @@
       <div class="td__date">
         <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
       </div>
-    </div>
-  </v-card>    
+    </div>  
 </template>
 
 
@@ -65,7 +59,7 @@ const ampm = computed(() => {
 
 .td__time_time {
   font-size: 1em;
-  color: white;
+  color: currentColor;
   text-align: center;
   text-wrap: nowrap;
   width: fit-content;
@@ -77,7 +71,7 @@ const ampm = computed(() => {
 
 .td__date_date {
   font-size: 0.75em;
-  color: white;
+  color: currentColor;
   text-align: center;
   text-wrap: nowrap;
   width: fit-content;

@@ -31,13 +31,7 @@
           <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
           </icon-button>
-          <icon-button
-            @activate="() => playPauseTour()"
-            :fa-icon="isTourPlaying ? 'stop' : 'play'"
-            :color="buttonColor"
-            :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
-            tooltip-location="start">
-          </icon-button>
+          
           
           <div id="controls" class="control-icon-wrapper">
           <div id="controls-top-row">
@@ -131,14 +125,28 @@
        <div id="empty-space">
        </div>
        <div id="playback-controls">
-        
-          <icon-button 
-            :fa-icon="timePlaying ? 'pause' : 'play'"
-            :color="buttonColor" 
-            tooltip-text="Play"
-            tooltip-location="start" 
-            @activate="()=>{playbackControl.togglePlay()}" 
-            />
+            
+            <icon-button
+            @activate="() => playPauseTour()"
+            :fa-icon="isTourPlaying ? 'stop' : 'play'"
+            :color="buttonColor"
+            :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
+            tooltip-location="start">
+              <template #button>
+                <span class="jl_icon_button_text">Show me how to find the Nova!</span>
+              </template>
+          </icon-button>
+          <!-- icon button to go to TCrB -->
+          <icon-button
+            @activate="() => goToTCrB()"
+            :fa-icon="'star'"
+            :color="buttonColor"
+            :tooltip-text="'Go to T CrB'"
+            tooltip-location="start">
+              <template #button>
+                <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
+              </template>
+          </icon-button>
           
           <!-- reset time to now button -->
            <button 
@@ -163,6 +171,16 @@
       <div id="bottom-content">
         <credit-logos style="margin:1em;" logo-size="25px"/>
         
+        <div style="flex-grow:1;"></div>
+        
+        <icon-button 
+          :fa-icon="timePlaying ? 'pause' : 'play'"
+          :color="buttonColor" 
+          tooltip-text="Let time move forward"
+          tooltip-location="start" 
+          @activate="()=>{playbackControl.togglePlay()}" 
+          style="align-self: center;"
+        />
         <div id="date-picker">
             <v-overlay 
             activator="parent"
@@ -174,12 +192,22 @@
             >
             <template #activator="{props}">
               <!-- any props added are passed directly to v-card -->
-              <time-display v-bind="props" :date="selectedDate" ampm elevation="5" />
+              <v-card 
+                v-bind="props"
+                class="td__card"
+                width="fit-content"
+                rounded="lg"
+                elevation="5"
+                >
+                <time-display :date="selectedDate" ampm />
+                <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
+              </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
                 <date-time-picker v-model="selectedDate">
-                  <button class="dtp__button" @click="set9pm" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
-                  <button class="dtp__button" @click="setMidnight" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); set9pm(); goToTCrB()}" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); setMidnight(); goToTCrB()}" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
+                  <button class="dtp__button" @click="() => {playbackControl.pause(); selectedDate = new Date(); goToTCrB()}" name="set-now" aria-label="Set time to Now">Now</button>
                 </date-time-picker>
               </v-card>
             </v-overlay>
@@ -324,9 +352,19 @@ function getWWTLocation(): LocationRad {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const blazeStarLocation: EquatorialRad = {
-  raRad: (15 + 59 / 60 + 30.1622 / 3600) * (12 / Math.PI),
+  raRad: (15 + 59 / 60 + 30.1622 / 3600) * 15 * D2R,
   decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
 };
+
+
+function goToTCrB(instant=false) {
+  store.gotoRADecZoom({
+    raRad: blazeStarLocation.raRad,
+    decRad: blazeStarLocation.decRad,
+    zoomDeg: 180,
+    instant: instant,
+  });
+}
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
   // get's today's date and 
@@ -405,7 +443,7 @@ onMounted(() => {
         updateCrbBelowHorizon(store.currentTime);
         throttledUpdateDate(new Date(store.currentTime));
       }
-    }, 100);
+    }, 10);
 
     // We want to make sure that the location change happens AFTER
     // the camera reposition caused by local horizon mode.
@@ -842,13 +880,19 @@ p {
   flex-grow: 0;
   height: fit-content;
   pointer-events: none;
-  align-items: flex-end;
+  align-items: center;
   gap: 5px;
 }
 
+#logo-credits {
+  align-self: flex-end;
+}
 #date-picker {
   margin: 1rem;
   pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 #controls {
@@ -975,6 +1019,12 @@ video {
   background-color: black;
 }
 
+.jl_icon_button_text {
+  font-size : 1.15em; 
+  padding-inline: 1em; 
+  max-width: 20ch; text-align: center;
+}
+
 .jl_debug {
   outline: 3px solid red !important;
   background-color: teal;
@@ -988,5 +1038,17 @@ video {
   padding: 4px;
   margin: 4px;
   cursor: pointer;
+}
+
+.td__card {
+  border: 1px solid var(--accent-color);
+  text-align: right;
+  position: relative;
+}
+
+.td__icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
 }
 </style>
