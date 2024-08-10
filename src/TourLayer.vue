@@ -43,14 +43,14 @@
 
 .star_marker {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  background-color: yellow;
+  width: 15px;
+  height: 15px;
+  background-color: rgb(255, 0, 251);
   border: none;
   border-radius: 50%;
   z-index: 1;
   pointer-events: none;
-  outline: 1px solid white;
+  /* outline: 1px solid white; */
 }
 
 .star_marker:hover {
@@ -96,14 +96,31 @@ import { ref, watch } from 'vue';
 import { engineStore } from "@wwtelescope/engine-pinia";
 type WWTEngineStore = ReturnType<typeof engineStore>;
   
-type Equatorial = { ra: number; dec: number };
+export interface Equatorial { 
+  ra: number; 
+  dec: number, 
+}
+
+export interface Star extends Equatorial {
+  bv?: number, 
+  color?: string, 
+  logT?: number,
+  mag?: number,
+}
+
 type Screen = { x: number; y: number };
+
+import { getStarColor, magToRadius } from './star_colors';
 
 // create Marker type that extends HTMLElement with the dataset property
 interface Marker extends HTMLDivElement {
   dataset: {
     ra: string;
     dec: string;
+    mag: string;
+    bv: string;
+    color: string;
+    logT: string;
   };
 }
   
@@ -139,7 +156,7 @@ function getMarkerLayer() {
   return document.getElementById("marker-layer");
 }
 
-function createMarker(loc: Equatorial, class_name='') {
+function createMarker(loc: Equatorial | Star, class_name='') {
   const screen = worldToScreen(loc);
   const marker = document.createElement("div");
   marker.className = "marker";
@@ -152,6 +169,28 @@ function createMarker(loc: Equatorial, class_name='') {
   // add equatorial coordinates to marker
   marker.dataset.ra = loc.ra.toString();
   marker.dataset.dec = loc.dec.toString();
+  // add bv to marker
+  if ('bv' in loc) {
+    marker.dataset.bv = `${loc.bv}`;
+  }
+  if ('color' in loc) {
+    marker.dataset.color = loc.color;
+    // set backgroundColor to loc.color
+    if (loc.color) {
+      marker.style.backgroundColor = loc.color;
+    }
+  }
+  if ('mag' in loc) {
+    marker.dataset.mag = `${loc.mag}`;
+    if (loc.mag) {
+      const mag = parseFloat(`${loc.mag}`);
+      const radius = magToRadius(mag);
+      marker.style.width = `${radius}px`;
+      marker.style.height = `${radius}px`;
+    }
+  }
+  
+  
   return marker as Marker;
 }
 
@@ -179,6 +218,9 @@ function addMarkersTo(markers: Marker[], el: HTMLElement) {
   });
 }
 
+function removeMarker(marker: Marker) {
+  marker.remove();
+}
 
 function updateMarker(marker: Marker) {
   const ra = parseFloat(marker.dataset.ra);
@@ -187,11 +229,14 @@ function updateMarker(marker: Marker) {
   marker.style.left = `${screen.x}px`;
   marker.style.top = `${screen.y}px`;
 }
+
 function updateMarkers() {
 
   markers.value.forEach((marker) => {
+    // eslint-disable-next-line no-constant-condition
     if (!isMarkerOnScreen(marker)) {
       marker.style.display = "none";
+      // removeMarker(marker);
     } else {
       marker.style.display = "block";
       updateMarker(marker);
@@ -203,14 +248,17 @@ function updateMarkers() {
 // functin to convert world coordinates to screen coordinates
 const worldToScreen = (world: Equatorial) => {
   // convert world coordinates to coordinates in radians
-  return store.findScreenPointForRADec(world);
+  const point =  store.findScreenPointForRADec(world);
+  return {
+    x: point.x - 10,
+    y: point.y - 10,
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const screenToWorld = (screen: Screen) => {
   return store.findRADecForScreenPoint(screen);
 };
-
 
 
 store.waitForReady().then(() => {
@@ -239,7 +287,6 @@ function loadStarData() {
   fetch(starJson)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       return data['features'];
     })
     .then((features) => {
@@ -248,10 +295,14 @@ function loadStarData() {
         if (feature.properties.mag > 4) {
           return;
         }
-        const ra = feature.geometry.coordinates[0];
-        const dec = feature.geometry.coordinates[1];
-        // console.log(ra, dec);
-        const star = createMarker({ ra, dec }, 'star_marker');
+        const data = {
+          ra: feature.geometry.coordinates[0],
+          dec: feature.geometry.coordinates[1],
+          bv: feature.properties.bv,
+          color: getStarColor(parseFloat(feature.properties.bv)),
+          mag: feature.properties.mag,
+        } as Star;
+        const star = createMarker(data, 'star_marker');
         markers.value.push(star);
       });
       starDataLoaded.value = true;

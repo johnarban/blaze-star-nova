@@ -428,6 +428,8 @@ onMounted(() => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    // store.setBackgroundImageByName("Digitized Sky Survey (Color)");
+    store.setBackgroundImageByName("SDSS: Sloan Digital Sky Survey (Optical) [DR7]");
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
