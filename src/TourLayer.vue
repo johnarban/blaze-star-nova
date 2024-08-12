@@ -39,6 +39,7 @@
   border-radius: 50%;
   border: 2px solid red;
   z-index: 1;
+  transform: translate(-50%, -50%);
 }
 
 .star_marker {
@@ -248,11 +249,7 @@ function updateMarkers() {
 // functin to convert world coordinates to screen coordinates
 const worldToScreen = (world: Equatorial) => {
   // convert world coordinates to coordinates in radians
-  const point =  store.findScreenPointForRADec(world);
-  return {
-    x: point.x - 10,
-    y: point.y - 10,
-  };
+  return  store.findScreenPointForRADec(world);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
