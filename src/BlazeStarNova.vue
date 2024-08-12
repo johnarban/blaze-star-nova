@@ -102,7 +102,7 @@
           >
             Corona Borealis is Set
           </v-chip>
-          <div class="d-flex flex-row align-flex-end ga-1">
+          <div class="d-flex flex-row ga-1" style="align-items: flex-end;">
           <v-select
             style="width: 200px;"
             v-model="selectedBackgroundImage"
