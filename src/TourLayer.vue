@@ -4,7 +4,6 @@
     <div id="marker-layer"></div>
     <button class="tour-layer-button button1" @click="updateMarkers">Update Markers</button>
     <button class="tour-layer-button button2" @click="loadStarData">Load Stars</button>
-        
   </div>
   
 </template>
@@ -50,12 +49,13 @@
   border: none;
   border-radius: 50%;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
   /* outline: 1px solid white; */
 }
 
 .star_marker:hover {
   background-color: red;
+  outline: 5px solid red;
 }
 
 .star_marker::before {
@@ -76,6 +76,7 @@
   border-radius: 10px;
   color: black;
   pointer-events: auto;
+  z-index: 2;
 }
 
 .button1 {
@@ -289,7 +290,7 @@ function loadStarData() {
     .then((features) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       features.forEach((feature: any) => {
-        if (feature.properties.mag > 4) {
+        if (feature.properties.mag > 6) {
           return;
         }
         const data = {

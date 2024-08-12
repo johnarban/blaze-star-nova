@@ -60,13 +60,6 @@ const starBvMap = new Map<number, number>(
 
 // function binary search, for reverse ordered array
 function binarySearchReverse(arr: number[], x: number): number {
-  if (x < arr[arr.length - 1]) {
-    return arr.length - 2;
-  }
-  if (x > arr[0]) {
-    return 0;
-  }
-  
   let low = 0;
   let high = arr.length - 1;
   while (low < high) {
@@ -82,11 +75,7 @@ function binarySearchReverse(arr: number[], x: number): number {
 
 
 // lerp
-function lerp(x: number, x0, y0, x1, y1): number {
-  if (y0 === y1) {
-    return y0;
-  }
-  
+function lerp(x: number, x0: number, y0: number, x1: number, y1: number): number {
   if (x1 === x0) {
     return (y0 + y1) / 2;
   }
@@ -96,16 +85,35 @@ function lerp(x: number, x0, y0, x1, y1): number {
 // get color of star from B-V
 export function getStarColor(bv: number): string {
   const exactIndex = starBvMap.get(bv);
+  let r = 0;
+  let g = 0;
+  let b = 0;
   let i = 0;
   if (exactIndex !== undefined) {
     i = exactIndex;
+    r = starR[i];
+    g = starG[i];
+    b = starB[i];
+  } else if (bv >= starBV[0]) {
+    r = starR[0];
+    g = starG[0];
+    b = starB[0];
+  } else if (bv <= starBV[starBV.length - 1]) {
+    i = starBV.length - 1;
+    r = starR[i];
+    g = starG[i];
+    b = starB[i];
   } else {
     i = binarySearchReverse(starBV, bv);
+    r = Math.round(lerp(bv, starBV[i], starR[i], starBV[i + 1], starR[i + 1]));
+    g = Math.round(lerp(bv, starBV[i], starG[i], starBV[i + 1], starG[i + 1]));
+    b = Math.round(lerp(bv, starBV[i], starB[i], starBV[i + 1], starB[i + 1]));
   }
 
-  const r = Math.round(lerp(bv, starBV[i], starR[i], starBV[i + 1], starR[i + 1]));
-  const g = Math.round(lerp(bv, starBV[i], starG[i], starBV[i + 1], starG[i + 1]));
-  const b = Math.round(lerp(bv, starBV[i], starB[i], starBV[i + 1], starB[i + 1]));
+  // check if nan if so log out the values
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    console.log(bv, r, g, b);
+  }
   return 'rgb(' + r + ',' + g + ',' + b + ')';
 }
 
@@ -118,7 +126,7 @@ function _fluxScale(mag: number): number {
 }
 
 function sigmoidScale(x, x0, xmin, max = 25, min = 5, steepness = 1): number {
-  const xmax = -1.33;
+  const xmax = -1.33; // magnitude of Sirus, the brightest star
   const g = 1 + Math.exp((xmax - x0) / steepness);
   const g2 = 1 + Math.exp((xmin - x0) / steepness);
   const c = (max - min) / ( (1 / g) - (1 / g2) );
