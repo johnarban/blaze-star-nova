@@ -243,6 +243,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": "npm:^6.5.1"
     "@fortawesome/vue-fontawesome": "npm:^3.0.5"
     "@mdi/font": "npm:^7.4.47"
+    "@types/tz-lookup": "npm:^6.1.2"
     "@typescript-eslint/eslint-plugin": "npm:^6.19.0"
     "@typescript-eslint/parser": "npm:^6.19.0"
     "@typescript-eslint/typescript-estree": "npm:^6.19.0"
@@ -253,12 +254,14 @@ __metadata:
     "@vue/eslint-config-typescript": "npm:^12.0.0"
     "@vuepic/vue-datepicker": "npm:^9.0.1"
     "@wwtelescope/engine-pinia": "npm:^0.9.0"
+    date-fns-tz: "npm:^3.1.3"
     eslint: "npm:^8.56.0"
     eslint-plugin-vue: "npm:^9.20.1"
     less: "npm:^4.2.0"
     less-loader: "npm:^12.0.0"
     pinia: "npm:^2.1.7"
     typescript: "npm:^5.3.3"
+    tz-lookup: "npm:^6.1.25"
     vue: "npm:^3.4.15"
     vuetify: "npm:^3.4.11"
     webpack: "npm:^5.89.0"
@@ -862,6 +865,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: b20b7820ee813f22de4f2ce98bdd12c68c930e016a8912b1ed967595ac0d8a4cbbff44f4d486dd97f77f5927e7b5725bdac7472c9ec5b27f53a5a13179f0612f
+  languageName: node
+  linkType: hard
+
+"@types/tz-lookup@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "@types/tz-lookup@npm:6.1.2"
+  checksum: 73d19d2798b95eac13f4e717dd153a399478a66f87a7c7d6886b4b15a9de3a6ee3cade64dc7c551f7f81500d3933fd173546cce5bb9a4ff0bd635df8f61bec9a
   languageName: node
   linkType: hard
 
@@ -2730,6 +2740,15 @@ __metadata:
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 80c089d6f7e0c5b2bd83cf0539ab41474198579584fa10d86d0cafe0642202343cbc119e076a0b1aece191989477081415d66c9fefbf3c957fc2fc4b7009f248
+  languageName: node
+  linkType: hard
+
+"date-fns-tz@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "date-fns-tz@npm:3.1.3"
+  peerDependencies:
+    date-fns: ^3.0.0
+  checksum: dcedf178a96632a798966cf5a881441aefc451cc308336a98919e49c2df8eff7a302d19b9d3903c50838dd0912533f862f0bfb9429e8c28c1c3ce5da19ccb64e
   languageName: node
   linkType: hard
 
@@ -7570,6 +7589,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10dd9881baba22763de859e8050d6cb6e2db854197495c6f1929b08d1eb2b2b00d0b5d9b0bcee8472f1c3f4a7ef6a5d7ebe0cfd703f853aa5ae465b8404bc1ba
+  languageName: node
+  linkType: hard
+
+"tz-lookup@npm:^6.1.25":
+  version: 6.1.25
+  resolution: "tz-lookup@npm:6.1.25"
+  checksum: eeeab1171972ac36fa0ec25b441d513e114e43066a96b1b449534be7c33a2236665e7e0befcc94d7a676dec47503e17b9dead94a8bce7f49014a192cee7e4511
   languageName: node
   linkType: hard
 

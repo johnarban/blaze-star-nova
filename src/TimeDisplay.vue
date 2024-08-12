@@ -6,7 +6,10 @@
       <div class="td__date">
         <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
       </div>
-    </div>  
+      <div class="td__timezone" v-if="props.showTimezone">
+        <span class="td__timezone_tz">{{ props.timezone }}</span>
+      </div>
+   </div>  
 </template>
 
 
@@ -16,10 +19,15 @@ import { computed, defineProps } from 'vue';
 
 const props = defineProps({
   date: { type: Date, required: true },
-  ampm: { type: Boolean, default: false }
+  ampm: { type: Boolean, default: false },
+  showTimezone: { type: Boolean, default: false, required: false },
+  timezone: { 
+    type: String, 
+    default: Intl.DateTimeFormat().resolvedOptions().timeZone, 
+    required: false 
+  },
 }
 );
-
 
 function pad(number: number, length: number = 2): string {
   return String(number).padStart(length, '0');
@@ -51,6 +59,7 @@ const ampm = computed(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: currentColor;
 }
 
 .td__time {
@@ -59,7 +68,7 @@ const ampm = computed(() => {
 
 .td__time_time {
   font-size: 1em;
-  color: currentColor;
+  color: inherit;
   text-align: center;
   text-wrap: nowrap;
   width: fit-content;
@@ -71,7 +80,19 @@ const ampm = computed(() => {
 
 .td__date_date {
   font-size: 0.75em;
-  color: currentColor;
+  color: inherit;
+  text-align: center;
+  text-wrap: nowrap;
+  width: fit-content;
+}
+
+.td__timezone {
+  width: max-content;
+}
+
+.td__timezone_tz {
+  font-size: 0.75em;
+  color: inherit;
   text-align: center;
   text-wrap: nowrap;
   width: fit-content;

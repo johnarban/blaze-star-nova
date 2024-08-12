@@ -199,12 +199,12 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="selectedDate" ampm />
+                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
-                <date-time-picker v-model="selectedDate" :editable-time="true">
+                <date-time-picker v-model="localSelectedDate" :editable-time="true">
                   <button class="dtp__button" @click="() => {playbackControl.pause(); set9pm(); goToTCrB()}" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); setMidnight(); goToTCrB()}" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); selectedDate = new Date(); goToTCrB()}" name="set-now" aria-label="Set time to Now">Now</button>
@@ -264,6 +264,7 @@ import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
+import { useTimezone } from "./timezones";
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -388,7 +389,29 @@ const selectedLocation = ref<LocationDeg>({
   latitudeDeg: 42.3581,
 });
 
+// useTimezone also provides selectedTimezone and browserTimezone
+const { shortTimezone, selectedTimezoneOffset, browserTimezoneOffset} = useTimezone(selectedLocation);
 
+
+// faking localization because
+// <date-time-picker> and <time-display> are not timezone aware
+const localSelectedDate = computed({
+  // if you console log this date it will still say the local timezone 
+  // as determined by the browser Intl.DateTimeFormat().resolvedOptions().timeZone
+  // but we have manually offset it so the hours are correct for the selected timezone
+  get: () => {
+    const time = selectedDate.value.getTime();
+    const fakeUTC = time + browserTimezoneOffset;
+    return new Date(fakeUTC + selectedTimezoneOffset.value);
+  },
+  set: (value: Date) => {
+    // get local time
+    const time = value.getTime();
+    // undo fake localization
+    const newTime = time - selectedTimezoneOffset.value - browserTimezoneOffset;
+    selectedDate.value = new Date(newTime);
+  }
+});
 
 
 function setWWTLocation(location: LocationDeg) {
