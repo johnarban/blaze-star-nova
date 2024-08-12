@@ -102,6 +102,53 @@
           >
             Corona Borealis is Set
           </v-chip>
+          <div class="d-flex flex-row align-flex-end ga-1">
+          <v-select
+            style="width: 200px;"
+            v-model="selectedBackgroundImage"
+            :items="imagesetOptions"
+            item-title="text"
+            item-value="value"
+            variant="solo"
+            denisty="compact"
+            label="Select Background Image"
+            hide-details
+          />
+          <v-overlay
+            location-strategy="connected"
+            location="bottom end"
+            origin="top end"
+            :scrim="false"
+            :style="cssVars"
+            offset="5"
+          >
+            <template #activator="{props}">
+              <font-awesome-icon
+                v-bind="props"
+                icon="question-circle"
+                size="lg"
+                color="white"
+                tabindex="0"
+              />
+            </template>
+            <v-card style="width: 200px;">
+              <v-card-text v-if="selectedBackgroundImage == imagesetOptions[0].value">
+                The background image is an image created from the Tycho Bright Star Catalog.
+                Each star is shown with the color, and with brighter stars shown larger. 
+              </v-card-text>
+              <v-card-text v-else-if="selectedBackgroundImage == imagesetOptions[1].value">
+                The background image is an image created from the USNO Bright Star Catalog.
+                Each star is shown with the black and white, and with brighter stars shown larger.<br />
+                In this catalog, T CrB is shown with brightness it had the last time it went nova. 
+              </v-card-text>
+              <v-card-text v-else-if="selectedBackgroundImage == imagesetOptions[2].value">
+                The background image is from the Digitized Sky Survey.
+                This shows the real sky as seen from Earth, and was created
+                from photographic plates taken in the 1950s and 1960s.
+              </v-card-text>
+            </v-card>
+          </v-overlay>
+        </div>
           <button 
             class="icon-wrapper jl_icon-button jl_debug" 
             @click="() => updateHorizonAndSky()"
@@ -389,8 +436,15 @@ const selectedLocation = ref<LocationDeg>({
   latitudeDeg: 42.3581,
 });
 
-
-
+const imagesetOptions = [
+  {text: "Tycho", value: "Tycho (Synthetic, Optical)"},
+  {text: "USNO", value: "USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)"},
+  {text: "DSS", value: "Digitized Sky Survey (Color)"}, 
+];
+const selectedBackgroundImage = ref(imagesetOptions[0].value);
+watch(selectedBackgroundImage, (value) => {
+  store.setBackgroundImageByName(value);
+});
 
 function setWWTLocation(location: LocationDeg) {
   wwtSettings.set_locationLat(location.latitudeDeg);
