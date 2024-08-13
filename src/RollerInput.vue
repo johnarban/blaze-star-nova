@@ -47,10 +47,6 @@ const parseValue = (value: string | number) => {
 const minValue = ref(parseValue(props.min));
 const maxValue = ref(parseValue(props.max));
 const stepValue = ref(parseValue(props.step));
-console.log(value.value);
-console.log(minValue.value);
-console.log(maxValue.value);
-console.log(stepValue.value);
 
 function setValue(event: Event) {
   if (event.target) {

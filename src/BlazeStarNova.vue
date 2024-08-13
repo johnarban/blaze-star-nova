@@ -24,13 +24,13 @@
       <!-- This block contains the elements (e.g. icon buttons displayed at/near the top of the screen -->
 
       <div id="top-content">
-        <div id="left-buttons">
+        <div id="left-buttons" v-if="!isTourPlaying">
           <icon-button v-model="showTextSheet" fa-icon="book-open" :color="buttonColor"
             :tooltip-text="showTextSheet ? 'Hide Info' : 'Learn More'" tooltip-location="start">
           </icon-button>
-          <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
+          <!-- <icon-button v-model="showVideoSheet" fa-icon="video" :color="buttonColor" tooltip-text="Watch video"
             tooltip-location="start">
-          </icon-button>
+          </icon-button> -->
           
           
           <div id="controls" class="control-icon-wrapper">
@@ -133,11 +133,12 @@
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
             tooltip-location="start">
               <template #button>
-                <span class="jl_icon_button_text">Show me how to find the Nova!</span>
+                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
               </template>
           </icon-button>
           <!-- icon button to go to TCrB -->
           <icon-button
+            v-if="!isTourPlaying"
             @activate="() => goToTCrB()"
             :fa-icon="'star'"
             :color="buttonColor"
@@ -199,12 +200,12 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="selectedDate" ampm />
+                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
-                <date-time-picker v-model="selectedDate">
+                <date-time-picker v-model="localSelectedDate" :editable-time="true">
                   <button class="dtp__button" @click="() => {playbackControl.pause(); set9pm(); goToTCrB()}" name="set-9pm" aria-label="Set time to 9pm">9pm</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); setMidnight(); goToTCrB()}" name="set-midnight" aria-label="Set time to Midnight">Midnight</button>
                   <button class="dtp__button" @click="() => {playbackControl.pause(); selectedDate = new Date(); goToTCrB()}" name="set-now" aria-label="Set time to Now">Now</button>
@@ -264,6 +265,7 @@ import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
+import { useTimezone } from "./timezones";
 
 type SheetType = "text" | "video";
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -388,7 +390,29 @@ const selectedLocation = ref<LocationDeg>({
   latitudeDeg: 42.3581,
 });
 
+// useTimezone also provides selectedTimezone and browserTimezone
+const { shortTimezone, selectedTimezoneOffset, browserTimezoneOffset} = useTimezone(selectedLocation);
 
+
+// faking localization because
+// <date-time-picker> and <time-display> are not timezone aware
+const localSelectedDate = computed({
+  // if you console log this date it will still say the local timezone 
+  // as determined by the browser Intl.DateTimeFormat().resolvedOptions().timeZone
+  // but we have manually offset it so the hours are correct for the selected timezone
+  get: () => {
+    const time = selectedDate.value.getTime();
+    const fakeUTC = time + browserTimezoneOffset;
+    return new Date(fakeUTC + selectedTimezoneOffset.value);
+  },
+  set: (value: Date) => {
+    // get local time
+    const time = value.getTime();
+    // undo fake localization
+    const newTime = time - selectedTimezoneOffset.value - browserTimezoneOffset;
+    selectedDate.value = new Date(newTime);
+  }
+});
 
 
 function setWWTLocation(location: LocationDeg) {
@@ -599,6 +623,7 @@ function playPauseTour() {
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
+    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
   }
 }
 
@@ -615,6 +640,7 @@ function onTourPlayingChange(playing: boolean) {
       instant: true,
     });
     store.setTime(beforeTourTime);
+    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
     WWTControl.singleton.renderOneFrame();
 
     // Not a huge fan of this, but `nextTick` wasn't working
@@ -643,14 +669,12 @@ function logWWTState() {
 
 
 function set9pm() {
-  console.log("Setting time to 9pm");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(21, 0, 0, 0);
   selectedDate.value = time;
 }
 
 function setMidnight(){
-  console.log("Setting time to midnight");
   const time = new Date(selectedDate.value.getTime());
   time.setHours(23, 59, 0, 0);
   selectedDate.value = time;
@@ -672,7 +696,6 @@ watch(showConstellations, (show) => {
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
-  console.log("selectedDate changed", date);
   store.setTime(date);
   updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);
@@ -833,11 +856,10 @@ p {
 }
 
 #center-buttons {
-  display: flex;
-  flex-direction: column;
-  flex-grow: .333;
-  gap: 10px;
-  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .map-container {
@@ -857,7 +879,7 @@ p {
 #right-buttons {
   display: flex;
   flex-direction: column;
-  flex-grow: .333;
+  flex-grow: 1;
   gap: 10px;
   align-items: flex-end;
 }
