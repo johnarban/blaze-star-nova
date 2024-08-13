@@ -4,8 +4,6 @@ export interface LocationRad {
 }
 
 export interface HorizonSkyOptions {
-  location: LocationRad;
-  when?: Date;
   color?: string;
   opacity?: number;
 }

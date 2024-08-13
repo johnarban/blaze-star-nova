@@ -26,7 +26,7 @@ import {
   WWTControl,
 } from "@wwtelescope/engine";
 
-import { Annotation2 } from "./Annotation2";
+import { drawHorizon, drawSky } from "./horizon_sky";
 import { makeTextOverlays } from "./text";
 
 export function makeAltAzGridText() {
@@ -141,7 +141,10 @@ export function useCustomGlyphs(batch: Text3dBatch) {
   cache._webFile.send();
 }
 
-export function renderOneFrame(showBlazeOverlay=true, showAlphaOverlay=true) {
+export function renderOneFrame(showBlazeOverlay=true,
+                               showAlphaOverlay=true,
+                               showHorizon=true,
+                               showSky=true) {
   if (this.renderContext.get_backgroundImageset() != null) {
     this.renderType = this.renderContext.get_backgroundImageset().get_dataSetType();
   } else {
@@ -235,6 +238,9 @@ export function renderOneFrame(showBlazeOverlay=true, showAlphaOverlay=true) {
     this.uiController.render(this.renderContext);
   }
   else {
+    if (drawSky) {
+      drawSky(this.renderContext, { opacity: 0.95, color: "#4190ED" });
+    }
     Annotation.prepBatch(this.renderContext);
     for (const item of this._annotations) {
       item.draw(this.renderContext);
@@ -274,11 +280,9 @@ export function renderOneFrame(showBlazeOverlay=true, showAlphaOverlay=true) {
     this.alphaOverlay.draw(this.renderContext, 1, Color.fromArgb(255, 255, 255, 255));
   }
 
-  Annotation2.prepBatch(this.renderContext);
-  for (const item of Annotation2.annotations) {
-    item.draw(this.renderContext);
+  if (showHorizon) {
+    drawHorizon(this.renderContext, { opacity: 0.95, color: "#01362C" });
   }
-  Annotation2.drawBatch(this.renderContext);
 
   const worldSave = this.renderContext.get_world();
   const viewSave = this.renderContext.get_view();
