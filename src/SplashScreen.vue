@@ -7,7 +7,7 @@
           <p class="highlight">Blaze Star Nova</p>
           <p>Learn where in the sky to watch for a "new" star!</p>
         </div>
-        <div id="splash-screen-acknowledgements" class="small">
+        <div id="splash-screen-acknowledgements" class="splash-screen-small">
           <span>This Data Story is brought to you by <a href="https://www.cosmicds.cfa.harvard.edu/" target="_blank"
             rel="noopener noreferrer">Cosmic Data Stories</a> and <a href="https://www.worldwidetelescope.org/home/"
             target="_blank" rel="noopener noreferrer">WorldWide Telescope</a>.</span>
@@ -59,21 +59,6 @@ function closeSplashScreen() {
   justify-content: center;
 }
 
-p.highlight {
-    color: var(--accent-color);
-    text-transform: uppercase;
-    font-weight: bolder;
-    filter: drop-shadow(0 0 0.1rem black);
-
-    @media (max-width: 750px) {
-      font-weight: bold;
-    }
-}
-
-p:not(.highlight) {
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
-}
 #splash-screen {
   color: black;
   background-color: #000000;
@@ -109,8 +94,27 @@ p:not(.highlight) {
     margin-inline: 7%;
     text-align: center;
   }
+  
+  p.highlight {
+    color: var(--accent-color);
+    text-transform: uppercase;
+    font-weight: bolder;
+    text-shadow: 0 0 16px black;
+    filter: drop-shadow(0 0 5px black);
+    font-size: 1.2em;
 
-  .small {
+    @media (max-width: 750px) {
+      font-weight: bold;
+    }
+  }
+
+  p:not(.highlight) {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    margin: 1rem;
+  }
+
+  .splash-screen-small {
     font-size: var(--default-font-size);
     font-weight: bold;
     margin-top: 1rem;
