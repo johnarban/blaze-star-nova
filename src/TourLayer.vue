@@ -96,7 +96,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ref, watch } from 'vue';
 import { engineStore } from "@wwtelescope/engine-pinia";
+import { WWTControl} from "@wwtelescope/engine";
 type WWTEngineStore = ReturnType<typeof engineStore>;
+  
+import { findScreenPointForRADec3D } from "./wwt_3d_points";
   
 export interface Equatorial { 
   ra: number; 
@@ -110,7 +113,7 @@ export interface Star extends Equatorial {
   mag?: number,
 }
 
-type Screen = { x: number; y: number };
+type Screen = { x: number; y: number, z?: number };
 
 import { getStarColor, magToRadius } from './star_colors';
 
@@ -132,6 +135,8 @@ const props = defineProps<{
 }>();
 
 const store = props.store;
+const findScreenPointForRADec = findScreenPointForRADec3D.bind(WWTControl.singleton);
+
 const _D2R = Math.PI / 180;
 // const H2R = Math.PI / 12;
 
@@ -201,7 +206,9 @@ function isMarkerOnScreen(marker: Marker) {
     ra: parseFloat(marker.dataset.ra),
     dec: parseFloat(marker.dataset.dec),
   });
-  return screen.x >= 0 && screen.x <= window.innerWidth && screen.y >= 0 && screen.y <= window.innerHeight;
+  return (screen.x >= 0 && screen.x <= window.innerWidth && 
+          screen.y >= 0 && screen.y <= window.innerHeight &&
+          screen.z === 1);
 }
 
 function addMarkerTo(el: HTMLElement, marker: Marker) {
@@ -220,6 +227,7 @@ function addMarkersTo(markers: Marker[], el: HTMLElement) {
   });
 }
 
+/** Complete remove marker from DOM */
 function removeMarker(marker: Marker) {
   marker.remove();
 }
@@ -250,7 +258,9 @@ function updateMarkers() {
 // functin to convert world coordinates to screen coordinates
 const worldToScreen = (world: Equatorial) => {
   // convert world coordinates to coordinates in radians
-  return  store.findScreenPointForRADec(world);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const vec3 =  findScreenPointForRADec(world);
+  return vec3;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
