@@ -43,7 +43,7 @@
                 src="https://www.nasa.gov/wp-content/uploads/2024/06/novacyg093500952-print.jpg"
               ></v-img>
               <figcaption>A red giant star and white dwarf orbit each other, similar to T Coronae Borealis, the Blaze Star. 
-                A disk of material is pulled off the red giant, into a disk, and then onto the white dwarf. <credit>(Credit: NASA / Goddard Space Flight Center)</credit>
+                A disk of material is pulled off the red giant, into a disk, and then onto the white dwarf. <cite>(Credit: NASA / Goddard Space Flight Center)</cite>
               </figcaption>
             </figure>
             

@@ -134,6 +134,9 @@ function sigmoidScale(x, x0, xmin, max = 25, min = 5, steepness = 1): number {
   return c / (1 + Math.exp((x - x0) / steepness)) + b;
 }
 
-export function magToRadius(mag: number): number {
+export function magToRadius(mag: number | null | undefined): number | null {
+  if (mag === null || mag === undefined) {
+    return null;
+  }
   return sigmoidScale(mag, 4, 6, 25, 3, 1);
 }
