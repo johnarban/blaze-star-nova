@@ -238,7 +238,7 @@ export function renderOneFrame(showBlazeOverlay=true,
     this.uiController.render(this.renderContext);
   }
   else {
-    if (drawSky) {
+    if (showSky) {
       drawSky(this.renderContext, { opacity: 0.95, color: "#4190ED" });
     }
     Annotation.prepBatch(this.renderContext);
