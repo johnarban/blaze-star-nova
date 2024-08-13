@@ -254,14 +254,13 @@
 import { storeToRefs } from "pinia";
 import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
-import { Classification, SolarSystemObjects } from "@wwtelescope/engine-types";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 
 import {throttle} from './debounce';
 
-import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
-import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
+import { equatorialToHorizontal } from "./utils";
+import { EquatorialRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
@@ -323,24 +322,21 @@ const _showDatePicker= ref(false);
 const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.singleton);
 const boundRenderOneFrame = renderOneFrame.bind(WWTControl.singleton);
 const newFrameRender = function() { 
-  boundRenderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
+  boundRenderOneFrame(
+    showBlazeOverlay.value,
+    showAlphaOverlay.value,
+    showHorizon.value,
+    showHorizon.value
+  );
 };
 let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
 
-const sunPlace = new Place();
-sunPlace.set_names(["Sun"]);
-sunPlace.set_classification(Classification.solarSystem);
-sunPlace.set_target(SolarSystemObjects.sun);
-sunPlace.set_zoomLevel(20);
-
 const crbPlace = new Place();
 crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
 crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
-
-
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -442,7 +438,6 @@ onMounted(() => {
     store.applySetting(["altAzGridColor", Color.fromArgb(180, 133, 201, 254)]);
     store.applySetting(["showConstellationLabels", showConstellations.value]);
     store.applySetting(["showConstellationFigures", showConstellations.value]);
-    updateHorizonAndSky();
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -453,8 +448,6 @@ onMounted(() => {
     // render that we need to use
     WWTControl.singleton.renderOneFrame();
 
-    // Hack the engine to display our Annotation2 annotations
-    // which go in front of the planet layer
     // as well as our custom text overlays
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -463,7 +456,6 @@ onMounted(() => {
 
     setInterval(() => {
       if (timePlaying.value) {
-        updateHorizonAndSky(store.currentTime); 
         updateCrbBelowHorizon(store.currentTime);
         throttledUpdateDate(new Date(store.currentTime));
       }
@@ -477,7 +469,6 @@ onMounted(() => {
         ...props.initialCameraParams,
         instant: true
       }).then(() => {
-        updateHorizonAndSky();
         positionSet.value = true;
       });
     }, 50);
@@ -488,21 +479,6 @@ const ready = computed(() => layersLoaded.value && positionSet.value);
 
 /* `isLoading` is a bit redundant here, but it could potentially have independent logic */
 const isLoading = computed(() => !ready.value);
-
-function getSunPosition(when: Date | null): EquatorialRad & HorizontalRad {
-  const location = getWWTLocation();
-  const sunAltAz = equatorialToHorizontal(sunPlace.get_RA() * 15 * D2R,
-    sunPlace.get_dec() * D2R,
-    location.latitudeRad,
-    location.longitudeRad,
-    when ?? store.currentTime);
-
-  return {
-    raRad: sunPlace.get_RA() * 15 * D2R,
-    decRad: sunPlace.get_dec() * D2R,
-    ...sunAltAz
-  };
-}
 
 function getCrbAlt(when: Date | null = null) {
   const location = getWWTLocation();
@@ -577,38 +553,9 @@ function selectSheet(sheetType: SheetType | null) {
   }
 }
 
-function removeSky() {
-  store.clearAnnotations();
-}
-
-
-function updateHorizonAndSky(when: Date | null = null) {
-  try {
-    removeHorizon();
-    removeSky();
-  } finally {
-    const location = getWWTLocation();
-    if (showHorizon.value) {
-      const time = when ?? store.currentTime;
-      createHorizon({ location, opacity: 0.95, when: time });
-      const sunPosition = getSunPosition(time);
-      const opacity = skyOpacityForSunAlt(sunPosition.altRad);
-      store.setForegroundOpacity((1 - opacity) * 100);
-      createSky({ location, when: time, opacity });
-    }
-  }
-}
-
 function updateCrbBelowHorizon(when: Date | null = null) {
   const alt = getCrbAlt(when);
   crbBelowHorizon.value = alt <= 0;
-}
-
-function skyOpacityForSunAlt(sunAltRad: number) {
-  const civilTwilight = -6 * D2R;
-  const astronomicalTwilight = 3 * civilTwilight;
-  
-  return (1 + Math.atan(Math.PI * sunAltRad / (-astronomicalTwilight))) / 2;
 }
 
 function clearCurrentTour() {
@@ -642,9 +589,6 @@ function onTourPlayingChange(playing: boolean) {
     store.setTime(beforeTourTime);
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
     WWTControl.singleton.renderOneFrame();
-
-    // Not a huge fan of this, but `nextTick` wasn't working
-    setTimeout(updateHorizonAndSky, 100);
   }
 }
 
@@ -681,7 +625,6 @@ function setMidnight(){
 }
 
 
-watch(showHorizon, (_show) => updateHorizonAndSky());
 watch(isTourPlaying, onTourPlayingChange);
 
 watch(showAltAzGrid, (show) => {
@@ -697,14 +640,12 @@ watch(showConstellations, (show) => {
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
   store.setTime(date);
-  updateHorizonAndSky(date);
   updateCrbBelowHorizon(date);
   WWTControl.singleton.renderOneFrame();
 });
 
 watch(selectedLocation, (location: LocationDeg) => {
   setWWTLocation(location);
-  updateHorizonAndSky();
   updateCrbBelowHorizon();
   WWTControl.singleton.renderOneFrame();
 });

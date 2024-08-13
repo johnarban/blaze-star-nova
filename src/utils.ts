@@ -1,7 +1,5 @@
 import { D2R, R2D } from "@cosmicds/vue-toolkit";
-import { Poly, WWTControl } from "@wwtelescope/engine";
-import { Annotation2, Poly2 } from "./Annotation2";
-import { HorizonSkyOptions, HorizontalRad, EquatorialRad } from "./types";
+import { HorizontalRad, EquatorialRad } from "./types";
 
 // WWT does have all of this functionality built in
 // but it doesn't seem to be exposed
@@ -109,85 +107,3 @@ export function equatorialToHorizontal(raRad: number, decRad: number, latRad: nu
   return { altRad: altitude, azRad: azimuth };
 
 }
-
-export function createHorizon(options: HorizonSkyOptions): Poly[] {
-  const date = options.when || new Date();
-
-  // The initial coordinates are given in Alt/Az, then converted to RA/Dec
-  // Use N annotations to cover below the horizon
-  const n = 6;
-  const delta = 2 * Math.PI / n;
-  const color = options.color ?? "#01362C";
-  const opacity = options.opacity ?? 1;
-
-  const pieces: Poly[] = [];
-  for (let i = 0; i < n; i++) {
-    let points: [number, number][] = [
-      [0, i * delta],
-      [-Math.PI / 2, i * delta],
-      [0, (i + 1) * delta]
-    ];
-    points = points.map((point) => {
-      const raDec = horizontalToEquatorial(...point, options.location.latitudeRad, options.location.longitudeRad, date);
-      return [R2D * raDec.raRad, R2D * raDec.decRad];
-    });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const poly = new Poly2();
-    points.forEach(point => poly.addPoint(...point));
-    poly.set_lineColor(color);
-    poly.set_fill(true);
-    poly.set_fillColor(color);
-    poly.set_opacity(opacity);
-    poly.set_lineWidth(0); // This removes the seam that appears between the polygons when opacity < 1
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    Annotation2.addAnnotation(poly);
-    pieces.push(poly);
-  }
-
-  return pieces;
-}
-
-export function removeHorizon() {
-  Annotation2.clearAll();
-}
-
-export function createSky(options: HorizonSkyOptions): Poly[] {
-  const color = options.color ?? "#4190ED";
-  const date = options.when || new Date();
-  const opacity = options.opacity ?? 1;
-
-  // The initial coordinates are given in Alt/Az, then converted to RA/Dec
-  // Use N annotations to cover below the horizon
-  const n = 6;
-  const delta = 2 * Math.PI / n;
-  // const delta = 360/n;
-  
-  const pieces: Poly[] = [];
-  for (let i = 0; i < n; i++) {
-    let points: [number, number][] = [
-      [0, i * delta],
-      [0, (i + 1) * delta],
-      [Math.PI / 2, i * delta] // In addition to using +pi/2 instead of -pi/2, I had to switch the order of the 2nd & 3rd points relative to the horizon set. I don't know why, but before I switched them, the polygons didn't render.
-    ];
-    points = points.map((point) => {
-      const raDec = horizontalToEquatorial(...point, options.location.latitudeRad, options.location.longitudeRad, date);
-      return [R2D * raDec.raRad, R2D * raDec.decRad];
-    });
-    const poly = new Poly();
-    points.forEach(point => poly.addPoint(...point));
-    poly.set_fill(true);
-    poly.set_fillColor(color);
-    poly.set_opacity(opacity);
-    poly.set_lineWidth(0); // This removes the seam that appears between the polygons when opacity < 1
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    WWTControl.scriptInterface.addAnnotation(poly);
-    pieces.push(poly);
-  }
-
-  return pieces;
-}
-

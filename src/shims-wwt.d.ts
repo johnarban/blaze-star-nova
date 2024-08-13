@@ -66,4 +66,5 @@ declare module "@wwtelescope/engine" {
   export class CAAMoon {
     static radiusVector(JD: number): number;
   }
+
 }
