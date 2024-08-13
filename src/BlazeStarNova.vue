@@ -260,7 +260,8 @@ import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurAc
 
 import {throttle} from './debounce';
 
-import { createHorizon, createSky, removeHorizon, equatorialToHorizontal } from "./annotations";
+import { createSky, equatorialToHorizontal } from "./annotations";
+import { drawHorizon } from "./horizon";
 import { EquatorialRad, HorizontalRad, LocationRad } from "./types";
 import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
@@ -324,6 +325,13 @@ const originalFrameRender = WWTControl.singleton.renderOneFrame.bind(WWTControl.
 const boundRenderOneFrame = renderOneFrame.bind(WWTControl.singleton);
 const newFrameRender = function() { 
   boundRenderOneFrame(showBlazeOverlay.value, showAlphaOverlay.value);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (Settings.get_active() != null) {
+    const horizonOptions = { opacity: 0.95, color: "#01362C", location: getWWTLocation() };
+    drawHorizon(WWTControl.singleton.renderContext, horizonOptions);
+  }
+
 };
 let beforeTourTime: Date = new Date();
 
@@ -584,13 +592,11 @@ function removeSky() {
 
 function updateHorizonAndSky(when: Date | null = null) {
   try {
-    removeHorizon();
     removeSky();
   } finally {
     const location = getWWTLocation();
     if (showHorizon.value) {
       const time = when ?? store.currentTime;
-      createHorizon({ location, opacity: 0.95, when: time });
       const sunPosition = getSunPosition(time);
       const opacity = skyOpacityForSunAlt(sunPosition.altRad);
       store.setForegroundOpacity((1 - opacity) * 100);

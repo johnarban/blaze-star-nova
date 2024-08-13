@@ -66,4 +66,12 @@ declare module "@wwtelescope/engine" {
   export class CAAMoon {
     static radiusVector(JD: number): number;
   }
+
+  export class Matrix3d {
+    static _rotationX(angle: number): Matrix3d;
+    static _rotationY(angle: number): Matrix3d;
+    _multiply(matrix: Matrix3d): void;
+    invert(): void;
+  }
+
 }
