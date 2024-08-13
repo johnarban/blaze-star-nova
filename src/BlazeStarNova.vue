@@ -24,7 +24,7 @@
       <!-- This block contains the elements (e.g. icon buttons displayed at/near the top of the screen -->
 
       <div id="top-content">
-        <div id="left-buttons">
+        <div id="left-buttons" v-if="!isTourPlaying">
           <icon-button v-model="showTextSheet" fa-icon="book-open" :color="buttonColor"
             :tooltip-text="showTextSheet ? 'Hide Info' : 'Learn More'" tooltip-location="start">
           </icon-button>
@@ -133,11 +133,12 @@
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
             tooltip-location="start">
               <template #button>
-                <span class="jl_icon_button_text">Show me how to find the Nova!</span>
+                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
               </template>
           </icon-button>
           <!-- icon button to go to TCrB -->
           <icon-button
+            v-if="!isTourPlaying"
             @activate="() => goToTCrB()"
             :fa-icon="'star'"
             :color="buttonColor"
@@ -622,6 +623,7 @@ function playPauseTour() {
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
+    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
   }
 }
 
@@ -638,6 +640,7 @@ function onTourPlayingChange(playing: boolean) {
       instant: true,
     });
     store.setTime(beforeTourTime);
+    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
     WWTControl.singleton.renderOneFrame();
 
     // Not a huge fan of this, but `nextTick` wasn't working
@@ -876,7 +879,7 @@ p {
 #right-buttons {
   display: flex;
   flex-direction: column;
-  flex-grow: .333;
+  flex-grow: 1;
   gap: 10px;
   align-items: flex-end;
 }
