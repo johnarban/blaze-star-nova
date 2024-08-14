@@ -1,7 +1,8 @@
 <template>
   
   <div id="tour-layer" ref="parent">
-    <div id="marker-layer"></div>
+    <div id="marker-container"></div>
+    <div id="marker-frame"></div>
     <button class="tour-layer-button button2" @click="loadStarData">Load Stars</button>
   </div>
   
@@ -13,7 +14,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ref, watch, onMounted, computed } from 'vue';
 import { engineStore } from "@wwtelescope/engine-pinia";
-  
 import { getStarColor, magToRadius } from './star_colors';
 import { useTrackedElements, TrackedHTMLElement } from './useTrackedElements';
 
@@ -30,30 +30,27 @@ type Star = Equatorial & {
 };
 
 const store = engineStore();
-
-const ute = useTrackedElements();
+const ute = useTrackedElements("marker-frame");
 const markers = ute.trackedElements;
+
 
 // template ref to the parent element
 // this gets set to the element with ref="parent" in the template
 const parent = ref<HTMLElement | null>(null);
-const parentSize = computed(() => {
-  return {
-    width: parent.value?.clientWidth || 0,
-    height: parent.value?.clientHeight || 0,
-  };
-});
 
-function getMarkerLayer() {
-  return document.getElementById("marker-layer");
-}
-
-
+const starJson = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json";
+const starDataLoaded = ref(false);
 
 const blazeStarLocation: Equatorial = {
   ra: (15 + 59 / 60 + 30.1622 / 3600) * 15,
   dec: (25 + 55 / 60 + 12.613 / 3600),
 };
+
+
+
+function getMarkerLayer() {
+  return document.getElementById("marker-container");
+}
 
 
 function createCusomMarker(loc: Equatorial | Star, class_name='') {
@@ -79,8 +76,7 @@ function createCusomMarker(loc: Equatorial | Star, class_name='') {
     marker.style.height = `${radius}px`;
   }
   
-  // addMarkerToLayer(marker);
-  
+  marker.style.display = ute.isMarkerVisible(marker)[1] ? 'block' : 'none';
   return marker;
 }
 
@@ -89,14 +85,8 @@ function addMarkerToLayer(marker: TrackedHTMLElement , layer: HTMLElement | null
     layer.append(marker);
     return true;
   }
+  return false;
 }
-
-store.waitForReady().then(() => {
-  // const tcrbMarker = ute.createTrackedElement(blazeStarLocation);
-  const marker = createCusomMarker(blazeStarLocation, 'tcrb_marker');
-  addMarkerToLayer(marker, getMarkerLayer());
-
-});
 
 // resize observer to update markers on window resize
 const resizeObserver = new ResizeObserver(() => {
@@ -104,9 +94,6 @@ const resizeObserver = new ResizeObserver(() => {
 });
 resizeObserver.observe(document.body);
 
-
-const starJson = "https://raw.githubusercontent.com/ofrohn/d3-celestial/master/data/stars.6.json";
-const starDataLoaded = ref(false);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function processStarFeature(feature: any) {
@@ -152,6 +139,11 @@ function loadStarData() {
     });
 }
 
+store.waitForReady().then(() => {
+  const marker = createCusomMarker(blazeStarLocation, 'tcrb_marker');
+  addMarkerToLayer(marker, getMarkerLayer());
+});
+
 watch(store, () => {
   markers.value.forEach((marker) => {
     addMarkerToLayer(marker);
@@ -169,20 +161,30 @@ watch(store, () => {
   z-index: 0;
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   pointer-events: none;
   contain: strict;
 }
 
-#marker-layer {
-  position: absolute;
+#marker-container {
+  position: relative;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
   pointer-events: none;
+}
+
+#marker-frame {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  /* outline: 1px solid magenta; */
 }
 
 .tracked-element {
@@ -207,13 +209,14 @@ watch(store, () => {
   border: none;
   border-radius: 50%;
   z-index: 1;
-  pointer-events: auto;
+  pointer-events: none;
   /* outline: 1px solid white; */
 }
 
 .star_marker:hover {
-  background-color: red;
-  outline: 5px solid red;
+  /* background-color: red; */
+  /* outline: 5px solid red; */
+  scale: 1.5;
 }
 
 .star_marker::before {

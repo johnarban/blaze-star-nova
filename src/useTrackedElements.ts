@@ -1,4 +1,4 @@
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted, onMounted } from 'vue';
 import { engineStore } from '@wwtelescope/engine-pinia';
 import { use3DTransform } from './use3DTransform';
 import { checkPointContainedByDiv } from './check_dom_sizes';
@@ -24,25 +24,50 @@ export interface TrackedHTMLElement extends HTMLElement {
 }
 
 // create divs that move with the engine
-export function useTrackedElements() {
+export function useTrackedElements(layer: string) {
   
   // WWT setup
   const store = engineStore();
-  const wwtDiv = ref(null as HTMLElement | null);
-  const wwtDivRect = ref(null as DOMRect | null);
+  const frameDiv = ref(null as HTMLElement | null);
+  const frameDivRect = ref(null as DOMRect | null);
   const resizeObserver = ref(null as ResizeObserver | null);
+  const wwtDiv = ref(null as HTMLElement | null);
+  
+  watch(frameDiv, (newDiv) => {
+    if (newDiv) {
+      frameDivRect.value = newDiv.getBoundingClientRect();
+    }
+  });
+  
+  onMounted(() => {
+    const frame = document.getElementById(layer);
+    if (frame) {
+      frameDiv.value = frame;
+      resizeObserver.value = new ResizeObserver(() => {
+        if (!frameDiv.value) return;
+        frameDivRect.value = frameDiv.value.getBoundingClientRect();
+      });
+      resizeObserver.value.observe(frameDiv.value);
+    }
+  });
   
   store.waitForReady().then(() => {
-    // @ts-expect-error - hackery way to get the canvas parent element
-    wwtDiv.value = store.$wwt.inst.ctl.canvas.parentElement as HTMLElement;
-    wwtDivRect.value = wwtDiv.value.getBoundingClientRect();
-    // add resize observer
-    resizeObserver.value = new ResizeObserver(() => {
-      if (!wwtDiv.value) return;
-      wwtDivRect.value = wwtDiv.value.getBoundingClientRect();
-    });
-    resizeObserver.value.observe(wwtDiv.value);
+    
+    if (frameDiv.value === null) {
+      const frame = document.getElementById(layer);
+      // @ts-expect-error - hackery way to get the canvas parent element
+      wwtDiv.value = store.$wwt.inst.ctl.canvas.parentElement as HTMLElement;
+      frameDiv.value = frame ?? wwtDiv.value;
+      
+      resizeObserver.value = new ResizeObserver(() => {
+        if (!frameDiv.value) return;
+        frameDivRect.value = frameDiv.value.getBoundingClientRect();
+      });
+      resizeObserver.value.observe(frameDiv.value);
+    }
+    
   });
+  
   
   // Create 
   const trackedElements = ref<TrackedHTMLElement[]>([]);
@@ -132,7 +157,7 @@ export function useTrackedElements() {
     if (screen.z === 0) {
       return [screen, false];
     }
-    return [screen, checkPointContainedByDiv(screen, wwtDivRect.value)];
+    return [screen, checkPointContainedByDiv(screen, frameDivRect.value)];
   }
   
   
@@ -182,6 +207,7 @@ export function useTrackedElements() {
     addElement,
     addElements,
     updateOffScreenElements,
+    isMarkerVisible,
     placeElement
   };
     
