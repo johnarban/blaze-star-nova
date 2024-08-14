@@ -17,15 +17,13 @@ export type ScreenPosition = {
 };
 
 export type TrackedElementData = LocationDegrees & Record<string, string | number>;
-
-
 export interface TrackedHTMLElement extends HTMLElement {
   trackedData: TrackedElementData;
 }
 
 // create divs that move with the engine
 export function useTrackedElements(layer: string) {
-  
+
   // WWT setup
   const store = engineStore();
   const frameDiv = ref(null as HTMLElement | null);
@@ -33,125 +31,72 @@ export function useTrackedElements(layer: string) {
   const resizeObserver = ref(null as ResizeObserver | null);
   const wwtDiv = ref(null as HTMLElement | null);
   
-  watch(frameDiv, (newDiv) => {
-    if (newDiv) {
-      frameDivRect.value = newDiv.getBoundingClientRect();
-    }
-  });
-  
-  onMounted(() => {
-    const frame = document.getElementById(layer);
-    if (frame) {
-      frameDiv.value = frame;
-      resizeObserver.value = new ResizeObserver(() => {
-        if (!frameDiv.value) return;
-        frameDivRect.value = frameDiv.value.getBoundingClientRect();
-      });
-      resizeObserver.value.observe(frameDiv.value);
-    }
-  });
-  
-  store.waitForReady().then(() => {
-    
-    if (frameDiv.value === null) {
-      const frame = document.getElementById(layer);
-      // @ts-expect-error - hackery way to get the canvas parent element
-      wwtDiv.value = store.$wwt.inst.ctl.canvas.parentElement as HTMLElement;
-      frameDiv.value = frame ?? wwtDiv.value;
-      
-      resizeObserver.value = new ResizeObserver(() => {
-        if (!frameDiv.value) return;
-        frameDivRect.value = frameDiv.value.getBoundingClientRect();
-      });
-      resizeObserver.value.observe(frameDiv.value);
-    }
-    
-  });
-  
-  
-  // Create 
   const trackedElements = ref<TrackedHTMLElement[]>([]);
-  
   const updateOffScreenElements = ref(false);
+
   
+
+  // Element Creation
   
-  /**
-   * Create a tracked element out of the given element  pt: RA/Dec
-   * @returns TrackedHTMLElement
-   */
   function placeElement(el: HTMLElement, pt: LocationDegrees): TrackedHTMLElement {
-    
     const { x, y } = findScreenPointForRADec(pt);
-    
+
     el.style.position = 'absolute';
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
-    
+
     el.classList.add('tracked-element');
     (el as TrackedHTMLElement).trackedData = pt as TrackedElementData;
-    
+
     trackedElements.value.push(el as TrackedHTMLElement);
-    
+
     return el as TrackedHTMLElement;
   }
-  
-  function createElement(pt: {x: number, y: number}, tag="div"): HTMLElement {
+
+  function createElement(pt: { x: number, y: number }, tag = "div"): HTMLElement {
     const marker = document.createElement(tag) as HTMLElement;
     marker.style.position = 'absolute';
     marker.style.left = `${pt.x}px`;
     marker.style.top = `${pt.y}px`;
     return marker;
   }
-  
-  
-  
-  /** Places a div at the given RA/Dec (degrees/degrees) location */
-  function createTrackedElement(pt: TrackedElementData, tag='div', name: string = ''): TrackedHTMLElement {
-    
-    // get the screen position
+
+  function createTrackedElement(pt: TrackedElementData, tag = 'div', name: string = ''): TrackedHTMLElement {
     const { x, y } = findScreenPointForRADec(pt);
-    
-    const element = createElement({x, y}, tag) as TrackedHTMLElement;
+    const element = createElement({ x, y }, tag) as TrackedHTMLElement;
     element.className = "tracked-element";
-    
-    // if it has a name, add an identifying class
+
     if (name) {
       element.classList.add(`tracked-element__${name}`);
     }
-    
+
     element.trackedData = pt;
-    
     trackedElements.value.push(element);
     return element as TrackedHTMLElement;
   }
-  
-  
-  
-  
-  // add a class to an element
+
   function addClassToElement(element: HTMLElement, class_name: string) {
     element.classList.add(class_name);
   }
-  
-  
+
   const addElement = (el: TrackedHTMLElement) => {
     trackedElements.value.push(el);
   };
-  
+
   const addElements = (el: TrackedHTMLElement[]) => {
     el.forEach((el) => {
       addElement(el);
     });
   };
+
   
+  // Element Updating
   
-  // update the screen position of the element
   function updateElementScreenPosition(el: TrackedHTMLElement, screenPos: ScreenPosition) {
     el.style.left = `${screenPos.x}px`;
     el.style.top = `${screenPos.y}px`;
   }
   
-  // check if a marker is going to be visible on the WWT canvas
   function isMarkerVisible(el: TrackedHTMLElement): [ScreenPosition, boolean] {
     const screen = findScreenPointForRADec(el.trackedData);
     if (screen.z === 0) {
@@ -159,22 +104,20 @@ export function useTrackedElements(layer: string) {
     }
     return [screen, checkPointContainedByDiv(screen, frameDivRect.value)];
   }
-  
-  
-  // updates all the elements
+
+
   function updateElements() {
     trackedElements.value.forEach((el) => {
       const [screenPos, onscreen] = isMarkerVisible(el);
-      
+
       if (onscreen || updateOffScreenElements.value) {
         updateElementScreenPosition(el, screenPos);
-      } 
+      }
       el.style.display = onscreen ? 'block' : 'none';
-      
+
     });
   }
-  
-  /** Remove a tracked element from trackedElements list */
+
   function removeTrackedElement(el: TrackedHTMLElement) {
     const index = trackedElements.value.indexOf(el);
     if (index > -1) {
@@ -182,26 +125,64 @@ export function useTrackedElements(layer: string) {
     }
     el.remove();
   }
+
+  // Watchers, Lifecycle, and Cleanup
   
-  
+  watch(frameDiv, (newDiv) => {
+    if (newDiv) {
+      frameDivRect.value = newDiv.getBoundingClientRect();
+    }
+  });
+
   watch(store, () => {
     updateElements();
   });
-  
+
   watch(updateOffScreenElements, () => {
     updateElements();
+  });
+
+  
+  function initializeFrameDiv(frame: HTMLElement) {
+    frameDiv.value = frame;
+    resizeObserver.value = new ResizeObserver(() => {
+      if (!frameDiv.value) return;
+      frameDivRect.value = frameDiv.value.getBoundingClientRect();
+    });
+    resizeObserver.value.observe(frameDiv.value);
+  }
+
+  
+  onMounted(() => {
+    const frame = document.getElementById(layer);
+    if (frame) {
+      initializeFrameDiv(frame);
+    }
+  });
+
+  store.waitForReady().then(() => {
+    
+    // @ts-expect-error - hackery way to get the canvas parent element
+    wwtDiv.value = store.$wwt.inst.ctl.canvas.parentElement as HTMLElement;
+
+    if (frameDiv.value === null) {
+      const frame = document.getElementById(layer);
+      initializeFrameDiv(frame ?? wwtDiv.value);
+    }
+
   });
   
   onUnmounted(() => {
     resizeObserver.value?.disconnect();
     trackedElements.value.forEach((el) => el.remove());
   });
-
   
-  return { 
-    trackedElements, 
+
+
+  return {
+    trackedElements,
     createTrackedElement,
-    addClassToElement, 
+    addClassToElement,
     removeTrackedElement,
     updateElements,
     addElement,
@@ -210,5 +191,5 @@ export function useTrackedElements(layer: string) {
     isMarkerVisible,
     placeElement
   };
-    
+
 }
