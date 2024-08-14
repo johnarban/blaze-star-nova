@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import { engineStore } from '@wwtelescope/engine-pinia';
 import { use3DTransform } from './use3DTransform';
 import { checkPointContainedByDiv } from './check_dom_sizes';
@@ -30,17 +30,18 @@ export function useTrackedElements() {
   const store = engineStore();
   const wwtDiv = ref(null as HTMLElement | null);
   const wwtDivRect = ref(null as DOMRect | null);
+  const resizeObserver = ref(null as ResizeObserver | null);
   
   store.waitForReady().then(() => {
     // @ts-expect-error - hackery way to get the canvas parent element
     wwtDiv.value = store.$wwt.inst.ctl.canvas.parentElement as HTMLElement;
     wwtDivRect.value = wwtDiv.value.getBoundingClientRect();
     // add resize observer
-    const resizeObserver = new ResizeObserver(() => {
+    resizeObserver.value = new ResizeObserver(() => {
       if (!wwtDiv.value) return;
       wwtDivRect.value = wwtDiv.value.getBoundingClientRect();
     });
-    resizeObserver.observe(wwtDiv.value);
+    resizeObserver.value.observe(wwtDiv.value);
   });
   
   // Create 
@@ -166,6 +167,11 @@ export function useTrackedElements() {
     updateElements();
   });
   
+  onUnmounted(() => {
+    resizeObserver.value?.disconnect();
+    trackedElements.value.forEach((el) => el.remove());
+  });
+
   
   return { 
     trackedElements, 
