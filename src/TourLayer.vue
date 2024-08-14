@@ -11,8 +11,7 @@
 
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch } from 'vue';
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { getStarColor, magToRadius } from './star_colors';
 import { useTrackedElements, TrackedHTMLElement } from './useTrackedElements';
