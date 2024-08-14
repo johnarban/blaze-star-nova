@@ -29,6 +29,10 @@ import {
 import { drawHorizon, drawSky } from "./horizon_sky";
 import { makeTextOverlays } from "./text";
 
+export function resetAltAzGridText() {
+  Grids._altAzTextBatch = null;
+}
+
 export function makeAltAzGridText() {
   if (Grids._altAzTextBatch == null) {
     const glyphHeight = 70;

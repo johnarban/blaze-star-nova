@@ -261,7 +261,7 @@ import {throttle} from './debounce';
 
 import { equatorialToHorizontal } from "./utils";
 import { EquatorialRad, LocationRad } from "./types";
-import { makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
+import { resetAltAzGridText, makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
 import { useTimezone } from "./timezones";
@@ -480,6 +480,9 @@ const ready = computed(() => layersLoaded.value && positionSet.value);
 /* `isLoading` is a bit redundant here, but it could potentially have independent logic */
 const isLoading = computed(() => !ready.value);
 
+// It doesn't really matter which one we note here
+const inNorthernHemisphere = computed(() => selectedLocation.value.latitudeDeg > 0);
+
 function getCrbAlt(when: Date | null = null) {
   const location = getWWTLocation();
   const crbAltAz = equatorialToHorizontal(
@@ -649,6 +652,8 @@ watch(selectedLocation, (location: LocationDeg) => {
   updateCrbBelowHorizon();
   WWTControl.singleton.renderOneFrame();
 });
+
+watch(inNorthernHemisphere, (_inNorth: boolean) => resetAltAzGridText());
 
 </script>
 
