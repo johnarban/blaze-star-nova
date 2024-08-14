@@ -1,5 +1,4 @@
 {
-  "draft": true,
   "version": "0.0.0",
   "dependencies": {
     "@cosmicds/vue-toolkit": "^0.3.0",
