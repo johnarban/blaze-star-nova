@@ -1,37 +1,18 @@
 // Types and Interfaces
-export interface Equatorial { 
-  ra: number; 
-  dec: number, 
-}
 
-export interface Star extends Equatorial {
-  bv?: number, 
-  color?: string, 
-  logT?: number,
-  mag?: number,
-}
 
 export type ScreenLoc = { x: number; y: number, z?: number };
 
-// create Marker type that extends HTMLElement with the dataset property
-export interface Marker extends HTMLDivElement {
-  dataset: {
-    ra: string;
-    dec: string;
-    mag: string;
-    bv: string;
-    color: string;
-    logT: string;
-  };
-}
 
+type BoundingClientRect = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+};
 
-
-
-
-export function checkPointContainedByDiv(point: ScreenLoc, div: HTMLElement | null = null): boolean {
-  if (div) {
-    const divRect = div.getBoundingClientRect();
+export function checkPointContainedByDiv(point: ScreenLoc, divRect: BoundingClientRect | null = null): boolean {
+  if (divRect) {
     return (
       point.x >= divRect.left &&
       point.x <= divRect.right &&

@@ -104,10 +104,6 @@
           >
             Corona Borealis is Set
           </v-chip>
-          <button 
-            class="icon-wrapper jl_icon-button jl_debug" 
-            @click="() => updateHorizonAndSky()"
-            >Update Horizon and Sky</button>
           <button
             class="icon-wrapper jl_icon-button jl_debug"
             @click="() => updateCrbBelowHorizon()"

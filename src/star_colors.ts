@@ -82,6 +82,10 @@ function lerp(x: number, x0: number, y0: number, x1: number, y1: number): number
   return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
 }
 
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
 // get color of star from B-V
 export function getStarColor(bv: number): string {
   const exactIndex = starBvMap.get(bv);
@@ -114,7 +118,8 @@ export function getStarColor(bv: number): string {
   if (isNaN(r) || isNaN(g) || isNaN(b)) {
     console.log(bv, r, g, b);
   }
-  return 'rgb(' + r + ',' + g + ',' + b + ')';
+  // return 'rgb(' + r + ',' + g + ',' + b + ')';
+  return rgbToHex(r, g, b);
 }
 
 function _fluxScale(mag: number): number {
