@@ -256,6 +256,7 @@ import { ref, reactive, computed, onMounted, nextTick, watch } from "vue";
 import { Color, Grids, Place, Settings, WWTControl } from "@wwtelescope/engine";
 import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
+import { useDisplay} from 'vuetify';
 
 import {throttle} from './debounce';
 
@@ -301,6 +302,9 @@ const props = withDefaults(defineProps<MainComponentProps>(), {
   }
 });
 
+
+const { smAndUp } = useDisplay();
+
 const splash = new URLSearchParams(window.location.search).get("splash")?.toLowerCase() !== "false";
 const showSplashScreen = ref(splash);
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
@@ -312,10 +316,10 @@ const buttonColor = ref("#f7bb48");
 // const tab = ref(0);
 const showHorizon = ref(true);
 const showAltAzGrid = ref(true);
-const showControls = ref(false);
+const showControls = ref(smAndUp.value);
 const showConstellations = ref(true);
 const showBlazeOverlay = ref(true);
-const showAlphaOverlay = ref(true);
+const showAlphaOverlay = ref(false);
 const crbBelowHorizon = ref(true);
 const _showDatePicker= ref(false);
 
@@ -886,12 +890,16 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-left: calc(0.5 * var(--default-line-height));
+    // padding-left: calc(0.5 * var(--default-line-height));
 
     .v-checkbox .v-selection-control {
       font-size: calc(1.1 * var(--default-font-size));
       height: calc(1.2 * var(--default-line-height));
       min-height: calc(1.2 * var(--default-line-height));
+    }
+    
+    .v-selection-control .v-label {
+      white-space: nowrap;
     }
 
     .v-checkbox .v-selection-control__input {
