@@ -126,12 +126,12 @@
        </div>
        <div id="playback-controls">
             
-            <icon-button
+          <icon-button
             @activate="() => playPauseTour()"
             :fa-icon="isTourPlaying ? 'stop' : 'play'"
             :color="buttonColor"
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
-            tooltip-location="start">
+            tooltip-location="top">
               <template #button>
                 <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
               </template>
@@ -140,27 +140,38 @@
           <icon-button
             v-if="!isTourPlaying"
             @activate="() => goToTCrB()"
-            :fa-icon="'star'"
+            fa-icon="star"
             :color="buttonColor"
-            :tooltip-text="'Go to T CrB'"
-            tooltip-location="start">
+            tooltip-text="Go to T CrB"
+            tooltip-location="top">
               <template #button>
                 <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
               </template>
           </icon-button>
-          
+          <icon-button
+            @activate="() => toggleBackground()"
+            :color="buttonColor"
+            :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
+            tooltip-location="top"
+          >
+            <template #button>
+              <span class="jl_icon_button_text">Show what T CrB will look like when it bursts!</span>
+            </template>
+          </icon-button>
+
+
           <!-- reset time to now button -->
-           <button 
+          <button 
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = new Date()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
-            <!-- reset to 9pm button -->
-            <button
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
+          <!-- reset to 9pm button -->
+          <button
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = todayAt9pm()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
        </div>
        
        
@@ -274,6 +285,9 @@ export interface MainComponentProps {
   initialCameraParams?: CameraParams;
 }
 
+const TYCHO_ISET_NAME = "Tycho (Synthetic, Optical)";
+const USNOB_ISET_NAME = "USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)";
+
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
 
@@ -352,7 +366,6 @@ function getWWTLocation(): LocationRad {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const blazeStarLocation: EquatorialRad = {
   raRad: (15 + 59 / 60 + 30.1622 / 3600) * 15 * D2R,
   decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
@@ -421,11 +434,19 @@ function setWWTLocation(location: LocationDeg) {
   console.log("Setting location to", location);
 }
 
+function toggleBackground() {
+  if (store.backgroundImageset?.get_name() === TYCHO_ISET_NAME) {
+    store.setBackgroundImageByName(USNOB_ISET_NAME);
+  } else {
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
+  }
+}
+
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
@@ -577,7 +598,7 @@ function playPauseTour() {
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
   }
 }
 
@@ -594,7 +615,7 @@ function onTourPlayingChange(playing: boolean) {
       instant: true,
     });
     store.setTime(beforeTourTime);
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
     WWTControl.singleton.renderOneFrame();
   }
 }
