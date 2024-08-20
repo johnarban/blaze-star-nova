@@ -22,7 +22,7 @@
             </p>
             <h4>How do I see this nova?</h4>
             <p>
-              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed, the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." <a href="#" onclick="return false;" @click="() => playTour()">This guide</a> explains how you can find Corona Borealis in your night sky.
+              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." <a href="#" onclick="return false;" @click="() => playTour()">This guide</a> explains how you can find Corona Borealis in your night sky.
             </p>
             <!-- <v-btn @click="$emit('toggle-blaze')">{{ `${showBlazeOverlay ? 'Hide' : 'Show'} T CrB label` }}</v-btn> -->
             <p>
@@ -35,7 +35,7 @@
             <!-- <v-btn @click="$emit('toggle-alpha')">{{ `${showAlphaOverlay ? 'Hide' : 'Show'} alpha label` }}</v-btn> -->
             <h4>What causes a nova?</h4>
             <p>
-              Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The graviational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
+              Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The gravitational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
             </p>
             
             <figure class="fig-right" style="width:40%;"> <!-- floats, the old magic, before flex-->
