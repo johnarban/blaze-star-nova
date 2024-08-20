@@ -149,6 +149,7 @@
               </template>
           </icon-button>
           <icon-button
+            v-if="!isTourPlaying"
             @activate="() => toggleBackground()"
             :color="buttonColor"
             :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
