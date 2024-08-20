@@ -597,8 +597,23 @@ function onTourPlayingChange(playing: boolean) {
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
     WWTControl.singleton.renderOneFrame();
   }
+  adjustWWTSize(playing);
 }
 
+function adjustWWTSize(tourPlaying: boolean) {
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  if (aspectRatio > 4 / 3) {
+    return;
+  }
+  const wwt = document.querySelector(".wwtelescope-component");
+  if (!(wwt instanceof HTMLElement)) {
+    return;
+  }
+  const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
+  const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
+  wwt.style.height = `${height}px`;
+  wwt.style.top = `${top}px`;
+}
 
 function logWWTState() {
   const loc = getWWTLocation();
@@ -705,6 +720,8 @@ p {
   margin-bottom: 0.5rem;
 }
 
+
+
 #main-content {
   position: fixed;
   width: 100%;
@@ -734,7 +751,6 @@ p {
     padding: 0;
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
