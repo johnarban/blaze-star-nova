@@ -155,7 +155,9 @@
             tooltip-location="top"
           >
             <template #button>
-              <span class="jl_icon_button_text">Show what T CrB will look like when it bursts!</span>
+              <span class="jl_icon_button_text">{{ store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
+                'Show what the nova will look like!' :
+                'Return to current view' }}</span>
             </template>
           </icon-button>
 
@@ -269,7 +271,7 @@ import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 import { useDisplay} from 'vuetify';
 
-import {throttle} from './debounce';
+import { throttle } from './debounce';
 
 import { equatorialToHorizontal } from "./utils";
 import { EquatorialRad, LocationRad } from "./types";
