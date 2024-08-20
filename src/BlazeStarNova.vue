@@ -150,15 +150,17 @@
           </icon-button>
           <icon-button
             v-if="!isTourPlaying"
-            @activate="() => toggleBackground()"
+            @activate="() => store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME)"
             :color="buttonColor"
             :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
             tooltip-location="top"
           >
             <template #button>
-              <span class="jl_icon_button_text">{{ store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
+              <span class="jl_icon_button_text">{{
+                store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
                 'Show what the nova will look like!' :
-                'Return to current view' }}</span>
+                'Return to current view'
+                }}</span>
             </template>
           </icon-button>
 
@@ -435,14 +437,6 @@ function setWWTLocation(location: LocationDeg) {
   wwtSettings.set_locationLat(location.latitudeDeg);
   wwtSettings.set_locationLng(location.longitudeDeg);
   console.log("Setting location to", location);
-}
-
-function toggleBackground() {
-  if (store.backgroundImageset?.get_name() === TYCHO_ISET_NAME) {
-    store.setBackgroundImageByName(USNOB_ISET_NAME);
-  } else {
-    store.setBackgroundImageByName(TYCHO_ISET_NAME);
-  }
 }
 
 onMounted(() => {
