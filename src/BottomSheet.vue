@@ -30,7 +30,7 @@
             </p>
             <h4>How bright will the nova be?</h4>
             <p>
-              At its normal brightness, T CrB is about a 10th magnitude star. This is about 30-40 times fainter than the faintest star a person could see from a dark sky, so you would need a telescope to see it. When it goes nova, it is predicted to be about 2-2.5 magnitudes. It is comparable in brightness to Alphecca (Go to <a href="#" @click.prevent="$emit('toggle-alpha')">Alphecca</a>), the brightest star you can see in the crown of Corona Borealis.(TODO: add a link to turn on the layer that shows the brightness comparison.)
+              At its normal brightness, T CrB is about a 10th magnitude star. This is about 30-40 times fainter than the faintest star a person could see from a dark sky, so you would need a telescope to see it. When it goes nova, it is predicted to be about 2-2.5 magnitudes. It is comparable in brightness to Alphecca (Go to <a href="#" @click.prevent="$emit('toggle-alpha')">Alphecca</a>), the brightest star you can see in the crown of Corona Borealis.
             </p>
             <!-- <v-btn @click="$emit('toggle-alpha')">{{ `${showAlphaOverlay ? 'Hide' : 'Show'} alpha label` }}</v-btn> -->
             <h4>What causes a nova?</h4>

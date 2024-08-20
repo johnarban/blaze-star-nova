@@ -241,8 +241,10 @@
         :touchscreen="touchscreen"
         :show-blaze-overlay="showBlazeOverlay"
         :show-alpha-overlay="showAlphaOverlay"
-        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 90, instant: false })"
-        @toggle-alpha="() => store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 90, instant: false })"
+        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 180, instant: false })"
+        @toggle-alpha="() => {
+          toggleAlpha();
+        }"
        />
      
 
@@ -631,6 +633,15 @@ function setMidnight(){
   selectedDate.value = time;
 }
 
+function toggleAlpha() {
+  store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 180, instant: false });
+  setTimeout(() => {
+    showAlphaOverlay.value = true;
+  }, 2000);
+  setTimeout(() => {
+    showAlphaOverlay.value = false;
+  }, 7000);
+}
 
 watch(isTourPlaying, onTourPlayingChange);
 
