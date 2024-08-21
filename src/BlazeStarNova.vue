@@ -396,8 +396,9 @@ function isTCrBOnScreen(): boolean {
 }
 
 function toggleAndGoToNova() {
-  const instant = isTCrBOnScreen();
-  goToTCrB(instant).then(() => {
+  // const instant = isTCrBOnScreen();
+  // console.log("Instant", instant);
+  goToTCrB().then(() => {
     store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME);
   });
 }
