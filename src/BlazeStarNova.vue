@@ -505,7 +505,7 @@ onMounted(() => {
         positionSet.value = true;
       });
     }, 50);
-  });
+  }).then(()=>{updateCrbBelowHorizon(store.currentTime);});
 });
 
 const ready = computed(() => layersLoaded.value && positionSet.value);
