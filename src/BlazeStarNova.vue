@@ -261,7 +261,7 @@ import { useDisplay} from 'vuetify';
 import {throttle} from './debounce';
 
 import { equatorialToHorizontal } from "./utils";
-import { EquatorialRad, LocationRad } from "./types";
+import { LocationRad } from "./types";
 import { resetAltAzGridText, makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
@@ -333,7 +333,6 @@ const newFrameRender = function() {
     showHorizon.value
   );
 };
-let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -341,6 +340,7 @@ const clockRate = 1000;
 const crbPlace = new Place();
 crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
 crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
+crbPlace.set_zoomLevel(180);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -352,21 +352,15 @@ function getWWTLocation(): LocationRad {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const blazeStarLocation: EquatorialRad = {
-  raRad: (15 + 59 / 60 + 30.1622 / 3600) * 15 * D2R,
-  decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
-};
-
-
 function goToTCrB(instant=false) {
-  store.gotoRADecZoom({
-    raRad: blazeStarLocation.raRad,
-    decRad: blazeStarLocation.decRad,
-    zoomDeg: 180,
+  store.gotoTarget({
+    place: crbPlace,
+    noZoom: false,
     instant: instant,
+    trackObject: false
   });
 }
+
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
   // get's today's date and 
@@ -573,7 +567,6 @@ function clearCurrentTour() {
 
 function playPauseTour() {
   if (!isTourPlaying.value) {
-    beforeTourTime = store.currentTime;
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
@@ -585,17 +578,15 @@ function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
   if (!playing) {
     clearCurrentTour();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    WWTControl.singleton.set__mover(null);
     store.applySetting(["localHorizonMode", true]);
-    store.gotoRADecZoom({
-      raRad: store.raRad,
-      decRad: store.decRad,
-      zoomDeg: store.zoomDeg,
-      rollRad: 0,
-      instant: true,
-    });
-    store.setTime(beforeTourTime);
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
-    WWTControl.singleton.renderOneFrame();
+    const time = todayAt9pm();
+    selectedDate.value = time;
+    store.setTime(time);
+    goToTCrB(true);
   }
 }
 
@@ -642,7 +633,6 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationLabels", show]);
   store.applySetting(["showConstellationFigures", show]);
 });
-
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
