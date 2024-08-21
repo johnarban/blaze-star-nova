@@ -99,6 +99,7 @@
         <div id="right-buttons">
           <v-chip
             v-if="crbBelowHorizon"
+            class="chip-text"
           >
             Corona Borealis is Set
           </v-chip>
@@ -188,7 +189,7 @@
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos style="margin:1em;" logo-size="25px"/>
+        <credit-logos v-if="!smAndDown" style="margin:1em;" logo-size="25px"/>
         
         <div style="flex-grow:1;"></div>
         
@@ -196,7 +197,7 @@
           v-if="!isTourPlaying"
           :fa-icon="timePlaying ? 'pause' : 'play'"
           :color="buttonColor" 
-          tooltip-text="Let time move forward"
+          :tooltip-text="timePlaying ? 'Pause time' : 'Let time move forward'"
           tooltip-location="start" 
           @activate="()=>{playbackControl.togglePlay()}" 
           style="align-self: center;"
@@ -219,7 +220,8 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" />
+                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" 
+                :smAndDown="smAndDown"/>
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
@@ -260,8 +262,10 @@
         :touchscreen="touchscreen"
         :show-blaze-overlay="showBlazeOverlay"
         :show-alpha-overlay="showAlphaOverlay"
-        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 90, instant: false })"
-        @toggle-alpha="() => store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 90, instant: false })"
+        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 180, instant: false })"
+        @toggle-alpha="() => {
+          toggleAlpha();
+        }"
        />
      
 
@@ -309,7 +313,7 @@ playbackControl.pause();
 const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
-// const { smAndDown } = useDisplay();
+const { smAndDown } = useDisplay();
 
 
 
@@ -524,10 +528,6 @@ function getCrbAlt(when: Date | null = null) {
   return crbAltAz.altRad;
 }
 
-/* Properties related to device/screen characteristics */
-// TODO: This seems to be giving the wrong value? Investigate why
-// const smallSize = computed(() => smAndDown);
-
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
   // get the text-bottom-sheet id height and subtract it from 100vh
@@ -657,6 +657,15 @@ function setMidnight(){
   selectedDate.value = time;
 }
 
+function toggleAlpha() {
+  store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 180, instant: false }).then(() => {
+    showAlphaOverlay.value = true;
+  }).then(() => {
+    setTimeout(() => {
+      showAlphaOverlay.value = false;
+    }, 5000);
+  });
+}
 
 watch(isTourPlaying, onTourPlayingChange);
 
@@ -693,8 +702,8 @@ watch(inNorthernHemisphere, (_inNorth: boolean) => resetAltAzGridText());
 }
 
 :root {
-  --default-font-size: clamp(0.9rem, min(2.2vh, 2.2vw), 1.4rem);
-  --default-line-height: clamp(1.3rem, min(2.8vh, 2.8vw), 2.1rem);
+  --default-font-size: ~"max(14px, calc(0.7em + 0.3vw))";
+  --default-line-height: ~"max(20px, calc(1em + 0.4vw))";
 }
 
 html {
@@ -703,7 +712,6 @@ html {
   padding: 0;
   background-color: #000;
   overflow: hidden;
-
 
   -ms-overflow-style: none;
   // scrollbar-width: none;
@@ -746,7 +754,6 @@ p {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  font-size: 11pt;
 
   .wwtelescope-component {
     position: absolute;
@@ -857,6 +864,18 @@ p {
   flex-grow: 1;
   gap: 10px;
   align-items: flex-end;
+  height: auto;
+}
+
+.chip-text {
+  font-size: var(--default-font-size) !important;
+  max-width: 33vw; 
+  white-space: normal; 
+  height: auto !important; 
+  padding-inline: 1em !important;
+  padding-block: 0.5em !important;
+  text-align: center;
+  border-radius: 20px;
 }
 
 #empty-space {
@@ -955,6 +974,7 @@ p {
       width: 150px;
     }
   }
+  
   #controls-top-row {
     padding-left: 0.5em;
     display: flex;
@@ -1024,9 +1044,10 @@ video {
 }
 
 .jl_icon_button_text {
-  font-size : 1.15em; 
+  font-size : var(--default-font-size) !important;
   padding-inline: 1em; 
-  max-width: 20ch; text-align: center;
+  max-width: 20ch; 
+  text-align: center;
 }
 
 .jl_debug {
