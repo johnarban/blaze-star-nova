@@ -125,7 +125,7 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">
             
           <icon-button
             @activate="() => playPauseTour()"
@@ -138,7 +138,7 @@
               </template>
           </icon-button>
           <icon-button
-            v-if="!isTourPlaying"
+            v-if="!isTourPlaying && !(aspectRatio > 1.5 && height < 330)"
             @activate="() => {
               toggleAndGoToNova();  
             }"
@@ -312,8 +312,9 @@ playbackControl.pause();
 const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
-const { smAndDown } = useDisplay();
+const { smAndDown, width, height } = useDisplay();
 
+const aspectRatio = computed(() => width.value / height.value);
 
 
 const props = withDefaults(defineProps<MainComponentProps>(), {
@@ -834,6 +835,10 @@ p {
 
 #top-content {
   position: relative;
+  // top: 0;
+  // left: 0;
+  // width: calc(100vw - 2rem);
+  max-height: 2rem;
   flex-grow:0;
   margin: 1rem;
   pointer-events: none;
@@ -842,6 +847,11 @@ p {
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
+  z-index: 1000;
+}
+
+#top-content > #left-buttons > #controls {
+  pointer-events: auto;
 }
 
 #left-buttons {
@@ -904,6 +914,14 @@ p {
   flex-direction: row;
   gap: 20px;
   justify-content: center;
+}
+
+#playback-controls.pc-widescreen {
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 5px;
+  max-height: calc(100vh - 5rem);
 }
 
 #bottom-content {
