@@ -124,7 +124,7 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
             
             <icon-button
             @activate="() => playPauseTour()"
