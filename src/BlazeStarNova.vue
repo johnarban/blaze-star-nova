@@ -421,6 +421,16 @@ function setWWTLocation(location: LocationDeg) {
   console.log("Setting location to", location);
 }
 
+window.addEventListener("orientationchange", function() {
+  console.log("Orientation change!");
+  adjustWWTSize(isTourPlaying.value);
+});
+
+window.addEventListener("resize", function() {
+  console.log("Resize!");
+  adjustWWTSize(isTourPlaying.value);
+});
+
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
@@ -601,18 +611,26 @@ function onTourPlayingChange(playing: boolean) {
 }
 
 function adjustWWTSize(tourPlaying: boolean) {
-  const aspectRatio = window.innerWidth / window.innerHeight;
-  if (aspectRatio > 4 / 3) {
-    return;
-  }
   const wwt = document.querySelector(".wwtelescope-component");
   if (!(wwt instanceof HTMLElement)) {
     return;
   }
-  const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
-  const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
-  wwt.style.height = `${height}px`;
-  wwt.style.top = `${top}px`;
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  if (aspectRatio < (4 / 3)) {
+    const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
+    const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
+    wwt.style.width = `${window.innerWidth}px`;
+    wwt.style.height = `${height}px`;
+    wwt.style.top = `${top}px`;
+    wwt.style.left = "0px";
+  } else {
+    const width = tourPlaying ? (4 / 3) * window.innerHeight : window.innerWidth;
+    const left = tourPlaying ? 0.5 * (window.innerWidth - width) : 0;
+    wwt.style.height = `${window.innerHeight}px`;
+    wwt.style.width = `${width}px`;
+    wwt.style.left = `${left}px`;
+    wwt.style.top = "0px";
+  }
 }
 
 function logWWTState() {
