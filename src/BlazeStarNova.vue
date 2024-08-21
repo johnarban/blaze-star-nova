@@ -133,24 +133,14 @@
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
             tooltip-location="top">
               <template #button>
-                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
-              </template>
-          </icon-button>
-          <!-- icon button to go to TCrB -->
-          <icon-button
-            v-if="!isTourPlaying"
-            @activate="() => goToTCrB()"
-            fa-icon="star"
-            :color="buttonColor"
-            tooltip-text="Go to T CrB"
-            tooltip-location="top">
-              <template #button>
-                <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
+                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the nova'}}</span>
               </template>
           </icon-button>
           <icon-button
             v-if="!isTourPlaying"
-            @activate="() => store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME)"
+            @activate="() => {
+              toggleAndGoToNova();  
+            }"
             :color="buttonColor"
             :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
             tooltip-location="top"
@@ -158,10 +148,22 @@
             <template #button>
               <span class="jl_icon_button_text">{{
                 store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
-                'Show what the nova will look like!' :
-                'Return to current view'
+                'Show me what the nova will look like' :
+                'Show me what T CrB usually looks like'
                 }}</span>
             </template>
+          </icon-button>
+          <!-- icon button to go to TCrB -->
+          <icon-button
+            v-if="!isTourPlaying"
+            @activate="() => goToTCrB()"
+            fa-icon="star"
+            :color="buttonColor"
+            tooltip-text="Center on T CrB"
+            tooltip-location="top">
+              <template #button>
+                <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
+              </template>
           </icon-button>
 
 
@@ -384,6 +386,13 @@ function goToTCrB(instant=false) {
     zoomDeg: 180,
     instant: instant,
   });
+}
+
+function toggleAndGoToNova() {
+  goToTCrB(); 
+  setTimeout(() => {
+    store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME);
+  }, 1500);    
 }
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
