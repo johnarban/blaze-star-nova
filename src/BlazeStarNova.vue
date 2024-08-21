@@ -585,6 +585,8 @@ function onTourPlayingChange(playing: boolean) {
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
     const time = todayAt9pm();
     selectedDate.value = time;
+    // The watcher will do this, but we need it to happen now,
+    // before we move
     store.setTime(time);
     goToTCrB(true);
   }
