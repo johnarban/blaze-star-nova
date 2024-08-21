@@ -175,6 +175,7 @@
         <div style="flex-grow:1;"></div>
         
         <icon-button 
+          v-if="!isTourPlaying"
           :fa-icon="timePlaying ? 'pause' : 'play'"
           :color="buttonColor" 
           tooltip-text="Let time move forward"
@@ -333,6 +334,7 @@ const newFrameRender = function() {
     showHorizon.value
   );
 };
+let beforeTourTime: Date = new Date();
 
 // For now, we're not allowing a user to change this
 const clockRate = 1000;
@@ -567,6 +569,7 @@ function clearCurrentTour() {
 
 function playPauseTour() {
   if (!isTourPlaying.value) {
+    beforeTourTime = selectedDate.value;
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
@@ -577,7 +580,7 @@ function playPauseTour() {
 function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
   if (playing) {
-    playbackControl.togglePlay();
+    playbackControl.pause();
   } else {
     clearCurrentTour();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -585,11 +588,10 @@ function onTourPlayingChange(playing: boolean) {
     WWTControl.singleton.set__mover(null);
     store.applySetting(["localHorizonMode", true]);
     store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
-    const time = todayAt9pm();
-    selectedDate.value = time;
+    selectedDate.value = beforeTourTime;
     // The watcher will do this, but we need it to happen now,
     // before we move
-    store.setTime(time);
+    store.setTime(beforeTourTime);
     goToTCrB(true);
   }
 }
