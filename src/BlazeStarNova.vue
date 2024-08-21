@@ -178,7 +178,7 @@
         <icon-button 
           :fa-icon="timePlaying ? 'pause' : 'play'"
           :color="buttonColor" 
-          tooltip-text="Let time move forward"
+          :tooltip-text="timePlaying ? 'Pause time' : 'Let time move forward'"
           tooltip-location="start" 
           @activate="()=>{playbackControl.togglePlay()}" 
           style="align-self: center;"
