@@ -98,7 +98,7 @@
         </div>
         <div id="right-buttons">
           <v-chip
-            v-if="crbBelowHorizon"
+            v-if="crbBelowHorizon && !isTourPlaying"
           >
             Corona Borealis is Set
           </v-chip>
