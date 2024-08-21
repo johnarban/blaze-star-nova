@@ -1,15 +1,18 @@
 <template>
     <div class="td__container">
-      <div class="td__time">
-        <span v-if="!smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
-        <span v-if="smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }} {{ props.ampm ? ampm : '' }}</span>
+      <div class="td__time" v-if="!props.shortTimeDate">
+        <span class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
       </div>
-      <div class="td__date">
+      <div class="td__date" v-if="props.showDate && !props.shortTimeDate">
         <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
       </div>
-      <div class="td__timezone" v-if="props.showTimezone">
+      <div class="td__timezone" v-if="props.showTimezone && !props.shortTimeDate">
         <span class="td__timezone_tz">{{ props.timezone }}</span>
       </div>
+      <div class="td__time" v-if="props.shortTimeDate"> 
+        <span class="td__time_time">{{ shortTimeDateString }}</span>
+      </div>
+      
    </div>  
 </template>
 
@@ -21,16 +24,14 @@ import { computed, defineProps } from 'vue';
 const props = defineProps({
   date: { type: Date, required: true },
   ampm: { type: Boolean, default: false },
-  showTimezone: { type: Boolean, default: false, required: false },
+  showDate: { type: Boolean, default: true, required: false },
+  showTimezone: { type: Boolean, default: true, required: false },
+  shortTimeDate: { type: Boolean, default: false, required: false },
   timezone: { 
     type: String, 
     default: Intl.DateTimeFormat().resolvedOptions().timeZone, 
     required: false 
-  },
-  smAndDown: { 
-    type: Boolean, 
-    default: false, 
-    required: false }
+  }
 }
 );
 
@@ -51,6 +52,17 @@ const hours = computed(() => {
 
 const ampm = computed(() => {
   return props.date.getHours() >= 12 ? 'PM' : 'AM';
+});
+
+const shortTimeDateString = computed(() => {
+  // return date formatted as Oct 3 9:00 AM
+  const month = props.date.toLocaleString('default', { month: 'short' });
+  const day = props.date.getDate();
+  const hour = props.date.getHours() % 12;
+  const minute = pad(props.date.getMinutes());
+  const ampm = props.date.getHours() >= 12 ? 'PM' : 'AM';
+  const tz =  props.timezone;
+  return `${month} ${day} ${hour}:${minute} ${ampm}` + (props.showTimezone ? ` ${tz}` : '');
 });
 
 

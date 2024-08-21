@@ -220,9 +220,8 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" 
-                :smAndDown="smAndDown"/>
-                <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
+                <time-display :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
+                <v-icon v-if="!smAndDown" class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
