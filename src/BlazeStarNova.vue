@@ -632,13 +632,13 @@ function setMidnight(){
 }
 
 function toggleAlpha() {
-  store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 180, instant: false });
-  setTimeout(() => {
+  store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 180, instant: false }).then(() => {
     showAlphaOverlay.value = true;
-  }, 2000);
-  setTimeout(() => {
-    showAlphaOverlay.value = false;
-  }, 7000);
+  }).then(() => {
+    setTimeout(() => {
+      showAlphaOverlay.value = false;
+    }, 5000);
+  });
 }
 
 watch(isTourPlaying, onTourPlayingChange);
