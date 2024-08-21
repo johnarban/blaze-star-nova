@@ -98,7 +98,7 @@
         </div>
         <div id="right-buttons">
           <v-chip
-            v-if="crbBelowHorizon"
+            v-if="crbBelowHorizon && !isTourPlaying"
             class="chip-text"
           >
             Corona Borealis is Set
@@ -125,7 +125,7 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
             
           <icon-button
             @activate="() => playPauseTour()"
@@ -622,8 +622,23 @@ function onTourPlayingChange(playing: boolean) {
     store.setTime(beforeTourTime);
     goToTCrB(true);
   }
+  adjustWWTSize(playing);
 }
 
+function adjustWWTSize(tourPlaying: boolean) {
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  if (aspectRatio > 4 / 3) {
+    return;
+  }
+  const wwt = document.querySelector(".wwtelescope-component");
+  if (!(wwt instanceof HTMLElement)) {
+    return;
+  }
+  const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
+  const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
+  wwt.style.height = `${height}px`;
+  wwt.style.top = `${top}px`;
+}
 
 function logWWTState() {
   const loc = getWWTLocation();
@@ -737,6 +752,8 @@ p {
   margin-bottom: 0.5rem;
 }
 
+
+
 #main-content {
   position: fixed;
   width: 100%;
@@ -765,7 +782,6 @@ p {
     padding: 0;
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
