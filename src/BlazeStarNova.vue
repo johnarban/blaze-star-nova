@@ -379,8 +379,8 @@ const blazeStarLocation: EquatorialRad = {
 };
 
 
-function goToTCrB(instant=false) {
-  store.gotoRADecZoom({
+async function goToTCrB(instant=false): Promise<void> {
+  return store.gotoRADecZoom({
     raRad: blazeStarLocation.raRad,
     decRad: blazeStarLocation.decRad,
     zoomDeg: 180,
@@ -388,11 +388,18 @@ function goToTCrB(instant=false) {
   });
 }
 
+function isTCrBOnScreen(): boolean {
+  const screenPoint = store.findScreenPointForRADec({ ra: crbPlace.get_RA() * 15, dec: crbPlace.get_dec() });
+  console.log(screenPoint);
+  return screenPoint.x >= 0 && screenPoint.x <= window.innerWidth &&
+         screenPoint.y >= 0 && screenPoint.y <= window.innerHeight;
+}
+
 function toggleAndGoToNova() {
-  goToTCrB(); 
-  setTimeout(() => {
+  const instant = isTCrBOnScreen();
+  goToTCrB(instant).then(() => {
     store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME);
-  }, 1500);    
+  });
 }
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
