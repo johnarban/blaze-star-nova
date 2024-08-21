@@ -576,7 +576,9 @@ function playPauseTour() {
 
 function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
-  if (!playing) {
+  if (playing) {
+    playbackControl.togglePlay();
+  } else {
     clearCurrentTour();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
