@@ -10,7 +10,7 @@ export function makeTextOverlays(): Text3dBatch[] {
   const scale = 0.00018;
   const textItems = [
     ["T CrB, aka", "Blaze Star"],
-    ["Alphecca", "Nova will", "become roughly", "this bright"],
+    ["Alphecca", "(Nova will", "become roughly", "this bright)"],
   ];
   const up = Vector3d.create(0, 1, 0);
   const locations = [
@@ -20,9 +20,9 @@ export function makeTextOverlays(): Text3dBatch[] {
     ],
     [
       Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 25 + 42 / 60 + 52.89 / 3600),
-      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 24 + 27 / 60 + 52.89 / 3600),
-      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 23 + 12 / 60 + 52.89 / 3600),
-      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 21 + 57 / 60 + 52.89 / 3600),
+      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 24 + 17 / 60 + 52.89 / 3600),
+      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 23 + 2 / 60 + 52.89 / 3600),
+      Coordinates.raDecTo3d(15 + 24 / 60 + 41.268 / 3600, 21 + 47 / 60 + 52.89 / 3600),
     ]
   ];
   const batches = textItems.map(items => new Text3dBatch(glyphHeight));
