@@ -388,12 +388,12 @@ async function goToTCrB(instant=false): Promise<void> {
   });
 }
 
-function isTCrBOnScreen(): boolean {
-  const screenPoint = store.findScreenPointForRADec({ ra: crbPlace.get_RA() * 15, dec: crbPlace.get_dec() });
-  console.log(screenPoint);
-  return screenPoint.x >= 0 && screenPoint.x <= window.innerWidth &&
-         screenPoint.y >= 0 && screenPoint.y <= window.innerHeight;
-}
+// function isTCrBOnScreen(): boolean {
+//   const screenPoint = store.findScreenPointForRADec({ ra: crbPlace.get_RA() * 15, dec: crbPlace.get_dec() });
+//   console.log(screenPoint);
+//   return screenPoint.x >= 0 && screenPoint.x <= window.innerWidth &&
+//          screenPoint.y >= 0 && screenPoint.y <= window.innerHeight;
+// }
 
 function toggleAndGoToNova() {
   // const instant = isTCrBOnScreen();
