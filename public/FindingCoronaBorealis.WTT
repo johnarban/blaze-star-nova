@@ -1,24 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<FileCabinet HeaderSize="0x00000803">
+<FileCabinet HeaderSize="0x00000804">
   <Files>
-    <File Name="How to find Corona Borealis.wwtxml" Size="59539" Offset="0" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\25a5fa2a-3554-4d90-aa0f-b627ff5a9fc4.thumb.png" Size="5652" Offset="59539" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\55845942-840a-4746-af7c-030a8b522053.thumb.png" Size="6476" Offset="65191" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\bb5d75b6-5536-4e53-b766-122c269c546c.thumb.png" Size="5993" Offset="71667" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\eaa723de-e812-44ac-a01b-52c35dc760ac.thumb.png" Size="5993" Offset="77660" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\53b33c54-f37c-4db7-b9e0-0824e186e665.thumb.png" Size="6333" Offset="83653" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\2ffede55-bcc2-4d35-86b7-2b96a413e122.thumb.png" Size="6624" Offset="89986" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\cde548de-c633-437e-acea-077fb796057f.thumb.png" Size="5849" Offset="96610" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\b1b63253-b5b8-42eb-91ad-cb0a7f9f4c16.thumb.png" Size="6721" Offset="102459" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\cc2c7919-4b0f-4266-96c3-0d93b3b76cac.thumb.png" Size="5916" Offset="109180" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\b5217d72-4556-40a0-b0e3-23e1a5659576.thumb.png" Size="6927" Offset="115096" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\e818481d-ba23-4229-83c3-2baf8d8f5168.thumb.png" Size="6772" Offset="122023" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\3ecc98a8-dc35-4227-8e3b-800980b70037.thumb.png" Size="6790" Offset="128795" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\135a8de9-4249-455d-9591-533c925c4567.thumb.png" Size="6767" Offset="135585" />
-    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\20deed95-415a-4f4c-bdb8-4be31f6914bb.thumb.png" Size="6152" Offset="142352" />
+    <File Name="How to find Corona Borealis.wwtxml" Size="63097" Offset="0" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\25a5fa2a-3554-4d90-aa0f-b627ff5a9fc4.thumb.png" Size="5652" Offset="63097" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\55845942-840a-4746-af7c-030a8b522053.thumb.png" Size="6476" Offset="68749" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\bb5d75b6-5536-4e53-b766-122c269c546c.thumb.png" Size="5993" Offset="75225" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\eaa723de-e812-44ac-a01b-52c35dc760ac.thumb.png" Size="5993" Offset="81218" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\53b33c54-f37c-4db7-b9e0-0824e186e665.thumb.png" Size="6333" Offset="87211" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\2ffede55-bcc2-4d35-86b7-2b96a413e122.thumb.png" Size="6624" Offset="93544" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\cde548de-c633-437e-acea-077fb796057f.thumb.png" Size="5849" Offset="100168" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\b1b63253-b5b8-42eb-91ad-cb0a7f9f4c16.thumb.png" Size="6721" Offset="106017" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\cc2c7919-4b0f-4266-96c3-0d93b3b76cac.thumb.png" Size="5916" Offset="112738" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\b5217d72-4556-40a0-b0e3-23e1a5659576.thumb.png" Size="6927" Offset="118654" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\e818481d-ba23-4229-83c3-2baf8d8f5168.thumb.png" Size="6772" Offset="125581" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\3ecc98a8-dc35-4227-8e3b-800980b70037.thumb.png" Size="6790" Offset="132353" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\135a8de9-4249-455d-9591-533c925c4567.thumb.png" Size="6767" Offset="139143" />
+    <File Name="513de9f4-1116-4fc0-854e-0e94be39ca84\20deed95-415a-4f4c-bdb8-4be31f6914bb.thumb.png" Size="6152" Offset="145910" />
   </Files>
 </FileCabinet>﻿<?xml version='1.0' encoding='UTF-8'?>
-<Tour ID="513de9f4-1116-4fc0-854e-0e94be39ca84" Title="How to find Corona Borealis" Descirption="" Description="" RunTime="59" Author="" AuthorEmail="" OrganizationUrl="" OrganizationName="None" Keywords="" UserLevel="Beginner" Classification="0" Taxonomy="" DomeMode="False" TimeLineTour="False">
+<Tour ID="513de9f4-1116-4fc0-854e-0e94be39ca84" Title="How to find Corona Borealis" Descirption="" Description="" RunTime="60" Author="" AuthorEmail="" OrganizationUrl="" OrganizationName="None" Keywords="" UserLevel="Beginner" Classification="0" Taxonomy="" DomeMode="False" TimeLineTour="False">
   <TourStops>
     <TourStop Id="25a5fa2a-3554-4d90-aa0f-b627ff5a9fc4" Name="" Description="" Thumbnail="" Duration="00:00:03" Master="False" TransitionType="Slew" TransitionTime="2" TransitionOutTime="2" TransitionHoldTime="4" NextSlide="Next" InterpolationType="Linear" HasLocation="True" LocationAltitude="100" LocationLat="47.64222" LocationLng="-122.142" HasTime="True" StartTime="8/8/2024 2:40:05 PM" EndTime="8/8/2024 2:40:05 PM" ActualPlanetScale="True" ShowClouds="False" EarthCutawayView="False" ShowConstellationBoundries="False" ShowConstellationFigures="True" ShowConstellationSelection="True" ShowEcliptic="True" ShowElevationModel="False" ShowFieldOfView="False" ShowGrid="False" ShowHorizon="False" ShowHorizonPanorama="False" ShowMoonsAsPointSource="False" ShowSolarSystem="True" FovTelescope="0" FovEyepiece="0" FovCamera="0" LocalHorizonMode="False" GalacticMode="False" FadeInOverlays="False" SolarSystemStars="True" SolarSystemMilkyWay="False" SolarSystemCosmos="False" SolarSystemCMB="False" SolarSystemOrbits="True" SolarSystemMinorOrbits="True" SolarSystemOverlays="False" SolarSystemLighting="True" ShowISSModel="False" SolarSystemScale="1" MinorPlanetsFilter="255" PlanetOrbitsFilter="2147483647" SolarSystemMultiRes="True" SolarSystemMinorPlanets="False" SolarSystemPlanets="True" ShowEarthSky="True" ShowEquatorialGridText="True" ShowGalacticGrid="False" ShowGalacticGridText="True" ShowEclipticGrid="False" ShowEclipticGridText="True" ShowEclipticOverviewText="False" ShowAltAzGrid="False" ShowAltAzGridText="True" ShowPrecessionChart="False" ConstellationPictures="False" ConstellationsEnabled="" ShowConstellationLabels="True" ShowSkyOverlays="True" ShowConstellations="True" ShowSkyNode="True" ShowSkyGrids="False" SkyOverlaysIn3d="True" ConstellationFiguresFilter="-1,-1,-1" ConstellationBoundariesFilter="-1,-1,-1" ConstellationNamesFilter="-1,-1,-1" ConstellationArtFilter="-1,-1,-1">
       <Place Name="Current Screen" DataSetType="Sky" RA="12.1134944381349" Dec="55.3092895922342" Constellation="UMA" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="179.906298802707" Rotation="0.546637121724625" Angle="0" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
@@ -33,6 +33,9 @@
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="614.4329" Y="179.923" Width="658.3311" Height="227.0377" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="cb6fb7ce-fa30-4a70-bb41-5b9416a3918e" Type="TerraViewer.TextOverlay" Name="To find Corona" X="608.332" Y="181.2159" Width="621.8867" Height="223.4375" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">To find Corona
@@ -54,7 +57,10 @@ Borealis...</TextObject>
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
-        <Overlay Id="7556aee6-8c58-4605-857a-7aebbebd8182" Type="TerraViewer.TextOverlay" Name="Start at the Big Dipper" X="542.9413" Y="106.9029" Width="483.7851" Height="223.4375" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="547.2304" Y="110.0821" Width="511.3743" Height="227.0377" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
+        <Overlay Id="7556aee6-8c58-4605-857a-7aebbebd8182" Type="TerraViewer.TextOverlay" Name="Start at the Big Dipper" X="541.9413" Y="106.9029" Width="483.7851" Height="223.4375" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="NamedColor:Black" BorderStyle="None">Start at the
 Big Dipper.</TextObject>
@@ -78,6 +84,9 @@ Big Dipper.</TextObject>
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="643.8068" Y="131.9075" Width="764.5477" Height="227.0377" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="7556aee6-8c58-4605-857a-7aebbebd8182" Type="TerraViewer.TextOverlay" Name="Start at the Big Dipper" X="642.9413" Y="125.9029" Width="759.8593" Height="223.4375" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="NamedColor:Black" BorderStyle="None">Follow the stars in
@@ -119,9 +128,12 @@ the handle...</TextObject>
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="1103.138" Y="982.6218" Width="752.9076" Height="209.2524" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="cd1f8845-aea9-45c0-80bd-c4ccb8ed032f" Type="TerraViewer.TextOverlay" Name="To this very bright" X="1102.932" Y="982.135" Width="763.5117" Height="223.4375" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
-            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="Tight">To this very bright
+            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">To this very bright
 star, Arcturus.</TextObject>
           </Text>
         </Overlay>
@@ -149,12 +161,15 @@ star, Arcturus.</TextObject>
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="716.5576" Y="230.849" Width="886.7693" Height="325.979" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="d260ffb7-4704-407e-a6e2-83de049ac86c" Type="TerraViewer.ShapeOverlay" Name="Donut 1" X="636.0567" Y="712.996" Width="606.0569" Height="481.1742" Rotation="61.11084" Color="ARGBColor:255:255:102:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Shape ShapeType="Donut" />
         </Overlay>
         <Overlay Id="b847ad33-d879-4366-ac05-0cfe246d6533" Type="TerraViewer.TextOverlay" Name="And look for this big" X="720.5358" Y="232.7952" Width="881.7187" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
-            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="Tight">Look for this big kite-
+            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">Look for this big kite-
 shaped constellation, 
 Bootes.</TextObject>
           </Text>
@@ -188,12 +203,15 @@ Bootes.</TextObject>
         <Description><![CDATA[]]></Description>
       </EndTarget>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="781.666" Y="892.8822" Width="757.2727" Height="427.8304" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="72f9d152-bcd1-4693-8fd5-81062a87e502" Type="TerraViewer.ShapeOverlay" Name="Donut 1" X="596.2449" Y="457.4085" Width="553.9138" Height="400" Rotation="15" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Shape ShapeType="Donut" />
         </Overlay>
         <Overlay Id="f0df9b38-e58f-498e-af11-07abfb22f2ee" Type="TerraViewer.TextOverlay" Name="Corona Borealis" X="785.3978" Y="896.3481" Width="746.2382" Height="435.8749" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
-            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="Tight">Corona Borealis
+            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">Corona Borealis
 is the U-shaped
 constellation to
 the left of Bootes.</TextObject>
@@ -225,9 +243,12 @@ the left of Bootes.</TextObject>
         </BackgroundImageSet>
       </Place>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="555.778" Y="913.2529" Width="611.7708" Height="430.7405" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="556" Y="919" Width="579.0468" Height="435.8749" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
-            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="Tight">When T CrB
+            <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">When T CrB
 "goes nova,"
 it will become
 visible here...</TextObject>
@@ -248,6 +269,9 @@ visible here...</TextObject>
         </BackgroundImageSet>
       </Place>
       <Overlays>
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="585.6058" Y="875.3617" Width="368.7825" Height="326.1001" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
         <Overlay Id="b54c9df0-1d81-4485-8b69-b4ab4d63c3d9" Type="TerraViewer.ShapeOverlay" Name="Arrow 1" X="681.8707" Y="637.9481" Width="200" Height="20" Rotation="315" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Shape ShapeType="Arrow" />
         </Overlay>
@@ -260,7 +284,7 @@ this!</TextObject>
         </Overlay>
       </Overlays>
     </TourStop>
-    <TourStop Id="3ecc98a8-dc35-4227-8e3b-800980b70037" Name="" Description="" Thumbnail="" Duration="00:00:05" Master="False" TransitionType="Slew" TransitionTime="2" TransitionOutTime="2" TransitionHoldTime="4" NextSlide="Next" InterpolationType="Linear" HasLocation="True" LocationAltitude="100" LocationLat="47.64222" LocationLng="-122.142" HasTime="True" StartTime="8/7/2024 2:34:30 AM" EndTime="8/7/2024 2:34:30 AM" ActualPlanetScale="True" ShowClouds="False" EarthCutawayView="False" ShowConstellationBoundries="False" ShowConstellationFigures="True" ShowConstellationSelection="True" ShowEcliptic="True" ShowElevationModel="False" ShowFieldOfView="False" ShowGrid="False" ShowHorizon="False" ShowHorizonPanorama="False" ShowMoonsAsPointSource="False" ShowSolarSystem="True" FovTelescope="0" FovEyepiece="0" FovCamera="0" LocalHorizonMode="False" GalacticMode="False" FadeInOverlays="False" SolarSystemStars="True" SolarSystemMilkyWay="False" SolarSystemCosmos="False" SolarSystemCMB="False" SolarSystemOrbits="True" SolarSystemMinorOrbits="True" SolarSystemOverlays="False" SolarSystemLighting="True" ShowISSModel="False" SolarSystemScale="1" MinorPlanetsFilter="255" PlanetOrbitsFilter="2147483647" SolarSystemMultiRes="True" SolarSystemMinorPlanets="False" SolarSystemPlanets="True" ShowEarthSky="True" ShowEquatorialGridText="True" ShowGalacticGrid="False" ShowGalacticGridText="True" ShowEclipticGrid="False" ShowEclipticGridText="True" ShowEclipticOverviewText="False" ShowAltAzGrid="False" ShowAltAzGridText="True" ShowPrecessionChart="False" ConstellationPictures="False" ConstellationsEnabled="" ShowConstellationLabels="True" ShowSkyOverlays="True" ShowConstellations="True" ShowSkyNode="True" ShowSkyGrids="False" SkyOverlaysIn3d="True" ConstellationFiguresFilter="-1,-1,-1" ConstellationBoundariesFilter="-1,-1,-1" ConstellationNamesFilter="-1,-1,-1" ConstellationArtFilter="-1,-1,-1">
+    <TourStop Id="3ecc98a8-dc35-4227-8e3b-800980b70037" Name="" Description="" Thumbnail="" Duration="00:00:06" Master="False" TransitionType="Slew" TransitionTime="2" TransitionOutTime="2" TransitionHoldTime="4" NextSlide="Next" InterpolationType="Linear" HasLocation="True" LocationAltitude="100" LocationLat="47.64222" LocationLng="-122.142" HasTime="True" StartTime="8/7/2024 2:34:30 AM" EndTime="8/7/2024 2:34:30 AM" ActualPlanetScale="True" ShowClouds="False" EarthCutawayView="False" ShowConstellationBoundries="False" ShowConstellationFigures="True" ShowConstellationSelection="True" ShowEcliptic="True" ShowElevationModel="False" ShowFieldOfView="False" ShowGrid="False" ShowHorizon="False" ShowHorizonPanorama="False" ShowMoonsAsPointSource="False" ShowSolarSystem="True" FovTelescope="0" FovEyepiece="0" FovCamera="0" LocalHorizonMode="False" GalacticMode="False" FadeInOverlays="False" SolarSystemStars="True" SolarSystemMilkyWay="False" SolarSystemCosmos="False" SolarSystemCMB="False" SolarSystemOrbits="True" SolarSystemMinorOrbits="True" SolarSystemOverlays="False" SolarSystemLighting="True" ShowISSModel="False" SolarSystemScale="1" MinorPlanetsFilter="255" PlanetOrbitsFilter="2147483647" SolarSystemMultiRes="True" SolarSystemMinorPlanets="False" SolarSystemPlanets="True" ShowEarthSky="True" ShowEquatorialGridText="True" ShowGalacticGrid="False" ShowGalacticGridText="True" ShowEclipticGrid="False" ShowEclipticGridText="True" ShowEclipticOverviewText="False" ShowAltAzGrid="False" ShowAltAzGridText="True" ShowPrecessionChart="False" ConstellationPictures="False" ConstellationsEnabled="" ShowConstellationLabels="True" ShowSkyOverlays="True" ShowConstellations="True" ShowSkyNode="True" ShowSkyGrids="False" SkyOverlaysIn3d="True" ConstellationFiguresFilter="-1,-1,-1" ConstellationBoundariesFilter="-1,-1,-1" ConstellationNamesFilter="-1,-1,-1" ConstellationArtFilter="-1,-1,-1">
       <Place Name="Current Screen" DataSetType="Sky" RA="15.7416540310725" Dec="26.2305731163672" Constellation="CRB" Classification="Unidentified" Magnitude="0" Distance="0" AngularSize="60" ZoomLevel="115.150978129393" Rotation="0.113097335529232" Angle="-0.0414159265358979" Opacity="100" Target="Sun" ViewTarget="2.84462830244317E-19, 0, 0.004645784" TargetReferenceFrame="" DomeAlt="0" DomeAz="0">
         <Description><![CDATA[]]></Description>
         <BackgroundImageSet>
@@ -270,10 +294,13 @@ this!</TextObject>
         </BackgroundImageSet>
       </Place>
       <Overlays>
-        <Overlay Id="b54c9df0-1d81-4485-8b69-b4ab4d63c3d9" Type="TerraViewer.ShapeOverlay" Name="Arrow 1" X="1172.212" Y="640.8582" Width="200" Height="20" Rotation="230.609" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="1072.31" Y="880.7823" Width="1106.477" Height="328.8891" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
+        <Overlay Id="b54c9df0-1d81-4485-8b69-b4ab4d63c3d9" Type="TerraViewer.ShapeOverlay" Name="Arrow 1" X="1111.628" Y="643.3868" Width="161.2023" Height="20" Rotation="256.7994" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Shape ShapeType="Arrow" />
         </Overlay>
-        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="1076.124" Y="860.8305" Width="1092.223" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
+        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="1076.124" Y="878.8305" Width="1092.223" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">It will become about as
 bright as Corona Borealis's 
@@ -292,7 +319,10 @@ brightest star, Alphecca.</TextObject>
         </BackgroundImageSet>
       </Place>
       <Overlays>
-        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="856.2803" Y="869.0052" Width="1051.058" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="849.6921" Y="880.9651" Width="1057.007" Height="318.7039" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
+        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="856.2803" Y="882.0052" Width="1051.058" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">Until then, you can't
 see T CrB without
@@ -314,7 +344,10 @@ a telescope or binoculars.</TextObject>
         </BackgroundImageSet>
       </Place>
       <Overlays>
-        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="782.2803" Y="857.0052" Width="874.5429" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
+        <Overlay Id="01f78431-eca8-41d4-bf9a-a2b27101ee7a" Type="TerraViewer.ShapeOverlay" Name="Rectagle 1" X="778.3962" Y="876.325" Width="867.854" Height="309.9738" Rotation="0" Color="ARGBColor:255:8:8:8" Url="" LinkID="" Animate="False" Anchor="Screen">
+          <Shape ShapeType="Rectagle" />
+        </Overlay>
+        <Overlay Id="9aee9f66-4a87-4cf4-a2f0-3ce0af246f75" Type="TerraViewer.TextOverlay" Name="When T CrB" X="782.2803" Y="878.0052" Width="874.5429" Height="329.6562" Rotation="0" Color="ARGBColor:255:255:0:255" Url="" LinkID="" Animate="False" Anchor="Screen">
           <Text>
             <TextObject Bold="False" Italic="False" Underline="False" FontSize="66" FontName="Tahoma" ForgroundColor="ARGBColor:255:255:0:255" BackgroundColor="ARGBColor:255:17:17:17" BorderStyle="None">Keep an eye on
 this spot in the sky
