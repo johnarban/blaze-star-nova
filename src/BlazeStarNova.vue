@@ -221,7 +221,7 @@
                 elevation="5"
                 >
                 <time-display :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
-                <v-icon v-if="!smAndDown" class="td__icon">mdi-cursor-default-click</v-icon>
+                <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
               <v-card width="fit-content" elevation="5">
@@ -1069,11 +1069,13 @@ video {
   border: 1px solid var(--accent-color);
   text-align: right;
   position: relative;
+  overflow: visible;
 }
 
 .td__icon {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
+  bottom: -4px;
+  right: 0px;
+  z-index: 10000;
 }
 </style>
