@@ -1,7 +1,8 @@
 <template>
     <div class="td__container">
       <div class="td__time">
-        <span class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
+        <span v-if="!smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
+        <span v-if="smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }} {{ props.ampm ? ampm : '' }}</span>
       </div>
       <div class="td__date">
         <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
@@ -26,6 +27,10 @@ const props = defineProps({
     default: Intl.DateTimeFormat().resolvedOptions().timeZone, 
     required: false 
   },
+  smAndDown: { 
+    type: Boolean, 
+    default: false, 
+    required: false }
 }
 );
 
@@ -67,7 +72,7 @@ const ampm = computed(() => {
 }
 
 .td__time_time {
-  font-size: 1em;
+  font-size: var(--default-font-size);
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -79,7 +84,7 @@ const ampm = computed(() => {
 }
 
 .td__date_date {
-  font-size: 0.75em;
+  font-size: calc(0.85 * var(--default-font-size));
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -91,7 +96,7 @@ const ampm = computed(() => {
 }
 
 .td__timezone_tz {
-  font-size: 0.75em;
+  font-size: calc(0.85 * var(--default-font-size));
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
