@@ -126,41 +126,59 @@
        </div>
        <div id="playback-controls">
             
-            <icon-button
+          <icon-button
             @activate="() => playPauseTour()"
             :fa-icon="isTourPlaying ? 'stop' : 'play'"
             :color="buttonColor"
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
-            tooltip-location="start">
+            tooltip-location="top">
               <template #button>
-                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
+                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the nova'}}</span>
               </template>
+          </icon-button>
+          <icon-button
+            v-if="!isTourPlaying"
+            @activate="() => {
+              toggleAndGoToNova();  
+            }"
+            :color="buttonColor"
+            :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
+            tooltip-location="top"
+          >
+            <template #button>
+              <span class="jl_icon_button_text">{{
+                store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
+                'Show me what the nova will look like' :
+                'Show me what T CrB usually looks like'
+                }}</span>
+            </template>
           </icon-button>
           <!-- icon button to go to TCrB -->
           <icon-button
             v-if="!isTourPlaying"
             @activate="() => goToTCrB()"
-            :fa-icon="'star'"
+            fa-icon="star"
             :color="buttonColor"
-            :tooltip-text="'Go to T CrB'"
-            tooltip-location="start">
+            tooltip-text="Center on T CrB"
+            tooltip-location="top">
               <template #button>
                 <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
               </template>
           </icon-button>
-          
+
+
           <!-- reset time to now button -->
-           <button 
+          <button 
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = new Date()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
-            <!-- reset to 9pm button -->
-            <button
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
+          <!-- reset to 9pm button -->
+          <button
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = todayAt9pm()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
        </div>
        
        
@@ -259,7 +277,7 @@ import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 import { useDisplay} from 'vuetify';
 
-import {throttle} from './debounce';
+import { throttle } from './debounce';
 
 import { equatorialToHorizontal } from "./utils";
 import { LocationRad } from "./types";
@@ -274,6 +292,9 @@ export interface MainComponentProps {
   wwtNamespace?: string;
   initialCameraParams?: CameraParams;
 }
+
+const TYCHO_ISET_NAME = "Tycho (Synthetic, Optical)";
+const USNOB_ISET_NAME = "USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)";
 
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
@@ -354,12 +375,20 @@ function getWWTLocation(): LocationRad {
   };
 }
 
-function goToTCrB(instant=false) {
-  store.gotoTarget({
+async function goToTCrB(instant=false): Promise<void> {
+  return store.gotoTarget({
     place: crbPlace,
     noZoom: false,
-    instant: instant,
-    trackObject: false
+    instant,
+    trackObject: false,
+  });
+}
+
+function toggleAndGoToNova() {
+  // const instant = isTCrBOnScreen();
+  // console.log("Instant", instant);
+  goToTCrB().then(() => {
+    store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME);
   });
 }
 
@@ -421,7 +450,7 @@ onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
@@ -573,7 +602,7 @@ function playPauseTour() {
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
   }
 }
 
@@ -587,7 +616,7 @@ function onTourPlayingChange(playing: boolean) {
     // @ts-ignore
     WWTControl.singleton.set__mover(null);
     store.applySetting(["localHorizonMode", true]);
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
     selectedDate.value = beforeTourTime;
     // The watcher will do this, but we need it to happen now,
     // before we move
