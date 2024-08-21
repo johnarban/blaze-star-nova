@@ -422,12 +422,10 @@ function setWWTLocation(location: LocationDeg) {
 }
 
 window.addEventListener("orientationchange", function() {
-  console.log("Orientation change!");
   adjustWWTSize(isTourPlaying.value);
 });
 
 window.addEventListener("resize", function() {
-  console.log("Resize!");
   adjustWWTSize(isTourPlaying.value);
 });
 
