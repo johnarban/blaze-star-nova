@@ -98,7 +98,7 @@
         </div>
         <div id="right-buttons">
           <v-chip
-            v-if="crbBelowHorizon"
+            v-if="crbBelowHorizon && !isTourPlaying"
             class="chip-text"
           >
             Corona Borealis is Set
@@ -125,7 +125,7 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
             
           <icon-button
             @activate="() => playPauseTour()"
@@ -189,7 +189,7 @@
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos v-if="!smAndDown" style="margin:1em;" logo-size="25px"/>
+        <credit-logos v-if="!smAndDown && !isTourPlaying" style="margin:1em;" logo-size="25px"/>
         
         <div style="flex-grow:1;"></div>
         
@@ -450,6 +450,14 @@ function setWWTLocation(location: LocationDeg) {
   console.log("Setting location to", location);
 }
 
+window.addEventListener("orientationchange", function() {
+  adjustWWTSize(isTourPlaying.value);
+});
+
+window.addEventListener("resize", function() {
+  adjustWWTSize(isTourPlaying.value);
+});
+
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
@@ -623,8 +631,31 @@ function onTourPlayingChange(playing: boolean) {
     store.setTime(beforeTourTime);
     goToTCrB(true);
   }
+  adjustWWTSize(playing);
 }
 
+function adjustWWTSize(tourPlaying: boolean) {
+  const wwt = document.querySelector(".wwtelescope-component");
+  if (!(wwt instanceof HTMLElement)) {
+    return;
+  }
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  if (aspectRatio < (4 / 3)) {
+    const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
+    const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
+    wwt.style.width = `${window.innerWidth}px`;
+    wwt.style.height = `${height}px`;
+    wwt.style.top = `${top}px`;
+    wwt.style.left = "0px";
+  } else {
+    const width = tourPlaying ? (4 / 3) * window.innerHeight : window.innerWidth;
+    const left = tourPlaying ? 0.5 * (window.innerWidth - width) : 0;
+    wwt.style.height = `${window.innerHeight}px`;
+    wwt.style.width = `${width}px`;
+    wwt.style.left = `${left}px`;
+    wwt.style.top = "0px";
+  }
+}
 
 function logWWTState() {
   const loc = getWWTLocation();
@@ -738,6 +769,8 @@ p {
   margin-bottom: 0.5rem;
 }
 
+
+
 #main-content {
   position: fixed;
   width: 100%;
@@ -766,7 +799,6 @@ p {
     padding: 0;
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
