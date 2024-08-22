@@ -1084,12 +1084,18 @@ video {
 .icon-wrapper {
   width: fit-content;
   min-width: 50px;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .jl_icon-button {
   border-radius: 20px;
   border:2px solid  var(--accent-color);
   background-color: black;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .jl_icon_button_text {
