@@ -15,6 +15,9 @@
           <div id="splash-screen-logos">
             <credit-logos logo-size="5vmin" />
           </div>
+          <div id="image-credit">
+            Image credit: NASA / Goddard Space Flight Center
+          </div>
         </div>
       </div>
     </v-overlay>
@@ -140,6 +143,15 @@ function closeSplashScreen() {
     &:hover {
       cursor: pointer;
     }
+  }
+
+  #image-credit {
+    position: absolute;
+    bottom: 0.5rem;
+    left: -1rem;
+    font-size: calc(0.7 * var(--default-font-size));
+    font-weight: 400;
+    color: #DDDDDD;
   }
 }
 

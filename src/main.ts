@@ -36,17 +36,16 @@ import {
 
 library.add(faBookOpen);
 library.add(faChevronDown);
+library.add(faClock);
 library.add(faGear);
+library.add(faLocation);
+library.add(faLocationDot);
+library.add(faPause);
 library.add(faPlay);
+library.add(faSquareXmark);
 library.add(faStop);
 library.add(faTimes);
 library.add(faVideo);
-library.add(faPlay);
-library.add(faPause);
-library.add(faLocation);
-library.add(faLocationDot);
-library.add(faClock);
-library.add(faSquareXmark);
 
 /** v-hide directive taken from https://www.ryansouthgate.com/2020/01/30/vue-js-v-hide-element-whilst-keeping-occupied-space/ */
 // Extract the function out, up here, so I'm not writing it twice
