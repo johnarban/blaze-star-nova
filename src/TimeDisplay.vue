@@ -92,7 +92,7 @@ const shortTimeDateString = computed(() => {
 }
 
 .td__time_time {
-  font-size: var(--default-font-size);
+  font-size: 1em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -104,7 +104,7 @@ const shortTimeDateString = computed(() => {
 }
 
 .td__date_date {
-  font-size: calc(0.85 * var(--default-font-size));
+  font-size: 0.75em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -116,7 +116,7 @@ const shortTimeDateString = computed(() => {
 }
 
 .td__timezone_tz {
-  font-size: calc(0.85 * var(--default-font-size));
+  font-size: 0.75em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;

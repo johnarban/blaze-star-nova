@@ -220,7 +220,7 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display v-if="!isTourPlaying" :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
+                <time-display class="bsn__time" v-if="!isTourPlaying" :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
@@ -1133,5 +1133,17 @@ video {
   bottom: -4px;
   right: 0px;
   z-index: 10000;
+}
+
+.bsn__time .td__time_time {
+  font-size: var(--default-font-size);
+}
+
+.bsn__time .td__date_date {
+  font-size: calc(0.85 * var(--default-font-size));
+}
+
+.bsn__time .td__timezone_tz {
+  font-size: calc(0.85 * var(--default-font-size));
 }
 </style>
