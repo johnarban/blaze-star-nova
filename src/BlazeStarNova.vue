@@ -189,7 +189,7 @@
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos v-if="!smAndDown" style="margin:1em;" logo-size="25px"/>
+        <credit-logos v-if="!smAndDown && !isTourPlaying" style="margin:1em;" logo-size="25px"/>
         
         <div style="flex-grow:1;"></div>
         
