@@ -125,7 +125,7 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying, 'pc-widescreen': aspectRatio > 1.5}">
             
           <icon-button
             @activate="() => playPauseTour()"
@@ -138,7 +138,7 @@
               </template>
           </icon-button>
           <icon-button
-            v-if="!isTourPlaying"
+            v-if="!isTourPlaying && !(aspectRatio > 1.5 && height < 330)"
             @activate="() => {
               toggleAndGoToNova();  
             }"
@@ -220,8 +220,7 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display v-if="!isTourPlaying" :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" 
-                :smAndDown="smAndDown"/>
+                <time-display class="bsn__time" v-if="!isTourPlaying" :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
@@ -313,8 +312,9 @@ playbackControl.pause();
 const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
-const { smAndDown } = useDisplay();
+const { smAndDown, width, height } = useDisplay();
 
+const aspectRatio = computed(() => width.value / height.value);
 
 
 const props = withDefaults(defineProps<MainComponentProps>(), {
@@ -851,6 +851,10 @@ p {
 
 #top-content {
   position: relative;
+  // top: 0;
+  // left: 0;
+  // width: calc(100vw - 2rem);
+  max-height: 2rem;
   flex-grow:0;
   margin: 1rem;
   pointer-events: none;
@@ -859,6 +863,11 @@ p {
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
+  z-index: 1000;
+}
+
+#top-content > #left-buttons > #controls {
+  pointer-events: auto;
 }
 
 #left-buttons {
@@ -921,6 +930,14 @@ p {
   flex-direction: row;
   gap: 20px;
   justify-content: center;
+}
+
+#playback-controls.pc-widescreen {
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 5px;
+  max-height: calc(100vh - 5rem);
 }
 
 #bottom-content {
@@ -1067,12 +1084,18 @@ video {
 .icon-wrapper {
   width: fit-content;
   min-width: 50px;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .jl_icon-button {
   border-radius: 20px;
   border:2px solid  var(--accent-color);
   background-color: black;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 .jl_icon_button_text {
@@ -1102,11 +1125,25 @@ video {
   border: 1px solid var(--accent-color);
   text-align: right;
   position: relative;
+  overflow: visible;
 }
 
 .td__icon {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
+  bottom: -4px;
+  right: 0px;
+  z-index: 10000;
+}
+
+.bsn__time .td__time_time {
+  font-size: var(--default-font-size);
+}
+
+.bsn__time .td__date_date {
+  font-size: calc(0.85 * var(--default-font-size));
+}
+
+.bsn__time .td__timezone_tz {
+  font-size: calc(0.85 * var(--default-font-size));
 }
 </style>

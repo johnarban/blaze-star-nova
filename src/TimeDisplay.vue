@@ -1,15 +1,20 @@
 <template>
     <div class="td__container">
-      <div class="td__time">
-        <span v-if="!smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
-        <span v-if="smAndDown" class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }} {{ props.ampm ? ampm : '' }}</span>
+      <div class="td__date" v-if="props.showDate && !props.shortTimeDate">
+        <span class="td__date_date">
+          {{ props.date.toLocaleString('default', { month: 'long' }) }} {{ pad(props.date.getDate()) }}, {{ props.date.getFullYear() }}
+        </span>
       </div>
-      <div class="td__date">
-        <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
+      <div class="td__time" v-if="!props.shortTimeDate">
+        <span class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
       </div>
-      <div class="td__timezone" v-if="props.showTimezone">
+      <div class="td__timezone" v-if="props.showTimezone && !props.shortTimeDate">
         <span class="td__timezone_tz">{{ props.timezone }}</span>
       </div>
+      <div class="td__time" v-if="props.shortTimeDate"> 
+        <span class="td__time_time">{{ shortTimeDateString }}</span>
+      </div>
+      
    </div>  
 </template>
 
@@ -21,16 +26,14 @@ import { computed, defineProps } from 'vue';
 const props = defineProps({
   date: { type: Date, required: true },
   ampm: { type: Boolean, default: false },
-  showTimezone: { type: Boolean, default: false, required: false },
+  showDate: { type: Boolean, default: true, required: false },
+  showTimezone: { type: Boolean, default: true, required: false },
+  shortTimeDate: { type: Boolean, default: false, required: false },
   timezone: { 
     type: String, 
     default: Intl.DateTimeFormat().resolvedOptions().timeZone, 
     required: false 
-  },
-  smAndDown: { 
-    type: Boolean, 
-    default: false, 
-    required: false }
+  }
 }
 );
 
@@ -53,6 +56,17 @@ const ampm = computed(() => {
   return props.date.getHours() >= 12 ? 'PM' : 'AM';
 });
 
+const shortTimeDateString = computed(() => {
+  // return date formatted as Oct 3 9:00 AM
+  const month = props.date.toLocaleString('default', { month: 'short' });
+  const day = props.date.getDate();
+  const hour = props.date.getHours() % 12;
+  const minute = pad(props.date.getMinutes());
+  const ampm = props.date.getHours() >= 12 ? 'PM' : 'AM';
+  const tz =  props.timezone;
+  return `${month} ${day} ${hour}:${minute} ${ampm}` + (props.showTimezone ? ` ${tz}` : '');
+});
+
 
 </script>
 
@@ -67,12 +81,18 @@ const ampm = computed(() => {
   color: currentColor;
 }
 
+.td__container > div > span {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
 .td__time {
   width: max-content;
 }
 
 .td__time_time {
-  font-size: var(--default-font-size);
+  font-size: 1em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -84,7 +104,7 @@ const ampm = computed(() => {
 }
 
 .td__date_date {
-  font-size: calc(0.85 * var(--default-font-size));
+  font-size: 0.75em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
@@ -96,7 +116,7 @@ const ampm = computed(() => {
 }
 
 .td__timezone_tz {
-  font-size: calc(0.85 * var(--default-font-size));
+  font-size: 0.75em;
   color: inherit;
   text-align: center;
   text-wrap: nowrap;
