@@ -220,7 +220,7 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
+                <time-display v-if="!isTourPlaying" :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
