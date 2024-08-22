@@ -1,10 +1,12 @@
 <template>
     <div class="td__container">
+      <div class="td__date" v-if="props.showDate && !props.shortTimeDate">
+        <span class="td__date_date">
+          {{ props.date.toLocaleString('default', { month: 'long' }) }} {{ pad(props.date.getDate()) }}, {{ props.date.getFullYear() }}
+        </span>
+      </div>
       <div class="td__time" v-if="!props.shortTimeDate">
         <span class="td__time_time">{{ pad(hours) }}:{{ pad(props.date.getMinutes()) }}:{{ pad(props.date.getSeconds()) }} {{ props.ampm ? ampm : '' }}</span>
-      </div>
-      <div class="td__date" v-if="props.showDate && !props.shortTimeDate">
-        <span class="td__date_date">{{ props.date.getFullYear() }}-{{ pad(props.date.getMonth() + 1) }}-{{ pad(props.date.getDate()) }}</span>
       </div>
       <div class="td__timezone" v-if="props.showTimezone && !props.shortTimeDate">
         <span class="td__timezone_tz">{{ props.timezone }}</span>
