@@ -419,6 +419,11 @@ const selectedLocation = ref<LocationDeg>({
   latitudeDeg: 42.3581,
 });
 
+let href = window.location.href;
+if (href.endsWith("/")) {
+  href = href.slice(0, href.length - 1);
+}
+
 // useTimezone also provides selectedTimezone and browserTimezone
 const { shortTimezone, selectedTimezoneOffset, browserTimezoneOffset} = useTimezone(selectedLocation);
 
@@ -607,7 +612,7 @@ function clearCurrentTour() {
 function playPauseTour() {
   if (!isTourPlaying.value) {
     beforeTourTime = selectedDate.value;
-    store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
+    store.loadTour({ url: `${href}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
     store.setBackgroundImageByName(TYCHO_ISET_NAME);
