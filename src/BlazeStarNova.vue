@@ -100,7 +100,8 @@
         </div>
         <div id="right-buttons">
           <v-chip
-            v-if="crbBelowHorizon"
+            v-if="crbBelowHorizon && !isTourPlaying"
+            class="chip-text"
           >
             Corona Borealis is Set
           </v-chip>
@@ -122,43 +123,61 @@
       <!-- Date Picker -->
        <div id="empty-space">
        </div>
-       <div id="playback-controls">
+       <div id="playback-controls" :class="{'justify-md-end': isTourPlaying, 'px-4': isTourPlaying}">
             
-            <icon-button
+          <icon-button
             @activate="() => playPauseTour()"
             :fa-icon="isTourPlaying ? 'stop' : 'play'"
             :color="buttonColor"
             :tooltip-text="isTourPlaying ? 'Stop tour' : 'Play tour'"
-            tooltip-location="start">
+            tooltip-location="top">
               <template #button>
-                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the Nova!'}}</span>
+                <span class="jl_icon_button_text">{{ isTourPlaying ? 'Leave tour and return to main view' : 'Show me how to find the nova'}}</span>
               </template>
+          </icon-button>
+          <icon-button
+            v-if="!isTourPlaying"
+            @activate="() => {
+              toggleAndGoToNova();  
+            }"
+            :color="buttonColor"
+            :tooltip-text="store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? 'Show nova' : 'Hide nova'"
+            tooltip-location="top"
+          >
+            <template #button>
+              <span class="jl_icon_button_text">{{
+                store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ?
+                'Show me what the nova will look like' :
+                'Show me what T CrB usually looks like'
+                }}</span>
+            </template>
           </icon-button>
           <!-- icon button to go to TCrB -->
           <icon-button
             v-if="!isTourPlaying"
             @activate="() => goToTCrB()"
-            :fa-icon="'star'"
+            fa-icon="star"
             :color="buttonColor"
-            :tooltip-text="'Go to T CrB'"
-            tooltip-location="start">
+            tooltip-text="Center on T CrB"
+            tooltip-location="top">
               <template #button>
                 <span class="jl_icon_button_text"><v-icon>mdi-flare</v-icon><span> Go to T CrB</span></span>
               </template>
           </icon-button>
-          
+
+
           <!-- reset time to now button -->
-           <button 
+          <button 
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = new Date()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
-            <!-- reset to 9pm button -->
-            <button
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to Now</button>
+          <!-- reset to 9pm button -->
+          <button
             class="icon-wrapper jl_icon-button jl_debug"
             @click="selectedDate = todayAt9pm()"
             :style="{color: buttonColor}"
-            ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
+          ><font-awesome-icon icon="clock"/>&nbsp;Set time to 9pm</button>
        </div>
        
        
@@ -168,14 +187,15 @@
       <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
       
       <div id="bottom-content">
-        <credit-logos style="margin:1em;" logo-size="25px"/>
+        <credit-logos v-if="!smAndDown && !isTourPlaying" style="margin:1em;" logo-size="25px"/>
         
         <div style="flex-grow:1;"></div>
         
         <icon-button 
+          v-if="!isTourPlaying"
           :fa-icon="timePlaying ? 'pause' : 'play'"
           :color="buttonColor" 
-          tooltip-text="Let time move forward"
+          :tooltip-text="timePlaying ? 'Pause time' : 'Let time move forward'"
           tooltip-location="start" 
           @activate="()=>{playbackControl.togglePlay()}" 
           style="align-self: center;"
@@ -198,7 +218,8 @@
                 rounded="lg"
                 elevation="5"
                 >
-                <time-display :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" />
+                <time-display v-if="!isTourPlaying" :date="localSelectedDate" ampm show-timezone :timezone="shortTimezone" 
+                :smAndDown="smAndDown"/>
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
               </v-card>
             </template>
@@ -239,8 +260,10 @@
         :touchscreen="touchscreen"
         :show-blaze-overlay="showBlazeOverlay"
         :show-alpha-overlay="showAlphaOverlay"
-        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 90, instant: false })"
-        @toggle-alpha="() => store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 90, instant: false })"
+        @toggle-blaze="() => store.gotoRADecZoom({ raRad: crbPlace.get_RA() * 15 * D2R, decRad: crbPlace.get_dec() * D2R, zoomDeg: 180, instant: false })"
+        @toggle-alpha="() => {
+          toggleAlpha();
+        }"
        />
      
 
@@ -256,10 +279,10 @@ import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
 import { BackgroundImageset, skyBackgroundImagesets, supportsTouchscreen, blurActiveElement, useWWTKeyboardControls, D2R, LocationDeg } from "@cosmicds/vue-toolkit";
 import { useDisplay} from 'vuetify';
 
-import {throttle} from './debounce';
+import { throttle } from './debounce';
 
 import { equatorialToHorizontal } from "./utils";
-import { EquatorialRad, LocationRad } from "./types";
+import { LocationRad } from "./types";
 import { resetAltAzGridText, makeAltAzGridText, setupConstellationFigures, renderOneFrame } from "./wwt-hacks";
 
 import { usePlaybackControl } from "./wwt_playback_control";
@@ -271,6 +294,9 @@ export interface MainComponentProps {
   wwtNamespace?: string;
   initialCameraParams?: CameraParams;
 }
+
+const TYCHO_ISET_NAME = "Tycho (Synthetic, Optical)";
+const USNOB_ISET_NAME = "USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)";
 
 const store = engineStore();
 const { isTourPlaying } = storeToRefs(store);
@@ -285,7 +311,7 @@ playbackControl.pause();
 const { timePlaying } = playbackControl;
 
 const touchscreen = supportsTouchscreen();
-// const { smAndDown } = useDisplay();
+const { smAndDown } = useDisplay();
 
 
 
@@ -339,6 +365,7 @@ const clockRate = 1000;
 const crbPlace = new Place();
 crbPlace.set_RA(15 + 59 / 60 + 30.1622 / 3600);
 crbPlace.set_dec(25 + 55 / 60 + 12.613 / 3600);
+crbPlace.set_zoomLevel(180);
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -350,21 +377,23 @@ function getWWTLocation(): LocationRad {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const blazeStarLocation: EquatorialRad = {
-  raRad: (15 + 59 / 60 + 30.1622 / 3600) * 15 * D2R,
-  decRad: (25 + 55 / 60 + 12.613 / 3600) * D2R,
-};
-
-
-function goToTCrB(instant=false) {
-  store.gotoRADecZoom({
-    raRad: blazeStarLocation.raRad,
-    decRad: blazeStarLocation.decRad,
-    zoomDeg: 180,
-    instant: instant,
+async function goToTCrB(instant=false): Promise<void> {
+  return store.gotoTarget({
+    place: crbPlace,
+    noZoom: false,
+    instant,
+    trackObject: false,
   });
 }
+
+function toggleAndGoToNova() {
+  // const instant = isTCrBOnScreen();
+  // console.log("Instant", instant);
+  goToTCrB().then(() => {
+    store.setBackgroundImageByName(store.backgroundImageset?.get_name() == TYCHO_ISET_NAME ? USNOB_ISET_NAME : TYCHO_ISET_NAME);
+  });
+}
+
 // create selectedDate by default is today at 9pm localtime
 function todayAt9pm() {
   // get's today's date and 
@@ -419,13 +448,19 @@ function setWWTLocation(location: LocationDeg) {
   console.log("Setting location to", location);
 }
 
+window.addEventListener("orientationchange", function() {
+  adjustWWTSize(isTourPlaying.value);
+});
+
+window.addEventListener("resize", function() {
+  adjustWWTSize(isTourPlaying.value);
+});
+
 onMounted(() => {
   store.waitForReady().then(async () => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
 
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
-    // store.setBackgroundImageByName("Digitized Sky Survey (Color)");
-    store.setBackgroundImageByName("SDSS: Sloan Digital Sky Survey (Optical) [DR7]");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
 
     // If there are layers to set up, do that here!
     layersLoaded.value = true;
@@ -476,7 +511,7 @@ onMounted(() => {
         positionSet.value = true;
       });
     }, 50);
-  });
+  }).then(()=>{updateCrbBelowHorizon(store.currentTime);});
 });
 
 const ready = computed(() => layersLoaded.value && positionSet.value);
@@ -498,10 +533,6 @@ function getCrbAlt(when: Date | null = null) {
 
   return crbAltAz.altRad;
 }
-
-/* Properties related to device/screen characteristics */
-// TODO: This seems to be giving the wrong value? Investigate why
-// const smallSize = computed(() => smAndDown);
 
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
@@ -573,32 +604,56 @@ function clearCurrentTour() {
 
 function playPauseTour() {
   if (!isTourPlaying.value) {
-    beforeTourTime = store.currentTime;
+    beforeTourTime = selectedDate.value;
     store.loadTour({ url: `${window.location.origin}/FindingCoronaBorealis.WTT`, play: true });
   } else {
     clearCurrentTour();
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
   }
 }
 
 function onTourPlayingChange(playing: boolean) {
   WWTControl.singleton.renderOneFrame = playing ? originalFrameRender : newFrameRender;
-  if (!playing) {
+  if (playing) {
+    playbackControl.pause();
+  } else {
     clearCurrentTour();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    WWTControl.singleton.set__mover(null);
     store.applySetting(["localHorizonMode", true]);
-    store.gotoRADecZoom({
-      raRad: store.raRad,
-      decRad: store.decRad,
-      zoomDeg: store.zoomDeg,
-      rollRad: 0,
-      instant: true,
-    });
+    store.setBackgroundImageByName(TYCHO_ISET_NAME);
+    selectedDate.value = beforeTourTime;
+    // The watcher will do this, but we need it to happen now,
+    // before we move
     store.setTime(beforeTourTime);
-    store.setBackgroundImageByName("Tycho (Synthetic, Optical)");
-    WWTControl.singleton.renderOneFrame();
+    goToTCrB(true);
   }
+  adjustWWTSize(playing);
 }
 
+function adjustWWTSize(tourPlaying: boolean) {
+  const wwt = document.querySelector(".wwtelescope-component");
+  if (!(wwt instanceof HTMLElement)) {
+    return;
+  }
+  const aspectRatio = window.innerWidth / window.innerHeight;
+  if (aspectRatio < (4 / 3)) {
+    const height = tourPlaying ? 0.75 * window.innerWidth : window.innerHeight;
+    const top = tourPlaying ? 0.5 * (window.innerHeight - height) : 0;
+    wwt.style.width = `${window.innerWidth}px`;
+    wwt.style.height = `${height}px`;
+    wwt.style.top = `${top}px`;
+    wwt.style.left = "0px";
+  } else {
+    const width = tourPlaying ? (4 / 3) * window.innerHeight : window.innerWidth;
+    const left = tourPlaying ? 0.5 * (window.innerWidth - width) : 0;
+    wwt.style.height = `${window.innerHeight}px`;
+    wwt.style.width = `${width}px`;
+    wwt.style.left = `${left}px`;
+    wwt.style.top = "0px";
+  }
+}
 
 function logWWTState() {
   const loc = getWWTLocation();
@@ -633,6 +688,15 @@ function setMidnight(){
   selectedDate.value = time;
 }
 
+function toggleAlpha() {
+  store.gotoRADecZoom({ raRad: 233.6719500 * D2R, decRad: 26.7146850 * D2R, zoomDeg: 180, instant: false }).then(() => {
+    showAlphaOverlay.value = true;
+  }).then(() => {
+    setTimeout(() => {
+      showAlphaOverlay.value = false;
+    }, 5000);
+  });
+}
 
 watch(isTourPlaying, onTourPlayingChange);
 
@@ -644,7 +708,6 @@ watch(showConstellations, (show) => {
   store.applySetting(["showConstellationLabels", show]);
   store.applySetting(["showConstellationFigures", show]);
 });
-
 
 watch(selectedDate, (date) => {
   // if we are playing this already getting updated
@@ -670,8 +733,8 @@ watch(inNorthernHemisphere, (_inNorth: boolean) => resetAltAzGridText());
 }
 
 :root {
-  --default-font-size: clamp(0.9rem, min(2.2vh, 2.2vw), 1.4rem);
-  --default-line-height: clamp(1.3rem, min(2.8vh, 2.8vw), 2.1rem);
+  --default-font-size: ~"max(14px, calc(0.7em + 0.3vw))";
+  --default-line-height: ~"max(20px, calc(1em + 0.4vw))";
 }
 
 html {
@@ -680,7 +743,6 @@ html {
   padding: 0;
   background-color: #000;
   overflow: hidden;
-
 
   -ms-overflow-style: none;
   // scrollbar-width: none;
@@ -707,6 +769,8 @@ p {
   margin-bottom: 0.5rem;
 }
 
+
+
 #main-content {
   position: fixed;
   width: 100%;
@@ -723,7 +787,6 @@ p {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  font-size: 11pt;
 
   .wwtelescope-component {
     position: absolute;
@@ -736,7 +799,6 @@ p {
     padding: 0;
   }
 }
-
 
 .fade-enter-active,
 .fade-leave-active {
@@ -834,6 +896,18 @@ p {
   flex-grow: 1;
   gap: 10px;
   align-items: flex-end;
+  height: auto;
+}
+
+.chip-text {
+  font-size: var(--default-font-size) !important;
+  max-width: 33vw; 
+  white-space: normal; 
+  height: auto !important; 
+  padding-inline: 1em !important;
+  padding-block: 0.5em !important;
+  text-align: center;
+  border-radius: 20px;
 }
 
 #empty-space {
@@ -932,6 +1006,7 @@ p {
       width: 150px;
     }
   }
+  
   #controls-top-row {
     padding-left: 0.5em;
     display: flex;
@@ -1001,9 +1076,10 @@ video {
 }
 
 .jl_icon_button_text {
-  font-size : 1.15em; 
+  font-size : var(--default-font-size) !important;
   padding-inline: 1em; 
-  max-width: 20ch; text-align: center;
+  max-width: 20ch; 
+  text-align: center;
 }
 
 .jl_debug {

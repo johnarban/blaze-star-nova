@@ -22,7 +22,7 @@
             </p>
             <h4>How do I see this nova?</h4>
             <p>
-              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed, the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." <a href="#" onclick="return false;" @click="() => playTour()">This guide</a> explains how you can find Corona Borealis in your night sky.
+              The star that will become a nova is named "T Coronae Borealis." It is often referred to as "T CrB" for short and is also nicknamed the "Blaze Star" (Go to <a href="#" @click.prevent="$emit('toggle-blaze')">T CrB</a>). As the name suggests, it is located within the constellation Corona Borealis, the "Northern Crown." <a href="#" onclick="return false;" @click="() => playTour()">This guide</a> explains how you can find Corona Borealis in your night sky.
             </p>
             <!-- <v-btn @click="$emit('toggle-blaze')">{{ `${showBlazeOverlay ? 'Hide' : 'Show'} T CrB label` }}</v-btn> -->
             <p>
@@ -30,12 +30,12 @@
             </p>
             <h4>How bright will the nova be?</h4>
             <p>
-              At its normal brightness, T CrB is about a 10th magnitude star. This is about 30-40 times fainter than the faintest star a person could see from a dark sky, so you would need a telescope to see it. When it goes nova, it is predicted to be about 2-2.5 magnitudes. It is comparable in brightness to Alphecca (Go to <a href="#" @click.prevent="$emit('toggle-alpha')">Alphecca</a>), the brightest star you can see in the crown of Corona Borealis.(TODO: add a link to turn on the layer that shows the brightness comparison.)
+              At its normal brightness, T CrB is about a 10th magnitude star. This is about 30-40 times fainter than the faintest star a person could see from a dark sky, so you would need a telescope to see it. When it goes nova, it is predicted to be about 2-2.5 magnitudes. It is comparable in brightness to Alphecca (Go to <a href="#" @click.prevent="$emit('toggle-alpha')">Alphecca</a>), the brightest star you can see in the crown of Corona Borealis.
             </p>
             <!-- <v-btn @click="$emit('toggle-alpha')">{{ `${showAlphaOverlay ? 'Hide' : 'Show'} alpha label` }}</v-btn> -->
             <h4>What causes a nova?</h4>
             <p>
-              Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The graviational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
+              Novas occur in binary star systems where small, very dense, very hot stars called white dwarfs orbit another large star at close range. The gravitational pull from the white dwarf can pull gas from the outer layers of the large companion star onto the surface of the white dwarf. When enough of this gas collects on the surface of the white dwarf, it triggers a nuclear explosion that causes the temporary brightening of the nova.
             </p>
             
             <figure class="fig-right" style="width:40%;"> <!-- floats, the old magic, before flex-->
@@ -43,7 +43,7 @@
                 src="https://www.nasa.gov/wp-content/uploads/2024/06/novacyg093500952-print.jpg"
               ></v-img>
               <figcaption>A red giant star and white dwarf orbit each other, similar to T Coronae Borealis, the Blaze Star. 
-                A disk of material is pulled off the red giant, into a disk, and then onto the white dwarf. <cite>(Credit: NASA / Goddard Space Flight Center)</cite>
+                A disk of material is pulled off the red giant, into a disk, and then onto the white dwarf. (Credit: NASA / Goddard Space Flight Center)
               </figcaption>
             </figure>
             
