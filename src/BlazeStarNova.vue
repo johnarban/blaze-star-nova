@@ -219,6 +219,8 @@
                 width="fit-content"
                 rounded="lg"
                 elevation="5"
+                tabindex="0"
+                @keyup.enter="props.onClick"
                 >
                 <time-display class="bsn__time" v-if="!isTourPlaying" :date="localSelectedDate" ampm :short-time-date="smAndDown" show-timezone :timezone="shortTimezone" />
                 <v-icon class="td__icon">mdi-cursor-default-click</v-icon>
