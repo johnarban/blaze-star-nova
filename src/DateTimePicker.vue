@@ -5,12 +5,12 @@
     <div class="dtp__grid-container">
       <!-- <div class="dtp__rollers up-rollers"> -->
       <button id="dtp__year-up" class="dtp__grid-item" @click="increment('year')">
-        <span class="dtp__button-label">year</span>
+        <span class="dtp__button-label">yr</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
       <button id="dtp__month-up" class="dtp__grid-item" @click="increment('month')">
-        <span class="dtp__button-label">&nbsp;mon.</span>
+        <span class="dtp__button-label">mo</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
@@ -20,7 +20,7 @@
       </button>
       <slot name="top-middle"><span></span></slot>
       <button id="dtp__hour-up" class="dtp__grid-item" @click="increment('hour')">
-        <span class="dtp__button-label">hour</span>
+        <span class="dtp__button-label">hr</span>
         <v-icon>mdi-menu-up</v-icon>
       </button>
       <span></span>
