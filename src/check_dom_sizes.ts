@@ -11,7 +11,7 @@ type BoundingClientRect = {
   bottom: number;
 };
 
-export function checkPointContainedByDiv(point: ScreenLoc, divRect: BoundingClientRect | null = null): boolean {
+export function checkPointContainedByDiv(point: { x: number; y: number, z?: number }, divRect: BoundingClientRect | null = null): boolean {
   if (divRect) {
     return (
       point.x >= divRect.left &&

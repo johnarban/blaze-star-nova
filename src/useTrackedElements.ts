@@ -3,7 +3,7 @@ import { engineStore } from '@wwtelescope/engine-pinia';
 import { use3DTransform } from './use3DTransform';
 import { checkPointContainedByDiv } from './check_dom_sizes';
 
-const { findScreenPointForRADec } = use3DTransform();
+const { findScreenPointForRADec3D } = use3DTransform();
 
 export type LocationDegrees = {
   ra: number;
@@ -42,7 +42,7 @@ export function useTrackedElements(layer: string) {
    * Places an HTML element at a specified RA/Dec location.
    */
   function placeElement(el: HTMLElement, pt: LocationDegrees): TrackedHTMLElement {
-    const { x, y } = findScreenPointForRADec(pt);
+    const { x, y } = findScreenPointForRADec3D(pt) as ScreenPosition;
 
     el.style.position = 'absolute';
     el.style.left = `${x}px`;
@@ -72,7 +72,7 @@ export function useTrackedElements(layer: string) {
    * @param pt {ra: number, dec: number, ...} The RA/Dec location of the element.
    */
   function createTrackedElement(pt: TrackedElementData, tag = 'div', name = ''): TrackedHTMLElement {
-    const { x, y } = findScreenPointForRADec(pt);
+    const { x, y } = findScreenPointForRADec3D(pt) as ScreenPosition;
     const element = createElement({ x, y }, tag) as TrackedHTMLElement;
     element.className = "tracked-element";
 
@@ -117,10 +117,11 @@ export function useTrackedElements(layer: string) {
    * Checks if a tracked element is visible on the screen and returns its screen position.
    */
   function isMarkerVisible(el: TrackedHTMLElement): [ScreenPosition, boolean] {
-    const screen = findScreenPointForRADec(el.trackedData);
+    const screen = findScreenPointForRADec3D(el.trackedData) as ScreenPosition;
     if (screen.z === 0) {
       return [screen, false];
     }
+    
     return [screen, checkPointContainedByDiv(screen, frameDivRect.value)];
   }
 
@@ -158,6 +159,10 @@ export function useTrackedElements(layer: string) {
   });
 
   watch(store, () => {
+    updateElements();
+  });
+  
+  watch(frameDivRect, () => {
     updateElements();
   });
 
@@ -209,6 +214,7 @@ export function useTrackedElements(layer: string) {
     addElements,
     updateOffScreenElements,
     isMarkerVisible,
-    placeElement
+    placeElement,
+    wwtDiv,
   };
 }

@@ -1,7 +1,10 @@
 <template>
   
   <div id="tour-layer" ref="parent">
-    <div id="marker-container"></div>
+    <div id="marker-container">
+      <p class="tcrb-label">T Corona Borealis</p>
+      
+    </div>
     <div id="marker-frame"></div>
     <button class="tour-layer-button button2" @click="loadStarData">Load Stars</button>
   </div>
@@ -28,9 +31,18 @@ type Star = Equatorial & {
   mag?: number,
 };
 
-const store = engineStore();
-const ute = useTrackedElements("marker-frame");
+export type WWTEngineStore = ReturnType<typeof engineStore>;
+
+const props = defineProps({
+  store: {
+    type: Object as () => WWTEngineStore,
+    required: true,
+  },
+});
+const store = props.store;
+const ute = useTrackedElements("marker-container");
 const markers = ute.trackedElements;
+
 
 
 // template ref to the parent element
@@ -44,6 +56,7 @@ const blazeStarLocation: Equatorial = {
   ra: (15 + 59 / 60 + 30.1622 / 3600) * 15,
   dec: (25 + 55 / 60 + 12.613 / 3600),
 };
+
 
 
 
@@ -87,11 +100,6 @@ function addMarkerToLayer(marker: TrackedHTMLElement , layer: HTMLElement | null
   return false;
 }
 
-// resize observer to update markers on window resize
-const resizeObserver = new ResizeObserver(() => {
-  ute.updateElements();
-});
-resizeObserver.observe(document.body);
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -141,6 +149,12 @@ function loadStarData() {
 store.waitForReady().then(() => {
   const marker = createCusomMarker(blazeStarLocation, 'tcrb_marker');
   addMarkerToLayer(marker, getMarkerLayer());
+  const el = document.querySelector(".tcrb-label");
+  console.log('label',el);
+  if (el) {
+    ute.placeElement(el as HTMLElement, blazeStarLocation);
+  }
+  loadStarData();
 });
 
 watch(store, () => {
@@ -184,6 +198,12 @@ watch(store, () => {
   left: 0;
   pointer-events: none;
   /* outline: 1px solid magenta; */
+}
+
+p.tcrb-label {
+  color: red;
+  font-size: 32px;
+  transform: translateY(1em) translateX(-50%);
 }
 
 .tracked-element {
